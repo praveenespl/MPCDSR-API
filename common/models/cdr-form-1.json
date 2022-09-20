@@ -1,0 +1,162 @@
+{
+  "name": "cdr_form_1",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "notification_received_date": {
+      "type": "date"
+    },
+    "notification_received_person_name": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "date_of_birth": {
+      "type": "date"
+    },
+	"createdBy": {
+      "type": "string"
+    },
+    "age": {
+      "type": "string"
+    },
+    "sex": {
+      "type": "string"
+    },
+    "mother_name": {
+      "type": "string"
+    },
+    "father_name": {
+      "type": "string"
+    },
+    "address": {
+      "type": {
+        "colony": {
+          "type": "string"
+        },
+        "house_number": {
+          "type": "string"
+        },
+        "pincode": {
+          "type": "string"
+        },
+        "landmark": {
+          "type": "string"
+        },
+        "statecode": {
+          "type": "number"
+        },
+        "statename": {
+          "type": "string"
+        },
+        "districtcode": {
+          "type": "number"
+        },
+        "districtname": {
+          "type": "string"
+        },
+        "subdistrictcode": {
+          "type": "number"
+        },
+        "subdistrictname": {
+          "type": "string"
+        },
+        "villagecode": {
+          "type": "string"
+        },
+        "villagename": {
+          "type": "string"
+        }
+      }
+    },
+    "landline": {
+      "type": "string"
+    },
+    "mobile": {
+      "type": "string"
+    },
+    "date_of_death": {
+      "type": "date"
+    },
+    "palce_of_death": {
+      "type": "string"
+    },
+    "actual_palce_of_death": {
+      "type": "string"
+    },
+    "hospital_name": {
+      "type": {
+        "health_facility_name":"string",
+        "health_facility_primary_key_id":"number"
+      }
+    },
+    "primary_informant_name": {
+      "type": "string"
+    },
+    "time": {
+      "type": "date"
+    },
+    "date_of_notification": {
+      "type": "date"
+    },
+    "statecode": {
+      "type": "number"
+    },
+    "districtcode": {
+      "type": "number"
+    },
+    "subdistrictcode": {
+      "type": "number"
+    },
+    "villagecode": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "cdrForm2s": {
+      "type": "hasMany",
+      "model": "cdr_form_2",
+      "foreignKey": "cdr_id"
+    },
+    "cdrForm3s": {
+      "type": "hasMany",
+      "model": "cdr_form_3",
+      "foreignKey": "cdr_id"
+    },
+    "cdrForm3bs": {
+      "type": "hasMany",
+      "model": "cdr_form_3b",
+      "foreignKey": "cdr_id"
+    },
+    "cdrForm3cs": {
+      "type": "hasMany",
+      "model": "cdr_form_3c",
+      "foreignKey": "cdr_id"
+    },
+    "cdrForm4as": {
+      "type": "hasMany",
+      "model": "cdr_form_4a",
+      "foreignKey": "cdr_id"
+    },
+    "cdrForm4bs": {
+      "type": "hasMany",
+      "model": "cdr_form_4b",
+      "foreignKey": "cdr_id"
+    },
+	"createdBy": {
+      "type": "belongsTo",
+      "model": "usermaster",
+      "foreignKey": "createdBy"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

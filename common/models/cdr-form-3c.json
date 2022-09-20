@@ -1,0 +1,356 @@
+{
+  "name": "cdr_form_3c",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "cdr_id": {
+      "type": "string",
+      "required": true
+    },
+    "basic": {
+      "type": {
+        "mcts_number": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionA": {
+      "type": {
+        "informant_name": {
+          "type": "string"
+        },
+        "informant_relation": {
+          "type": "string"
+        },
+        "place_of_death": {
+          "type": "string"
+        },
+        "actual_place_of_death": {
+          "type": "string"
+        },
+        "place_of_death_other": {
+          "type": "string"
+        },
+        "contact_number": {
+          "type": "string"
+        },
+        "number_of_family_members": {
+          "type": "string"
+        },
+        "number_of_children": {
+          "type": "string"
+        },
+        "cast": {
+          "type": "string"
+        },
+        "below_poverty_line": {
+          "type": "string"
+        },
+        "family_assets": {
+          "type": "any"
+        }
+      }
+    },
+    "sectionB": {
+      "type": {
+        "asha_aww_vhn_anm_advice_on_hospital": {
+          "type": "string"
+        },
+        "who_advised": {
+          "type": "string"
+        },
+        "who_advised_other": {
+          "type": "string"
+        },
+        "seek_care_outside_home": {
+          "type": "string"
+        },
+        "illness_was_serious": {
+          "type": "string"
+        },
+        "money_not_available": {
+          "type": "string"
+        },
+        "family_members_were_not_able_to_accompany": {
+          "type": "string"
+        },
+        "bad_weather": {
+          "type": "string"
+        },
+        "did_not_know_where_to_take": {
+          "type": "string"
+        },
+        "no_hope_for_survival": {
+          "type": "string"
+        },
+        "transport_not_available": {
+          "type": "string"
+        },
+        "others": {
+          "type": "string"
+        },
+        "condition_when_decide_for_medical_consultation": {
+          "type": "string"
+        },
+        "quack_informal_service_providers": {
+          "type": "string"
+        },
+        "traditional_healer_religious_healer": {
+          "type": "string"
+        },
+        "sub_centre": {
+          "type": "string"
+        },
+        "phc": {
+          "type": "string"
+        },
+        "chc": {
+          "type": "string"
+        },
+        "sub_district_hospital": {
+          "type": "string"
+        },
+        "district_govt__Hospital": {
+          "type": "string"
+        },
+        "private_allopathic_doctor": {
+          "type": "string"
+        },
+        "doctors_in_alternate_system_of_medicine": {
+          "type": "string"
+        },
+        "reason_for_seeking_care_from_there": {
+          "type": "string"
+        },
+        "hospital_you_took_baby_type": {
+          "type": "string"
+        },
+        "hospital_you_took_baby_first_health_facility": {
+          "type": "string"
+        },
+        "hospital_you_took_baby_referral_institution_i": {
+          "type": "string"
+        },
+        "hospital_you_took_baby_referral_institution_ii": {
+          "type": "string"
+        },
+        "hospital_you_took_baby_referral_institution_iii": {
+          "type": "string"
+        },
+        "problem_health_facility": {
+          "type": "string"
+        },
+        "problem_referral_institution_i": {
+          "type": "string"
+        },
+        "problem_referral_institution_ii": {
+          "type": "string"
+        },
+        "problem_referral_institution_iii": {
+          "type": "string"
+        },
+        "time_taken_to_reach_facility_health_facility": {
+          "type": "string"
+        },
+        "time_taken_to_reach_facility_referral_institution_i": {
+          "type": "string"
+        },
+        "time_taken_to_reach_facility_referral_institution_ii": {
+          "type": "string"
+        },
+        "time_taken_to_reach_facility_referral_institution_iii": {
+          "type": "string"
+        },
+        "treatment_received_health_facility": {
+          "type": "string"
+        },
+        "treatment_received_referral_institution_i": {
+          "type": "string"
+        },
+        "treatment_received_referral_institution_ii": {
+          "type": "string"
+        },
+        "treatment_received_referral_institution_iii": {
+          "type": "string"
+        },
+        "reasons_for_referring_health_facility": {
+          "type": "string"
+        },
+        "reasons_for_referring_referral_institution_i": {
+          "type": "string"
+        },
+        "reasons_for_referring_referral_institution_ii": {
+          "type": "string"
+        },
+        "reasons_for_referring_referral_institution_iii": {
+          "type": "string"
+        },
+        "ransport_from_one_institution_to_other_health_facility": {
+          "type": "string"
+        },
+        "ransport_from_one_institution_to_other_referral_institution_i": {
+          "type": "string"
+        },
+        "ransport_from_one_institution_to_other_referral_institution_ii": {
+          "type": "string"
+        },
+        "ransport_from_one_institution_to_other_referral_institution_iii": {
+          "type": "string"
+        },
+        "distance_from_one_institution_to_other_health_facility": {
+          "type": "string"
+        },
+        "distance_from_one_institution_to_other_referral_institution_i": {
+          "type": "string"
+        },
+        "distance_from_one_institution_to_other_referral_institution_ii": {
+          "type": "string"
+        },
+        "distance_from_one_institution_to_other_referral_institution_iii": {
+          "type": "string"
+        },
+        "state_the_reasons_health_facility": {
+          "type": "string"
+        },
+        "state_the_reasons_referral_institution_i": {
+          "type": "string"
+        },
+        "state_the_reasons_referral_institution_ii": {
+          "type": "string"
+        },
+        "state_the_reasons_referral_institution_iii": {
+          "type": "string"
+        },
+        "who_advised_health_facility": {
+          "type": "string"
+        },
+        "who_advised_referral_institution_i": {
+          "type": "string"
+        },
+        "who_advised_referral_institution_ii": {
+          "type": "string"
+        },
+        "who_advised_referral_institution_iii": {
+          "type": "string"
+        },
+        "child_attended_immediately_health_facility": {
+          "type": "string"
+        },
+        "child_attended_immediately_referral_institution_i": {
+          "type": "string"
+        },
+        "child_attended_immediately_referral_institution_ii": {
+          "type": "string"
+        },
+        "child_attended_immediately_referral_institution_iii": {
+          "type": "string"
+        },
+        "time_taken_to_initiate_treatment_health_facility": {
+          "type": "string"
+        },
+        "time_taken_to_initiate_treatment_referral_institution_i": {
+          "type": "string"
+        },
+        "time_taken_to_initiate_treatment_referral_institution_ii": {
+          "type": "string"
+        },
+        "time_taken_to_initiate_treatment_referral_institution_iii": {
+          "type": "string"
+        },
+        "reasons_for_delay_health_facility": {
+          "type": "string"
+        },
+        "reasons_for_delay_referral_institution_i": {
+          "type": "string"
+        },
+        "reasons_for_delay_referral_institution_ii": {
+          "type": "string"
+        },
+        "reasons_for_delay_referral_institution_iii": {
+          "type": "string"
+        },
+        "reasons_for_delay_other_health_facility": {
+          "type": "string"
+        },
+        "reasons_for_delay_other_referral_institution_i": {
+          "type": "string"
+        },
+        "reasons_for_delay_other_referral_institution_ii": {
+          "type": "string"
+        },
+        "reasons_for_delay_other_referral_institution_iii": {
+          "type": "string"
+        },
+        "discharged_against_medical_advice_absconded": {
+          "type": "string"
+        },
+        "discharge_due_to_dissatisfaction_of_treatment": {
+          "type": "string"
+        },
+        "states_of_child_at_timed_of_lama_Discharge": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionC": {
+      "type": {
+        "history_of_alcoholism_in_family": {
+          "type": "string"
+        },
+        "history_of_smoking_in_family": {
+          "type": "string"
+        },
+        "history_of_domestic_violence_in_family": {
+          "type": "string"
+        },
+        "danger_signs_when_taken_to_health_facility": {
+          "type": "string"
+        },
+        "what_will_be__conditions": {
+          "type": "string"
+        },
+        "hospital_where_newborns_infants_children_can_be_admitted_and_treated": {
+          "type": "string"
+        },
+        "facilities_name": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionD": {
+      "type": {
+        "total_amount": {
+          "type": "string"
+        },
+        "treatment": {
+          "type": "string"
+        },
+        "transport": {
+          "type": "string"
+        },
+        "others": {
+          "type": "string"
+        },
+        "family_arrange_this_money": {
+          "type": "any"
+        }
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "cdrForm1": {
+      "type": "belongsTo",
+      "model": "cdr_form_1",
+      "foreignKey": "cdr_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

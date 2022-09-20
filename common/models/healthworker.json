@@ -1,0 +1,53 @@
+{
+  "name": "healthworker",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "required": true
+    },
+    "health_worker_designation": {
+      "type": "string",
+      "required": true
+    },
+    "health_worker_name": {
+      "type": "string",
+      "required": true
+    },
+    "health_worker_mobile": {
+      "type": "number",
+      "required": true
+    },
+    "health_worker_code": {
+      "type": "number",
+      "required": true
+    },
+    "health_worker_mapped_with": {
+      "type": "number"
+    },
+    "health_worker_block_code": {
+      "type": "number",
+      "required": true
+    },
+    "health_worker_sub_district_code": {
+      "type": "number",
+      "required": true
+    },
+    "health_worker_district_code": {
+      "type": "number",
+      "required": true
+    },
+    "health_worker_state_code": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

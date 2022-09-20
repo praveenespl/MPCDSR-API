@@ -1,0 +1,62 @@
+{
+  "name": "ward",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "required": true
+    },
+    "wardcode": {
+      "type": "number",
+      "required": true
+    },
+    "wardnumber": {
+      "type": "string"
+    },
+    "ward_name": {
+      "type": "string"
+    },
+    "wardname": {
+      "type": "string",
+      "required": true
+    },
+    "localbodycode": {
+      "type": "number"
+    },
+    "localbodyname": {
+      "type": "string",
+      "required": true
+    },
+    "districtcode": {
+      "type": "number",
+      "required": true
+    },
+    "subdistrictcode": {
+      "type": "number",
+      "required": true
+    },
+    "status": {
+      "type": "boolean",
+      "required": true
+    },
+    "createddate": {
+      "type": "date",
+      "required": true
+    },
+    "updateddate": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

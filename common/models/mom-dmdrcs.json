@@ -1,0 +1,53 @@
+{
+  "name": "MOM-DMDRCs",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "dateOfMeeting": {
+      "type": "date"
+    },
+    "district": {
+      "type": "string"
+    },
+    "month": {
+      "type": "number"
+    },
+    "year": {
+      "type": "number"
+    },
+    "facility": {
+      "type": "string"
+    },
+    "maternalDeathsPM": {
+      "type": "number"
+    },
+    "maternalDeathsPMReviewed": {
+      "type": "number"
+    },
+    "maternalDeathsFromApril": {
+      "type": "number"
+    },
+    "maternalDeathsFromAprilReviewed": {
+      "type": "number"
+    },
+    "recommendationsOfPrevMeeting": {
+      "type": "any"
+    },
+    "MDPresentMonthReview": {
+      "type": "any"
+    },
+    "familyOfDeceased": {
+      "type": "any"
+    },
+    "committeeMembersList": {
+      "type": "any"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

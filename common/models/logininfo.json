@@ -1,0 +1,35 @@
+{
+  "name": "logininfo",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "required": true
+    },
+    "login_time": {
+      "type": "date",
+      "required": true
+    },
+    "logout_time": {
+      "type": "date",
+      "required": false
+    },
+    "ip_address": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "usermaster": {
+      "type": "belongsTo",
+      "model": "usermaster",
+      "foreignKey": "user_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

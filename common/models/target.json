@@ -1,0 +1,33 @@
+{
+  "name": "target",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "state": {
+      "type": {
+        "statecode": {
+          "type": "number"
+        },
+        "statename": {
+          "type": "string"
+        }
+      }
+    },
+    "year": {
+      "type": "string"
+    },
+    "estimate": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

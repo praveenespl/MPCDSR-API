@@ -1,0 +1,38 @@
+{
+  "name": "MOM-DRUDCMs",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "dateOfMeeting": {
+      "type": "date"
+    },
+    "district": {
+      "type": "string"
+    },
+    "familyOfDeceased": {
+      "type": "any"
+    },
+    "maternalDeathsFromApril": {
+      "type": "number"
+    },
+    "maternalDeathsFromAprilReviewed": {
+      "type": "number"
+    },
+    "maternalDeathsPM": {
+      "type": "number"
+    },
+    "maternalDeathsPMReviewed": {
+      "type": "number"
+    },
+    "recommendationsOfPrevMeeting": {
+      "type": "any"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

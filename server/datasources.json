@@ -1,0 +1,20 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "MPDSRDB": {
+    "host": "localhost",
+    "port": 27017,
+    "database": "MPCDSR-Production",
+    "name": "MPDSRDB",
+    "connector": "mongodb"  
+  },
+  "storage": {
+    "name": "storage",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "./client/img",
+        "nameConflict": "makeUnique"
+  }
+}

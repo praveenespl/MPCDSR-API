@@ -1,0 +1,357 @@
+{
+  "name": "cdr_form_3",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "cdr_id": {
+      "type": "string",
+      "required": true
+    },
+    "basic": {
+      "type": {
+        "phc": {
+          "type": "string"
+        },
+        "sub_centre": {
+          "type": "string"
+        },
+        "mcts_number": {
+          "type": "string"
+        },
+        "date": {
+          "type": "date"
+        },
+        "household_head_name": {
+          "type": "string"
+        },
+        "deceased_name": {
+          "type": "string"
+        },
+        "deceased_mother_name": {
+          "type": "string"
+        },
+        "districtcode": {
+          "type": "number"
+        },
+        "districtname": {
+          "type": "string"
+        },
+        "subdistrictcode": {
+          "type": "number"
+        },
+        "subdistrictname": {
+          "type": "string"
+        },
+        "villagecode": {
+          "type": "number"
+        },
+        "villagename": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionA": {
+      "type": {
+        "respondent_name": {
+          "type": "string"
+        },
+        "respondent_relation": {
+          "type": "string"
+        },
+        "respondent_live_with_deceased_during_death": {
+          "type": "string"
+        },
+        "respondent_education": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "household_head_religion": {
+          "type": "string"
+        },
+        "household_head_religion_other": {
+          "type": "string"
+        },
+        "deceased_sex": {
+          "type": "string"
+        },
+        "age_completed_days": {
+          "type": "string"
+        },
+        "date_of_birth": {
+          "type": "date"
+        },
+        "date_of_death": {
+          "type": "date"
+        },
+        "address": {
+          "colony": {
+            "type": "string"
+          },
+          "house_number": {
+            "type": "string"
+          },
+          "pincode": {
+            "type": "string"
+          },
+          "landmark": {
+            "type": "string"
+          },
+          "statecode": {
+            "type": "number"
+          },
+          "statename": {
+            "type": "string"
+          },
+          "districtcode": {
+            "type": "number"
+          },
+          "districtname": {
+            "type": "string"
+          },
+          "subdistrictcode": {
+            "type": "number"
+          },
+          "subdistrictname": {
+            "type": "string"
+          },
+          "villagecode": {
+            "type": "number"
+          },
+          "villagename": {
+            "type": "string"
+          }
+        },
+        "place_of_death": {
+          "type": "string"
+        },
+        "actual_place_of_death": {
+          "type": "string"
+        },
+        "place_of_death_other": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionB": {
+      "type": {
+        "accident_death": {
+          "type": "string"
+        },
+        "accident_death_type": {
+          "type": "string"
+        },
+        "accident_death_type_other": {
+          "type": "string"
+        },
+        "do_you_think_is_injury_or_accident": {
+          "type": "string"
+        },
+        "pregnancy_months": {
+          "type": "number"
+        },
+        "mother_age": {
+          "type": "string"
+        },
+        "receive_2_doses_of_tetanus": {
+          "type": "string"
+        },
+        "complications_during_pregnancy": {
+          "type": "string"
+        },
+        "complications_occurred": {
+          "type": "any"
+        },
+        "single_or_multiple_birth": {
+          "type": "string"
+        },
+        "place_of_birth": {
+          "type": "string"
+        },
+        "place_of_birth_other": {
+          "type": "string"
+        },
+        "delivery_attended_by": {
+          "type": "string"
+        },
+        "delivery_attended_by_other": {
+          "type": "string"
+        },
+        "umbilical_cord_cut_by_disinfected_or_new_knife_blade": {
+          "type": "string"
+        },
+        "live_or_still_birth": {
+          "type": "string"
+        },
+        "baby_cry_move_breath": {
+          "type": "string"
+        },
+        "injury_on_child_body_after_birth": {
+          "type": "string"
+        },
+        "visible_malformations_at_birth": {
+          "type": "string"
+        },
+        "child_size_at_birth": {
+          "type": "string"
+        },
+        "child_weight_at_birth": {
+          "type": "number"
+        },
+        "child_weight_at_birth_dnk": {
+          "type": "boolean"
+        },
+        "baby_stop_crying": {
+          "type": "string"
+        },
+        "baby_stop_crying_after_days": {
+          "type": "number"
+        },
+        "baby_stop_crying_less_than_day": {
+          "type": "boolean"
+        },
+        "baby_first_breastfed": {
+          "type": "string"
+        },
+        "baby_able_suckle_normally": {
+          "type": "string"
+        },
+        "baby_stop_suckle_normally": {
+          "type": "string"
+        },
+        "baby_stop_suckle_after_days": {
+          "type": "number"
+        },
+        "baby_stop_suckle_less_than_day": {
+          "type": "boolean"
+        },
+        "drink_anything_other": {
+          "type": "string"
+        },
+        "drink_anything_other_specify": {
+          "type": "string"
+        },
+        "drink_anything_other_frequency_days": {
+          "type": "string"
+        },
+        "drink_anything_other_frequency_days_dnk": {
+          "type": "boolean"
+        },
+        "baby_have_fever": {
+          "type": "string"
+        },
+        "baby_have_fever_days": {
+          "type": "string"
+        },
+        "baby_have_fever_less_than_day": {
+          "type": "boolean"
+        },
+        "baby_have_difficulty_breathing": {
+          "type": "string"
+        },
+        "baby_have_difficulty_breathing_days": {
+          "type": "number"
+        },
+        "baby_have_difficulty_breathing_less_than_day": {
+          "type": "boolean"
+        },
+        "baby_have_fast_breathing": {
+          "type": "string"
+        },
+        "baby_have_fast_breathing_days": {
+          "type": "number"
+        },
+        "baby_have_fast_breathing_less_than_day": {
+          "type": "boolean"
+        },
+        "baby_have_in_drawing_chest": {
+          "type": "string"
+        },
+        "baby_have_cough": {
+          "type": "string"
+        },
+        "baby_have_grunting": {
+          "type": "string"
+        },
+        "baby_have_nostrils_flare_with_breathing": {
+          "type": "string"
+        },
+        "baby_have_diarrhoea": {
+          "type": "string"
+        },
+        "baby_have_baby_have_diarrhoea_days": {
+          "type": "number"
+        },
+        "baby_have_baby_have_diarrhoea_less_than_day": {
+          "type": "boolean"
+        },
+        "baby_have_vomit": {
+          "type": "string"
+        },
+        "baby_have_baby_have_vomit_days": {
+          "type": "string"
+        },
+        "baby_have_baby_have_vomit_less_than_day": {
+          "type": "boolean"
+        },
+        "baby_have_redness_discharge_from_umbilical_cord": {
+          "type": "string"
+        },
+        "baby_have_yellow_eyes_skin": {
+          "type": "string"
+        },
+        "baby_have_yellow_spasms_fits": {
+          "type": "string"
+        },
+        "baby_become_unresponsive_unconscious": {
+          "type": "string"
+        },
+        "baby_have_bulging_fontanelle": {
+          "type": "string"
+        },
+        "baby_feel_cold_when_touched": {
+          "type": "string"
+        },
+        "baby_hands_legs_lips_discoloured": {
+          "type": "string"
+        },
+        "baby_have_yellow_palms_soles": {
+          "type": "string"
+        },
+        "baby_have_blood_stools": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionC": {
+      "type": {
+        "case_summary": {
+          "type": "string"
+        },
+        "assigned_cause_of_death": {
+          "type": "string"
+        },
+        "cause_of_death": {
+          "type": "any"
+        }
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "cdrForm1": {
+      "type": "belongsTo",
+      "model": "cdr_form_1",
+      "foreignKey": "cdr_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

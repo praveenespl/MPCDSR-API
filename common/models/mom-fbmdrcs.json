@@ -1,0 +1,50 @@
+{
+  "name": "MOM-FBMDRCs",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "dateOfMeeting": {
+      "type": "date"
+    },
+    "month": {
+      "type": "number"
+    },
+    "year": {
+      "type": "number"
+    },
+    "facility": {
+      "type": "string"
+    },
+    "district": {
+      "type": "string"
+    },
+    "maternalDeathsPM": {
+      "type": "number"
+    },
+    "maternalDeathsPMReviewed": {
+      "type": "number"
+    },
+    "maternalDeathsFromApril": {
+      "type": "number"
+    },
+    "maternalDeathsFromAprilReviewed": {
+      "type": "number"
+    },
+    "recommendationsOfPrevMeeting": {
+      "type": "any"
+    },
+    "MDPresentMonthReview": {
+      "type": "any"
+    },
+    "committeeMembersList": {
+      "type": "any"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

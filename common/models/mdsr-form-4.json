@@ -1,0 +1,681 @@
+{
+  "name": "mdsr_form_4",
+  "description": "Facility Based Maternal Death Review Form",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "Aggregate": true
+  },
+  "properties": {
+    "deceased_women_id": {
+      "type": "string",
+      "required": true
+    },
+    "deceased_women_id_new": {
+      "type": "string",
+      "required": true
+    },
+    "state_id": {
+      "type": "string"
+    },
+    "district_id": {
+      "type": "string"
+    },
+    "block_id": {
+      "type": "string"
+    },
+    "general_information": {
+      "type": {
+        "mcts_id": {
+          "type": "string"
+        },
+        "inpatient_no": {
+          "type": "string",
+          "required": true
+        },
+        "deceased_women_current_address": {
+          "type": "string",
+          "description": "Deceased woman address"
+        },
+        "medigo_legal_admission": {
+          "type": "string",
+          "required": true
+        },
+        "education": {
+          "type": "string",
+          "required": true
+        },
+        "bpl": {
+          "type": "string",
+          "required": true
+        },
+        "age": {
+          "type": "number"
+        },
+        "deceased_women_fname": {
+          "type": "string"
+        },
+        "deceased_women_mname": {
+          "type": "string"
+        },
+        "deceased_women_lname": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "name_of_nodal_person": {
+          "type": "string"
+        },
+        "mobile_of_nodal_person": {
+          "type": "string"
+        },
+        "mobile": {
+          "type": "string"
+        },
+        "fbmdr_no": {
+          "type": "string"
+        }
+      },
+      "description": "part of the information of the deceased women will come from the notification form & some of the information will be inserted here"
+    },
+    "patient_history": {
+      "type": {
+        "admission_date_time": {
+          "type": "date",
+          "required": true,
+          "description": "admission date and time of the deceased woman"
+        },
+        "death_date_time": {
+          "type": "date",
+          "required": true,
+          "description": "death date and time of the deceased woman"
+        },
+        "delivery_date_time": {
+          "type": "date",
+          "required": true,
+          "description": "Delivery date and time of the deceased woman"
+        },
+        "stay_in_hospital": {
+          "type": {
+            "days": {
+              "type": "number",
+              "description": "Number of days stay in hospital"
+            },
+            "hours": {
+              "type": "number",
+              "description": "Number of hours stay in hospital"
+            },
+			"minutes": {
+              "type": "number",
+              "description": "Number of hours stay in hospital"
+            }
+          }
+        },
+        "stay_in_icu": {
+          "type": {
+            "days": {
+              "type": "number",
+              "description": "Number of days stay in hospital"
+            },
+            "hours": {
+              "type": "number",
+              "description": "Number of hours stay in hospital"
+            },
+			"minutes": {
+              "type": "number",
+              "description": "Number of minutes stay in hospital"
+            }
+          }
+        },
+        "delivery_interval": {
+          "type": {
+            "days": {
+              "type": "number",
+              "description": "Days Admission  Delivery Interval"
+            },
+            "hours": {
+              "type": "number",
+              "description": "Hours Admission  Delivery Interval"
+            },
+            "minutes": {
+              "type": "number",
+              "description": "Minutes Admission  Delivery Interval"
+            }
+          }
+        },
+        "death_interval": {
+          "type": {
+            "days": {
+              "type": "number",
+              "description": "Days Admission  Delivery Interval"
+            },
+            "hours": {
+              "type": "number",
+              "description": "Hours Admission  Delivery Interval"
+            },
+            "na_or_dnk": {
+              "type": "string",
+              "description": "Not Applicable or Don't Know"
+            }
+          }
+        },
+        "outcome_of_pregnancy": {
+          "type": "string",
+          "description": "Outcome of Pregnancy"
+        }
+      }
+    },
+    "on_admission": {
+      "type": {
+        "complaints": {
+          "type": "string",
+          "description": "Complaints at time of admission"
+        },
+        "gravida": {
+          "type": "number",
+          "description": "Obstetric formula on admission gravida"
+        },
+        "para": {
+          "type": "number",
+          "description": "Obstetric formula on admission para"
+        },
+        "spontaneous_abortion": {
+          "type": "number",
+          "description": "Obstetric formula on admission abortion"
+        },
+        "induced_abortion": {
+          "type": "number",
+          "description": "Obstetric formula on admission abortion"
+        },
+        "alive_children_male": {
+          "type": "number",
+          "description": "Obstetric formula on admission abortion"
+        },
+        "alive_children_female": {
+          "type": "number",
+          "description": "Obstetric formula on admission abortion"
+        },
+        "male_children": {
+          "type": "number",
+          "description": "Number of living male children"
+        },
+        "female_children": {
+          "type": "number",
+          "description": "Number of living female children"
+        },
+        "period_of_gestation": {
+          "type": "string",
+          "description": "Period of Gestation"
+        }
+      },
+      "description": "On Admission Details"
+    },
+    "condition_on_admission": {
+      "type": {
+        "condition": {
+          "type": "string",
+          "description": "Condition on admission"
+        },
+        "referred_from_outside": {
+          "type": "string"
+        },
+        "visited_places": {
+          "type": "number",
+          "description": "Number of places visited prior"
+        }
+      }
+    },
+    "diagnosis": {
+      "type": {
+        "hemorrhage": {
+          "type": "string"
+        },
+        "hemorrhage_causes": {
+          "type": "object",
+          "description": "Underline causes"
+        },
+        "hemorrhage_placental_cause": {
+          "type": "object",
+          "description": "if hemorrhage is antepartum then this should asked"
+        },
+        "hemorrhage_late_pregnancy": {
+          "type": "object",
+          "description": " Late Pregnancy Bleeding Other than placental cause "
+        },
+        "hemorrhage_late_pregnancy_other": {
+          "type": "string",
+          "description": " Late Pregnancy Bleeding Other than placental cause "
+        },
+        "hemorrhage_postpartum": {
+          "type": "object",
+          "description": "If post partum bleeding is selected then this should be asked."
+        },
+        "hypertensive": {
+          "type": "string",
+          "description": "Hypertensive cause"
+        },
+        "hypertensive_cause": {
+          "type": "object",
+          "description": "Hypertensive disorders of pregnancy"
+        },
+        "hypertensive_other": {
+          "type": "string",
+          "description": "Other Hypertensive"
+        },
+        "labour": {
+          "type": "string",
+          "description": "labour related"
+        },
+        "labour_cause": {
+          "type": "object",
+          "description": "Labour Related "
+        },
+        "labour_other": {
+          "type": "string",
+          "description": "Other Hypertensive disorders"
+        },
+        "medical_disorder": {
+          "type": "string"
+        },
+        "medical_disorders_cause": {
+          "type": "object",
+          "description": "Medical Disorders"
+        },
+        "medical_disorders_other": {
+          "type": "string",
+          "description": "Other Medical Disorders"
+        },
+        "infection": {
+          "type": "string"
+        },
+        "infection_cause": {
+          "type": "object",
+          "description": "infection causes"
+        },
+        "infection_causes_other": {
+          "type": "string",
+          "description": "infection causes"
+        },
+        "incidental": {
+          "type": "string",
+          "description": "Incidental/Accidental disorders eg. surgical including latrogenic, trauma vioence, anaesthetic complication"
+        },
+        "incidental_specify": {
+          "type": "string",
+          "description": "If incidental is yes, please specify"
+        },
+        "other": {
+          "type": "string",
+          "description": "Any other please specify"
+        },
+        "other_specify": {
+          "type": "string"
+        }
+      },
+      "description": "Diagnosis at time of admission"
+    },
+    "abortion": {
+      "type": {
+        "type": {
+          "type": "string",
+          "description": "Type of abortion"
+        },
+        "spontaneous": {
+          "type": "string",
+          "description": "Type of abortion is spontaneous the it complete or incomplete"
+        },
+        "induced": {
+          "type": "string",
+          "description": "If abortion is legal or illegal"
+        },
+        "procedure": {
+          "type": "object",
+          "description": "What was the procedure the atopted"
+        },
+        "other_procedure": {
+          "type": "string",
+          "description": "Other Procedure"
+        },
+        "post_abortion_period": {
+          "type": "object",
+          "description": "Post Abortion Period"
+        },
+        "post_abortion_period_other": {
+          "type": "string",
+          "description": "Post Abortion Period"
+        },
+        "termination_more_than_one_center": {
+          "type": "string",
+          "description": "Was the termination procedure done in more than one center"
+        },
+        "other_centers": {
+          "type": "string",
+          "description": "If yes, specify the centers visited before coming to this facility"
+        }
+      },
+      "description": "Abortion to be filled if applicable"
+    },
+    "antenatal_care": {
+      "type": {
+        "receive_anc": {
+          "type": "string",
+          "description": "Did she receive ANC"
+        },
+        "facility_type": {
+          "type": "any",
+          "description": "if did she receive ANC yes then specify the Facility"
+        },
+        "other_facility": {
+          "type": "string",
+          "description": "Specify Other Facility"
+        },
+        "services_by": {
+          "type": "any",
+          "description": "Serviecs provided by"
+        },
+        "services_by_other": {
+          "type": "string",
+          "description": "Specify Other Specialists"
+        },
+        "complication": {
+          "type": "string",
+          "description": "If Did she receive the ANC is yes then, was she told about any disorder/complication "
+        },
+        "identified_risk_factor": {
+          "type": "any",
+          "description": "If yes what was the risk factor identifed"
+        },
+        "medical_specify": {
+          "type": "string",
+          "description": "if medical condition is selected then please specify"
+        },
+        "other_specify": {
+          "type": "string",
+          "description": "if other is selected then please specify"
+        }
+      },
+      "description": "Antenatal Care Details"
+    },
+    "neonatal_info": {
+      "type": {
+        "labour_pain": {
+          "type": "string",
+          "description": "Did she have labour pain"
+        },
+        "past_facility": {
+          "type": "string",
+          "description": "If yes photograph used in to monitor in Past Facility Details"
+        },
+        "current_facility": {
+          "type": "boolean",
+          "description": "If yes photograph used in to monitor in Current Facility"
+        },
+        "complication_labour": {
+          "type": "object",
+          "description": "Delivery, Puerperium and neonatal Information"
+        },
+        "other_complication_labour": {
+          "type": "string",
+          "description": "Complication During Labour"
+        },
+        "mode_of_delivery": {
+          "type": "string",
+          "description": "Mode Of Delivery"
+        },
+        "anaesthesia": {
+          "type": "string",
+          "description": "Anaesthia, Any adverse reaction"
+        },
+        "develop_complication": {
+          "type": "string",
+          "description": "In which phase of labour did she develop complications"
+        },
+        "post_birth": {
+          "type": "string",
+          "description": "if phase is post birth then ask this question"
+        },
+        "neonatal_outcome": {
+          "type": "string",
+          "description": "Neonatal Outcome"
+        },
+        "neonatal_cause_of_death": {
+          "type": "object",
+          "description": "Probable Casue of death"
+        },
+        "neonatal_cause_of_death_other": {
+          "type": "string",
+          "description": "If baby died, selected probable cause of death"
+        },
+        "post_natal_period": {
+          "type": "string",
+          "description": "Post Natal Period"
+        },
+        "post_natal_cause_of_death": {
+          "type": "any",
+          "description": "if post natal period is Eventful then please ask this question"
+        },
+        "post_natal_medical": {
+          "type": "string",
+          "description": "if post natal medical condition or other is selected then ask this question"
+        },
+        "post_natal_other": {
+          "type": "string",
+          "description": "if post natal medical condition or other is selected then ask this question"
+        }
+      }
+    },
+    "interventions": {
+      "type": {
+        "early_pregnancy": {
+          "type": "string",
+          "description": "Early Pregnancy"
+        },
+        "antenatal": {
+          "type": "string",
+          "description": "Antenatal"
+        },
+        "intrapartum": {
+          "type": "string",
+          "description": "Intra partum"
+        },
+        "postpartum": {
+          "type": "string",
+          "description": "Post partum"
+        },
+        "anaesthesia_icu": {
+          "type": "string",
+          "description": "Anaesthesia/ICU"
+        },
+        "transfusion": {
+          "type": "string",
+          "description": "Blood Transfusion given"
+        },
+        "units": {
+          "type": "number",
+          "description": "Number of blood units transfusion"
+        },
+        "unit_type": {
+          "type": "string",
+          "description": "No of units of whole blood or prbc or ffp or platelets"
+        },
+        "reaction": {
+          "type": "string"
+        },
+        "specify_reaction": {
+          "type": "string"
+        }
+      }
+    },
+    "leading_to_death": {
+      "type": "string",
+      "description": "Primary Diagnosis/condition leading to death"
+    },
+    "cause_of_death": {
+      "type": {
+        "death_type": {
+          "type": "string",
+          "description": "Death of type"
+        },
+        "cause_type": {
+          "type": "string",
+          "description": "Direct/Indirect"
+        },
+        "direct":{
+          "group_name":"string",
+          "category":"string",
+          "sub_category":"string"
+        },
+		"indirect":{
+          "group_name":"string",
+          "category":"string",
+          "sub_category":"string"
+        }
+      },
+      "consequence1": {
+        "type": "string",
+        "description": "Due to or as a consequence of "
+      },
+      "consequence2": {
+        "type": "string",
+        "description": "Due to or as a consequence of "
+      },
+      "consequence3": {
+        "type": "string",
+        "description": "Due to or as a consequence of "
+      }
+    },
+    "opinion": {
+      "type": {
+        "seeking": {
+          "type": "string",
+          "description": "Delay in woman seeking help"
+        },
+        "refusal": {
+          "type": "string",
+          "description": "Refusal of treatment or admission"
+        },
+        "refusal_previous_facility": {
+          "type": "string",
+          "description": "Refusal of admission in previous facility"
+        },
+        "home_to_healthcare": {
+          "type": "string",
+          "description": "Lack of transport from home to health care facility"
+        },
+        "between_healthcare": {
+          "type": "string",
+          "description": "Lack of transport between health care facility"
+        },
+        "referral_system": {
+          "type": "string",
+          "description": "Lack of assured referral system"
+        },
+        "lack_of_facility": {
+          "type": "string",
+          "description": "Lack of facilityes, equipment or consumable"
+        },
+        "lack_of_blood": {
+          "type": "string",
+          "description": "Lack of Blood/Blood Products"
+        },
+        "lack_of_ot": {
+          "type": "string",
+          "description": "Lack of ot available"
+        },
+        "lack_of_human_resource": {
+          "type": "string",
+          "description": "lack of human resource"
+        },
+        "lack_of_anesthetist": {
+          "type": "string",
+          "description": "Lack of Anesthetist"
+        },
+        "lack_of_obstetricians": {
+          "type": "string",
+          "description": "Lack of obstetricians"
+        },
+        "lack_of_expertise": {
+          "type": "string",
+          "description": "Lack of expertise, training or education"
+        }
+      }
+    },
+    "autopsy": {
+      "type": "string",
+      "description": "autopsy will be Performed or not performed"
+    },
+    "performed": {
+      "type": "string",
+      "description": "If autopsy is performed please report the final diagnosis and send the detailed report later"
+    },
+    "case_summary": {
+      "type": "string",
+      "description": "Case Summary please supply a short summary of the events surrounding hospital stay and death of the patient"
+    },
+    "facility_type": {
+      "type": "string"
+    },
+    "facility_id": {
+      "type": "string"
+    },
+    "month": {
+      "type": "number"
+    },
+    "year": {
+      "type": "number"
+    },
+    "doctor":{
+      "type":{
+        "name":  "string",
+        "designation":  "string",
+        "date":  "date",
+        "reg_no":  "string"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "mdsrForm1": {
+      "type": "belongsTo",
+      "model": "mdsr_form_1",
+      "foreignKey": "deceased_women_id"
+    },
+    "mdsrForm1New": {
+      "type": "belongsTo",
+      "model": "mdsr_form_1",
+      "foreignKey": "deceased_women_id_new"
+    },
+    "block": {
+      "type": "belongsTo",
+      "model": "block",
+      "foreignKey": "block_id"
+    },
+    "district": {
+      "type": "belongsTo",
+      "model": "district",
+      "foreignKey": "district_id"
+    },
+    "state": {
+      "type": "belongsTo",
+      "model": "state",
+      "foreignKey": "state_id"
+    },
+    "facility": {
+      "type": "belongsTo",
+      "model": "facility",
+      "foreignKey": "facility_id"
+    },
+    "referraldetails": {
+      "type": "hasMany",
+      "model": "referraldetails",
+      "foreignKey": "form_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

@@ -1,0 +1,380 @@
+{
+  "name": "referraldetails",
+  "description": "Transport, Referral and type of care given details",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "deceased_women_id": {
+      "type": "string",
+      "required": true
+    },
+    "form_id": {
+      "type": "string",
+      "required": true
+    },
+    "form_name": {
+      "type": "string",
+      "required": "required"
+    },
+    "module_name": {
+      "type": "string",
+      "description": "name of the module of mdsr form 5"
+    },
+    "home_or_village": {
+      "type": {
+        "date": {
+          "type": "date"
+        },
+        "labour_time": {
+          "type": "string",
+          "description": "Time onset of the complication or onset of transport"
+        },
+        "arrival_time": {
+          "type": "string",
+          "description": "time of calling or arrival of transport"
+        },
+        "used_transport": {
+          "type": "string"
+        },
+        "facility_id": {
+          "type": "string",
+          "description": "Facility will be select from here"
+        },
+        "attend_by": {
+          "type": "string",
+          "description": "Attended by doctor or nurse or other staff or none"
+        },
+        "reached_time": {
+          "type": "string",
+          "description": "Time to reach from home to facility 1"
+        },
+        "money": {
+          "type": "number",
+          "description": "Money spent on transport from home to facility 1"
+        },
+        "reason_for_referral": {
+          "type": "string",
+          "description": "Reason for referral form facility1 to facility 2"
+        },
+        "referral_no_given": {
+          "type": "string",
+          "description": "Referral Number given or not"
+        },
+        "treament_given": {
+          "type": "string",
+          "description": "Treatment given to this facility"
+        },
+        "money_spent_on_treatment": {
+          "type": "number",
+          "description": "Money spent on treatment / medicine / dignostics"
+        },
+        "time_spent_in_facility": {
+          "type": "string",
+          "description": "Time spent in facility 1"
+        }
+      },
+      "description": "Home / Village details"
+    },
+    "facility1": {
+      "type": {
+        "date": {
+          "type": "date"
+        },
+        "labour_time": {
+          "type": "string",
+          "description": "Time onset of the complication or onset of transport"
+        },
+        "arrival_time": {
+          "type": "string",
+          "description": "time of calling or arrival of transport"
+        },
+        "used_transport": {
+          "type": "string"
+        },
+        "facility_id": {
+          "type": "string",
+          "description": "Facility will be select from here"
+        },
+        "attend_by": {
+          "type": "string",
+          "description": "Attended by doctor or nurse or other staff or none"
+        },
+        "reached_time": {
+          "type": "string",
+          "description": "Time to reach from home to facility 1"
+        },
+        "money": {
+          "type": "number",
+          "description": "Money spent on transport from home to facility 1"
+        },
+        "reason_for_referral": {
+          "type": "string",
+          "description": "Reason for referral form facility1 to facility 2"
+        },
+        "referral_no_given": {
+          "type": "string",
+          "description": "Referral Number given or not"
+        },
+        "treament_given": {
+          "type": "string",
+          "description": "Treatment given to this facility"
+        },
+        "money_spent_on_treatment": {
+          "type": "number",
+          "description": "Money spent on treatment / medicine / dignostics"
+        },
+        "time_spent_in_facility": {
+          "type": "string",
+          "description": "Time spent in facility 1"
+        }
+      },
+      "description": "Home to facility 1 details"
+    },
+    "facility2": {
+      "type": {
+        "date": {
+          "type": "date"
+        },
+        "labour_time": {
+          "type": "string",
+          "description": "Time onset of the complication or onset of transport"
+        },
+        "arrival_time": {
+          "type": "string",
+          "description": "time of calling or arrival of transport"
+        },
+        "used_transport": {
+          "type": "string"
+        },
+        "facility_id": {
+          "type": "string",
+          "description": "Facility will be select from here"
+        },
+        "attend_by": {
+          "type": "string",
+          "description": "Attended by doctor or nurse or other staff or none"
+        },
+        "reached_time": {
+          "type": "string",
+          "description": "Time to reach from home to facility 1"
+        },
+        "money": {
+          "type": "number",
+          "description": "Money spent on transport from home to facility 2"
+        },
+        "reason_for_referral": {
+          "type": "string",
+          "description": "Reason for referral form facility2 to facility 3"
+        },
+        "referral_no_given": {
+          "type": "string",
+          "description": "Referral Number given or not"
+        },
+        "treament_given": {
+          "type": "string",
+          "description": "Treatment given to this facility"
+        },
+        "money_spent_on_treatment": {
+          "type": "number",
+          "description": "Money spent on treatment / medicine / dignostics"
+        },
+        "timespent_in_facility": {
+          "type": "string",
+          "description": "Time spent in facility 2"
+        }
+      },
+      "description": "Facility 1 to facility 2 details"
+    },
+    "facility3": {
+      "type": {
+        "date": {
+          "type": "date"
+        },
+        "labour_time": {
+          "type": "string",
+          "description": "Time onset of the complication or onset of transport"
+        },
+        "arrival_time": {
+          "type": "string",
+          "description": "time of calling or arrival of transport"
+        },
+        "used_transport": {
+          "type": "string"
+        },
+        "facility_id": {
+          "type": "string",
+          "description": "Facility will be select from here"
+        },
+        "attend_by": {
+          "type": "string",
+          "description": "Attended by doctor or nurse or other staff or none"
+        },
+        "reached_time": {
+          "type": "string",
+          "description": "Time to reach from home to facility 1"
+        },
+        "money": {
+          "type": "number",
+          "description": "Money spent on transport from home to facility 1"
+        },
+        "reason_for_referral": {
+          "type": "string",
+          "description": "Reason for referral form facility2 to facility 3"
+        },
+        "referral_no_given": {
+          "type": "string",
+          "description": "Referral Number given or not"
+        },
+        "treament_given": {
+          "type": "string",
+          "description": "Treatment given to this facility"
+        },
+        "money_spent_on_treatment": {
+          "type": "number",
+          "description": "Money spent on treatment / medicine / dignostics"
+        },
+        "time_spent_in_facility": {
+          "type": "string",
+          "description": "Time spent in facility 3"
+        }
+      },
+      "description": "Facility 2 to facility 3 details"
+    },
+    "facility4": {
+      "type": {
+        "date": {
+          "type": "date"
+        },
+        "labour_time": {
+          "type": "string",
+          "description": "Time onset of the complication or onset of transport"
+        },
+        "arrival_time": {
+          "type": "string",
+          "description": "time of calling or arrival of transport"
+        },
+        "used_transport": {
+          "type": "string"
+        },
+        "facility_id": {
+          "type": "string",
+          "description": "Facility will be select from here"
+        },
+        "attend_by": {
+          "type": "string",
+          "description": "Attended by doctor or nurse or other staff or none"
+        },
+        "reached_time": {
+          "type": "string",
+          "description": "Time to reach from home to facility 1"
+        },
+        "money": {
+          "type": "number",
+          "description": "Money spent on transport from home to facility 1"
+        },
+        "reason_for_referral": {
+          "type": "string",
+          "description": "Reason for referral form facility2 to facility 3"
+        },
+        "referral_no_given": {
+          "type": "string",
+          "description": "Referral Number given or not"
+        },
+        "treament_given": {
+          "type": "string",
+          "description": "Treatment given to this facility"
+        },
+        "money_spent_on_treatment": {
+          "type": "number",
+          "description": "Money spent on treatment / medicine / dignostics"
+        },
+        "time_spent_in_facility": {
+          "type": "string",
+          "description": "Time spent in facility 3"
+        }
+      },
+      "description": "Facility 2 to facility 3 details"
+    },
+    "facility5": {
+      "type": {
+        "date": {
+          "type": "date"
+        },
+        "labour_time": {
+          "type": "string",
+          "description": "Time onset of the complication or onset of transport"
+        },
+        "arrival_time": {
+          "type": "string",
+          "description": "time of calling or arrival of transport"
+        },
+        "used_transport": {
+          "type": "string"
+        },
+        "facility_id": {
+          "type": "string",
+          "description": "Facility will be select from here"
+        },
+        "attend_by": {
+          "type": "string",
+          "description": "Attended by doctor or nurse or other staff or none"
+        },
+        "reached_time": {
+          "type": "string",
+          "description": "Time to reach from home to facility 1"
+        },
+        "money": {
+          "type": "number",
+          "description": "Money spent on transport from home to facility 1"
+        },
+        "reason_for_referral": {
+          "type": "string",
+          "description": "Reason for referral form facility2 to facility 3"
+        },
+        "referral_no_given": {
+          "type": "string",
+          "description": "Referral Number given or not"
+        },
+        "treament_given": {
+          "type": "string",
+          "description": "Treatment given to this facility"
+        },
+        "money_spent_on_treatment": {
+          "type": "number",
+          "description": "Money spent on treatment / medicine / dignostics"
+        },
+        "time_spent_in_facility": {
+          "type": "string",
+          "description": "Time spent in facility 3"
+        }
+      },
+      "description": "Facility 2 to facility 3 details"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "mdsrForm4": {
+      "type": "belongsTo",
+      "model": "mdsr_form_4",
+      "foreignKey": "form_id"
+    },
+    "mdsrForm5": {
+      "type": "belongsTo",
+      "model": "mdsr_form_5",
+      "foreignKey": "form_id"
+    },
+    "mdsrForm1": {
+      "type": "belongsTo",
+      "model": "mdsr_form_1",
+      "foreignKey": "deceased_women_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

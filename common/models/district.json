@@ -1,0 +1,49 @@
+{
+  "name": "district",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "required": true
+    },
+    "statecode": {
+      "type": "number",
+      "required": true
+    },
+    "districtcode": {
+      "type": "number",
+      "required": true
+    },
+    "districtname": {
+      "type": "string",
+      "required": true
+    },
+    "census2011code": {
+      "type": "number"
+    },
+    "status": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "createddate": {
+      "type": "date",
+      "required": true
+    },
+    "updateddate": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

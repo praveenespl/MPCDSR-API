@@ -1,0 +1,41 @@
+{
+  "name": "facilitytype",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "required": true
+    },
+    "shortname": {
+      "type": "string",
+      "required": true
+    },
+    "facilitytypename": {
+      "type": "string",
+      "required": true
+    },
+    "displayorder": {
+      "type": "number",
+      "required": true
+    },
+    "facilitytypeid": {
+      "type": "number",
+      "required": true
+    },
+    "status": {
+      "type": "boolean",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

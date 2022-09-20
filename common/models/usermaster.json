@@ -1,0 +1,150 @@
+{
+  "name": "usermaster",
+  "base": "User",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string"
+    },
+    "firstname": {
+      "type": "string",
+      "required": true
+    },
+    "middlename": {
+      "type": "string"
+    },
+    "lastname": {
+      "type": "string"
+    },
+    "designation": {
+      "type": "string",
+      "required": true
+    },
+    "mobilenumber": {
+      "type": "string"
+    },
+    "useridactive": {
+      "type": "boolean"
+    },
+    "username": {
+      "type": "string",
+      "required": true
+    },
+    "viewPassword": {
+      "type": "string",
+      "required": true
+    },
+    "password": {
+      "type": "string",
+      "required": true
+    },
+    "officeruserid": {
+      "type": "number"
+    },
+    "user_id_card_type": {
+      "type": "string"
+    },
+    "user_id_card_number": {
+      "type": "string"
+    },
+    "user_sex": {
+      "type": "string"
+    },
+    "user_sex_code": {
+      "type": "string"
+    },
+    "user_date_of_birth": {
+      "type": "string"
+    },
+    "user_age_year_month": {
+      "type": "string"
+    },
+    "user_house_number": {
+      "type": "string"
+    },
+    "user_house_street_address_line1": {
+      "type": "string"
+    },
+    "user_home_street_address_line2": {
+      "type": "string"
+    },
+    "user_home_landmark": {
+      "type": "string"
+    },
+    "user_phone_country_code": {
+      "type": "string"
+    },
+    "user_phone_office_number": {
+      "type": "string"
+    },
+    "user_state_id": {
+      "type": "string"
+    },
+    "user_district_id": {
+      "type": "string"
+    },
+    "user_block_id": {
+      "type": "string"
+    },
+    "nin":{
+      "type":"string",
+      "description":"this field is used for the facility logins "
+    },
+    "usertype": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "useraccess": {
+      "type": "hasMany",
+      "model": "useraccess",
+      "foreignKey": "user_id"
+    },
+    "state": {
+      "type": "belongsTo",
+      "model": "state",
+      "foreignKey": "user_state_id"
+    },
+    "district": {
+      "type": "belongsTo",
+      "model": "district",
+      "foreignKey": "user_district_id"
+    },
+    "block": {
+      "type": "belongsTo",
+      "model": "block",
+      "foreignKey": "user_block_id"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "login"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "logout"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "changePasswordAPI"
+    }
+  ],
+  "methods": {}
+}

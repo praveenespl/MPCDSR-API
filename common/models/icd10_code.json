@@ -1,0 +1,43 @@
+{
+  "name": "icd10_code",
+  "description": "ICD 10 MM Code",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+	"Aggregate": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "required": true
+    },
+    "code": {
+      "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "string",
+      "required": true
+    },
+    "group_name": {
+      "type": "string",
+      "required": true
+    },
+    "icd_category": {
+      "type": "string",
+      "required": true
+    },
+    "icd_sub_category": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

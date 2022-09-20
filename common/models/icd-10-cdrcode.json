@@ -1,0 +1,26 @@
+{
+  "name": "icd10_cdrcode",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "selectedListNumber": {
+      "type": "string"
+    },
+    "Code": {
+      "type": "any"
+    },
+    "disease_name": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

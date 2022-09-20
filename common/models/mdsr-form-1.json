@@ -1,0 +1,228 @@
+{
+  "name": "mdsr_form_1",
+  "description": "Notification form, Format to be filled by Primary informant for all Women’s Death (15-49) years",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "Aggregate": true
+  },
+  "properties": {
+    "state_id": {
+      "type": "string",
+      "required": false,
+      "description": "this field hold the state id"
+    },
+    "district_id": {
+      "type": "string",
+      "required": false,
+      "description": "this field hold the district id"
+    },
+    "block_id": {
+      "type": "string",
+      "required": false,
+      "description": "this field hold the block id"
+    },
+    "village_id": {
+      "type": "string",
+      "description": "this field hold the village id"
+    },
+    "deceased_women_fname": {
+      "type": "string",
+      "required": true,
+      "description": "first name of the women who has been died due maternal"
+    },
+    "deceased_women_mname": {
+      "type": "string",
+      "required": false,
+      "description": "middle name of the women who has been died due maternal"
+    },
+    "deceased_women_lname": {
+      "type": "string",
+      "required": false,
+      "description": "last name of the women who has been died due maternal"
+    },
+    "deceased_women_address": {
+      "type": "string",
+      "required": false,
+      "description": "last name of the women who has been died due maternal"
+    },
+    "husband_name": {
+      "type": "string",
+     
+      "description": "husband name of the deceased women"
+    },
+    "father_name": {
+      "type": "string",
+     
+      "description": "father name of the deceased women"
+    },
+    "date_of_birth": {
+      "type": "date",
+      "required": true,
+      "description": "date of the birth of the deceased women"
+    },
+    "age": {
+      "type": "number",
+      "required": true,
+      "description": "Age will be calculate of the deceased women based on her date of birth"
+    },
+    "mcts_id": {
+      "type": "string",
+      "required": false,
+      "description": "Unique identifier of the deceased women in MCTS - Mother and Child Tracking System"
+    },
+    "mobile": {
+      "type": "string",
+      "description": "contact number of the deceased women if person is individaul"
+    },
+    "death_date_time": {
+      "type": "date",
+      "required": true,
+      "description": "deceased women death date & time"
+    },
+    "place_of_death": {
+      "type": "string",
+      "required": true,
+      "description": "where death occur of the deceased women from - [home,health facility, transit, other]"
+    },
+    "place_of_death_other": {
+      "type": "string",
+      "description": "if death occured other place then specify where"
+    },
+    "when_death_occur": {
+      "type": "string",
+      "required": true,
+      "description": "when did death occured in the given option- [ During pregnancy, During delivery, Within 42 days after delivery, During abortion or within 6 weeks after abortion]"
+    },
+    "is_maternal_death": {
+      "type": "boolean",
+      "required": true,
+      "description": "if when did death occured value is either any one of the given values then maternal death else non-maternal death"
+    },
+    "reporting_person": {
+      "type": "string",
+      "required": true,
+      "description": "death reported by the person name"
+    },
+    "reporting_person_mobile": {
+      "type": "string",
+      "description": "contact number of the reporting person if person is individaul"
+    },
+    "reporting_person_address": {
+      "type": "string",
+      "description": "contact number of the reporting person if person is individaul"
+    },
+    "designation": {
+      "type": "string",
+      "description": "designation of the reporting person"
+    },
+    "date_of_reporting": {
+      "type": "date",
+      "description": "death reported date"
+    },
+    "facility_id": {
+      "type": "string",
+      "description": "Verification by ANM of the respective Sub-center that death of women occurred during pregnancy or within 42 days of delivery/abortion"
+    },
+    "name": {
+      "type": "string",
+      "description": "name of the person who has report maternal death or done verification"
+    },
+    "date": {
+      "type": "date",
+      "description": "verification date"
+    },
+    "status": {
+      "type": "string",
+      "description": "Person status"
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "modified_by": {
+      "type": "string"
+    },
+    "modified_date": {
+      "type": "date",
+      "description": "Modification date"
+    },
+    "uuid":{
+      "type":"string",
+      "description":"uniqe id for the maternal case"
+    }
+  },
+  "validations": [],
+  "relations": {
+  "created_by": {
+      "type": "belongsTo",
+      "model": "usermaster",
+      "foreignKey": "created_by"
+    },
+    "block": {
+      "type": "belongsTo",
+      "model": "block",
+      "foreignKey": "block_id"
+    },
+    "district": {
+      "type": "belongsTo",
+      "model": "district",
+      "foreignKey": "district_id"
+    },
+    "state": {
+      "type": "belongsTo",
+      "model": "state",
+      "foreignKey": "state_id"
+    },
+    "village": {
+      "type": "belongsTo",
+      "model": "village",
+      "foreignKey": "village_id"
+    },
+    "facility": {
+      "type": "belongsTo",
+      "model": "facility",
+      "foreignKey": "facility_id"
+    },
+    "healthworker": {
+      "type": "belongsTo",
+      "model": "healthworker",
+      "foreignKey": "reporting_person_id"
+    },
+    "mdsrForm2s": {
+      "type": "hasMany",
+      "model": "mdsr_form_2",
+      "foreignKey": "deceased_women_id"
+    },
+    "mdsrForm3s": {
+      "type": "hasMany",
+      "model": "mdsr_form_3",
+      "foreignKey": "deceased_women_id"
+    },
+    "mdsrForm6s": {
+      "type": "hasMany",
+      "model": "mdsr_form_6",
+      "foreignKey": "deceased_women_id"
+    },
+    "mdsrForm4s": {
+      "type": "hasMany",
+      "model": "mdsr_form_4",
+      "foreignKey": "deceased_women_id"
+    },
+    "mdsrForm5s": {
+      "type": "hasMany",
+      "model": "mdsr_form_5",
+      "foreignKey": "deceased_women_id"
+    },
+    "fileLibrary": {
+      "type": "hasMany",
+      "model": "FileLibrary",
+      "foreignKey": "form_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

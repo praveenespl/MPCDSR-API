@@ -1,0 +1,36 @@
+{
+  "name": "ihipaccess",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "ihipAccessToken": {
+      "type": "string",
+      "required": true
+    },
+    "ihipTokenType": {
+      "type": "string",
+      "required": true
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true
+    },
+    "updatedAt": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

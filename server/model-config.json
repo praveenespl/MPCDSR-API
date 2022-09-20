@@ -1,0 +1,215 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../node_modules/@aliatech/loopback-mongo-aggregate-mixin/lib",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "User": {
+    "dataSource": "db"
+  },
+  "AccessToken": {
+    "dataSource": "db",
+    "public": false
+  },
+  "ACL": {
+    "dataSource": "db",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "db",
+    "public": false,
+    "options": {
+      "strictObjectIDCoercion": true
+    }
+  },
+  "Role": {
+    "dataSource": "db",
+    "public": false
+  },
+  "state": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "district": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "block": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "subdistrict": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "ward": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "village": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "facilitytype": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "facilitycategory": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "facility": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "ControlTable": {
+    "dataSource": "db",
+    "public": true
+  },
+  "usermaster": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "mdsr_form_1": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "mdsr_form_2": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "mdsr_form_3": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "captcha": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "container": {
+    "dataSource": "storage",
+    "public": true
+  },
+  "FileLibrary": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "mdsr_form_4": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "mdsr_form_5": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "referraldetails": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "useraccess": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "logininfo": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "healthworker": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "mdsr_form_6": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "ihipaccess": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "icd10_code": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "gis": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "target": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "mpdsr_form_1_bkup": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "cdr_form_1": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "cdr_form_2": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "cdr_form_3": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "cdr_form_3b": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "cdr_form_3c": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "cdr_form_4a": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "cdr_form_4b": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "stillbirth": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "icd10_cdrcode": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "stillBirthAutoId": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "Alert": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "state-mdr-meeting":{
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "MOM-FBMDRCs": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "MOM-DMDRCs": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "MOM-DRUDCMs": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  }
+}

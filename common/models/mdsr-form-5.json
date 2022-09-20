@@ -1,0 +1,824 @@
+{
+  "name": "mdsr_form_5",
+  "description": "Verbal Autopsy Questionnaire",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "deceased_women_id": {
+      "type": "string",
+      "required": true
+    },
+	"deceased_women_id_new": {
+      "type": "string",
+      "required": true
+    },
+    "generalinformation": {
+      "type": {
+        "state_id": {
+          "type": "any",
+          "required": true,
+          "description": "this field hold the state id"
+        },
+        "district_id": {
+          "type": "any",
+          "required": true,
+          "description": "this field hold the district id"
+        },
+        "block_id": {
+          "type": "any",
+          "required": true,
+          "description": "this field hold the block id"
+        },
+        "village_id": {
+          "type": "string",
+          "description": "this field hold the village id"
+        },
+        "deceased_women_fname": {
+          "type": "string",
+          "required": true,
+          "description": "name of the women who has been died due maternal"
+        },
+        "deceased_women_mname": {
+          "type": "string",
+          "required": true,
+          "description": "name of the women who has been died due maternal"
+        },
+        "deceased_women_lname": {
+          "type": "string",
+          "required": true,
+          "description": "name of the women who has been died due maternal"
+        },
+        "husband_name": {
+          "type": "string",
+          "required": true,
+          "description": "husband name of the deceased women"
+        },
+        "father_name": {
+          "type": "string",
+          "required": true,
+          "description": "father name of the deceased women"
+        },
+        "mcts_id": {
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the deceased women in MCTS - Mother and Child Tracking System"
+        },
+        "death_date_time": {
+          "type": "date",
+          "required": true,
+          "description": "deceased women death date & time"
+        },
+        "investigators": {
+          "type": [
+            "object"
+          ],
+          "required": true
+        },
+        "investigation_date": {
+          "type": "date",
+          "required": true
+        }
+      }
+    },
+    "module1": {
+      "type": {
+        "background_info": {
+          "type": {
+            "respondent_name": {
+              "type": "string",
+              "required": true
+            },
+            "deceased_women_name": {
+              "type": "string"
+            },
+            "relation_with_deceased_women": {
+              "type": "string",
+              "required": true
+            },
+            "date_of_birth": {
+              "type": "date",
+              "required": true
+            },
+            "age": {
+              "type": "number",
+              "required": true
+            },
+            "period_of_death": {
+              "type": "string",
+              "required": true,
+              "description": "Period of death"
+            },
+            "place_of_death": {
+              "type": "string",
+              "required": true,
+              "description": "where death occur of the deceased women from - [home,health facility, transit, other]"
+            },
+            "place_of_death_other": {
+              "type": "string",
+              "description": "if death occured other place then specify where"
+            },
+            "death_date_time": {
+              "type": "date",
+              "required": true,
+              "description": "deceased women death date & time"
+            },
+            "cause_of_death_informed": {
+              "type": "string",
+              "required": true,
+              "description": "did the doctor or nurse at the health facility tell you the cause of death"
+            },
+            "cause_of_death": {
+              "type": "string",
+              "description": "if causeofdeathinformed then what is the cuase of death"
+            }
+          }
+        },
+        "profile": {
+          "type": {
+            "marital_status": {
+              "type": "boolean",
+              "required": true
+            },
+            "age_at_marriage": {
+              "type": "number"
+            },
+            "religion": {
+              "type": "string",
+              "required": true
+            },
+            "other_religion": {
+              "type": "string"
+            },
+            "caste": {
+              "type": "string",
+              "required": true
+            },
+            "bpl": {
+              "type": "string",
+              "required": true
+            },
+            "education": {
+              "type": "string",
+              "required": true
+            },
+            "other_education": {
+              "type": "string"
+            }
+          }
+        },
+        "availability_health_facility": {
+          "type": {
+            "name_of_nearest_facility": {
+              "type": "string",
+              "required": true,
+              "description": "name of the nearest goverment/private providing emergency obstetric care service"
+            },
+            "location_of_nearest_facility": {
+              "type": "string",
+              "required": true,
+              "description": "location of the goverment/private providing emergency obstetric care service"
+            },
+            "distance": {
+              "type": "number",
+              "required": true,
+              "description": "distance of this facility from the residence"
+            },
+            "mode_of_transport": {
+              "type": "string",
+              "required": true,
+              "description": "Mode of transport available to reach this facility"
+            }
+          }
+        },
+        "gpla": {
+          "type": {
+            "gravida": {
+              "type": "number"
+            },
+            "para": {
+              "type": "number"
+            },
+            "live_birth": {
+              "type": "number"
+            },
+            "abortion": {
+              "type": "number"
+            }
+          }
+        },
+        "current_pregnancy": {
+          "type": {
+            "infant_survival": {
+              "type": "string",
+              "required": true
+            },
+            "antenatal_care_received": {
+              "type": "string",
+              "required": true,
+              "description": "if yes then continue to next question else got to question no 6"
+            },
+            "antenatal_checkup": {
+              "type": "number",
+              "description": "if antenatalcarereceived yes then enter number of antenatal checkup received"
+            },
+            "place_of_checkup": {
+              "type": [
+                "string"
+              ],
+              "description": "Place of antenatal check ups [multiple responses possible]"
+            },
+            "services_received_anc": {
+              "type": [
+                "string"
+              ],
+              "description": "Services received during anc period"
+            },
+            "problem_antenatal_period": {
+              "type": "string",
+              "description": "did the deceased women have any problem during the antenatal period"
+            },
+            "symptoms": {
+              "type": [
+                "string"
+              ],
+              "description": "what were the symptoms she had"
+            },
+            "other_symptoms": {
+              "type": "string"
+            },
+            "care_of_symptoms": {
+              "type": "string",
+              "description": "did she seek care for these symptoms"
+            },
+            "where_seekcare": {
+              "type": "string",
+              "description": "if care of symptoms is yes then ask this question"
+            },
+            "reason_for_not_seeking": {
+              "type": [
+                "string"
+              ],
+              "description": "if care of symptoms is not the ask this question"
+            },
+            "otehrs_reason_for_notseeking": {
+              "type": "string"
+            }
+          },
+          "description": "To be filled from the information given by the respondents and MCP Card"
+        }
+      }
+    },
+    "module2": {
+      "type": {
+        "no_of_week_pregnancy": {
+          "type": "number",
+          "description": "No. of weeks of pregnancy completed at the time of death"
+        },
+        "death_during_antenatal_period": {
+          "type": {
+            "problem_at_time_of_death": {
+              "type": "string"
+            },
+            "symptoms": {
+              "type": [
+                "string"
+              ],
+              "description": "what were the symptoms she had"
+            },
+            "other_symptoms": {
+              "type": "string"
+            },
+            "referred": {
+              "type": "string",
+              "description": "was she referred at that time"
+            },
+            "care_of_complication": {
+              "type": "string",
+              "description": "Did she seek care of these complication"
+            },
+            "where_seekcare": {
+              "type": "string",
+              "description": "if careofcomplication is yes then ask this question, and if the response of this question is yes then fill the table no. 1 for referral transport if no skip to question no. 6"
+            },
+            "reason_for_not_seeking": {
+              "type": [
+                "string"
+              ],
+              "description": "if careofcomplication is not then ask this question"
+            },
+            "others_reason_for_not_seeking": {
+              "type": "string"
+            }
+          },
+          "description": "Death During Antenatal Period"
+        },
+        "abortion_related_death": {
+          "type": {
+            "died_abortion": {
+              "type": "string",
+              "description": "Did the deceased women die while having an abortion or with in 6 week of having an abortion"
+            },
+            "type_of_abortion": {
+              "type": "string"
+            },
+            "date_of_abortion": {
+              "type": "date",
+              "description": "Date of spontaneous abortion or date of termination of pregnancy"
+            },
+            "where_spontaneous_abortion": {
+              "type": "string",
+              "description": "if abortion was spontaneous, where was the abortion completed"
+            },
+            "other_spontaneous_abortion": {
+              "type": "string",
+              "description": "if abortion was completed other place then please specify"
+            },
+            "how_induced": {
+              "type": "string",
+              "description": "if abortion was induced how was it induced"
+            },
+            "where_induced_abortion": {
+              "type": "string",
+              "description": "if abortion was induced, where did she have the abortion"
+            },
+            "other_induced_abortion": {
+              "type": "string",
+              "description": "if abortion was completed other place then please specify"
+            },
+            "abortion_perfomed_by": {
+              "type": "string",
+              "description": "if abortion was induced, who performed the abortion"
+            },
+            "other_abortion_perfomed_by": {
+              "type": "string",
+              "description": "specify abortion perofomed by the other"
+            },
+            "reason_for_induced": {
+              "type": "string",
+              "description": "what was the reason for inducing abortion"
+            },
+            "reason_describe": {
+              "type": "string",
+              "description": "Describe the reasons for inducing the abortion"
+            },
+            "symptoms_after_abortion": {
+              "type": "string",
+              "description": "What were the complication / symptoms that the woman had after abortion"
+            },
+            "complication_seekcare": {
+              "type": "string",
+              "description": "After developing complication following abortion, did she seek care"
+            },
+            "where_complication_seekcare": {
+              "type": "string",
+              "description": "if question no. 10 (After developing complication following abortion, did she seek care) response is Yes then this will be asked , where did she seek care"
+            },
+            "other_complication_seekcare": {
+              "type": "string",
+              "description": "if other select then please specity"
+            },
+            "not_seekcare_reason": {
+              "type": "string",
+              "description": "if question no. 10 (After developing complication following abortion, did she seek care) response is no then this will be asked - in case of not seeking care form the hospital, what were the reasons for not seeking care, and if any response of this question is any facility then table 1 should be filled for referral transport"
+            }
+          }
+        }
+      },
+      "description": "This form is to be filled for the maternal deaths that occurred during the antenatal period or if the deaths due to abortion related causes"
+    },
+    "module3": {
+      "type": {
+        "intranatal_services": {
+          "type": {
+            "place_of_delivery": {
+              "type": "string",
+              "description": "place of delivery, if delivery is intitution delivery then also table 2 be filled"
+            },
+            "other_place_of_delivery": {
+              "type": "string",
+              "description": "if place of delivery is other then please specify"
+            },
+            "reason_home_delivery": {
+              "type": [
+                "string"
+              ],
+              "description": "if place of delivery is home then select the reasons for home delivery"
+            },
+            "other_reason_home_delivery": {
+              "type": "string",
+              "description": "if other reason selected then please specify"
+            },
+            "completed_weeks": {
+              "type": "number",
+              "description": "No. of weeks completed pregancy at time of delivery"
+            },
+            "delivery_date_time": {
+              "type": "date",
+              "description": "Date and time of the delivery"
+            },
+            "death_date_time": {
+              "type": "date",
+              "description": "Date and time of the delivery"
+            },
+            "delivry_conducted_by": {
+              "type": "string",
+              "description": "Delivery conducted by"
+            },
+            "other_delivry_conducted_by": {
+              "type": ":string",
+              "description": "if delivery conducted by other then please specify"
+            },
+            "type_of_delivery": {
+              "type": "string",
+              "description": "Type of Delivery"
+            },
+            "delivery_outcome": {
+              "description": "Out come of the delivery (write the numbers in each column or not applicable if not delivered but died in labour)",
+              "type": {
+                "live_birth": {
+                  "type": "number",
+                  "description": "Outcome of the delivery live birth"
+                },
+                "still_birth": {
+                  "type": "number",
+                  "description": "Outcome of the delivery still birth"
+                }
+              }
+            },
+            "complication_delivery": {
+              "type": [
+                "string"
+              ],
+              "description": "what were the complications that the decceased women (name) had during the delivery"
+            },
+            "other_complication_delivery": {
+              "type": "string",
+              "description": "if other selected in the complicationdelivery the specify"
+            },
+            "institutional_delivery": {
+              "description": "in case of institutional delivery",
+              "type": {
+                "provided_treatment": {
+                  "type": "string",
+                  "description": "In case of institutional Delivery, what was the treatment provided at the health facility"
+                },
+                "other_provided_treatment": {
+                  "type": "string",
+                  "description": "if providedtreatment is other, please specify"
+                },
+                "treatment_received": {
+                  "type": "string",
+                  "description": "see the hospital records if available and fill the details of treatment received"
+                }
+              }
+            },
+            "home_delivery": {
+              "description": "In case of home delivery",
+              "type": {
+                "home_seekcare": {
+                  "type": "string",
+                  "description": "In case of home delivery, did the woman seek care"
+                },
+                "not_home_seekcare": {
+                  "type": [
+                    "string"
+                  ],
+                  "description": "if homeseekcare is no then, in case of not seeking care, what were the reasons for not seeking care"
+                },
+                "other_not_home_seekcare": {
+                  "type": "string",
+                  "description": "if not nothomeseekcare is other then please specify"
+                },
+                "where_seekcare": {
+                  "type": "string",
+                  "description": "specify where did she seek care, this will be enabled if homeseekcare is yes"
+                },
+                "other_where_seekcare": {
+                  "type": "string",
+                  "description": "if whereseekcare is other then please specify"
+                }
+              }
+            },
+            "both_delivery": {
+              "description": "this is common for the both institutional or home delivery",
+              "type": {
+                "info_given": {
+                  "type": "string",
+                  "description": "Any informatiom given to the relatives about the nature of complication from the hospital, this will be used for for home & institutional delivery"
+                },
+                "decribe_info_given": {
+                  "type": "string",
+                  "description": "If complicationofnature is yes then please enter the details"
+                },
+                "delay_treatment": {
+                  "type": "string",
+                  "description": "Was there any delay in initiating treatment"
+                },
+                "describe_delay_treatment": {
+                  "type": "string",
+                  "description": "if delay in treatment was yes then please Describe"
+                }
+              }
+            },
+            "referred": {
+              "type": "string",
+              "description": "was the deceased women referred from the place of delivery in case of institutional delivery"
+            },
+            "referred_first_point": {
+              "type": "string",
+              "description": "In case of home delivery, was the deceased woman referred from first point of seeking care for complications"
+            },
+            "referral_center": {
+              "type": "string",
+              "description": "Did she attend the referral centre, if yes then fill the table for informaton on referral"
+            },
+            "not_seekcare_reason": {
+              "type": [
+                "string"
+              ],
+              "description": "in case of not seeking care from the hospital, what were the reasons for not seeking care"
+            },
+            "other_not_seekcare_reason": {
+              "type": "string",
+              "description": "if other selected the please specify"
+            },
+            "info_given_hospital": {
+              "type": "string",
+              "description": "Any informatiom given to the relatives about the nature of complication from the hospital"
+            },
+            "decribe_info_given_hospital": {
+              "type": "string",
+              "description": "If infogivenhospital is yes then please enter the details"
+            },
+            "delay_initiate_treatment": {
+              "type": "string",
+              "description": "Was there any delay in initiating treatment"
+            },
+            "describe_delay_initiate": {
+              "type": "string",
+              "description": "If yes then please specify delay initiate treatment"
+            }
+          }
+        },
+        "postnatal_period": {
+          "description": "If death happened after delivery of the placenta then fill this section, X also as it would be classified as death during post natal",
+          "type": {
+            "problem_delivery": {
+              "type": "string",
+              "description": "did deceased woman (name) have any problem following delivery, if no go to question no 10"
+            },
+            "date_time_problem": {
+              "type": "date",
+              "description": "Date and time of onset of the problem"
+            },
+            "duration": {
+              "type": {
+                "hours": {
+                  "type": "string",
+                  "description": "No. of hours duration of onset of problem after delivery"
+                },
+                "days": {
+                  "type": "string",
+                  "description": "No of days duration of onset of problem after delivery"
+                }
+              }
+            },
+            "problem_postnatal": {
+              "type": "any",
+              "description": "what was the problem during the post natal problem"
+            },
+            "other_problem_postnatal": {
+              "type": "string",
+              "description": "Please specify the other post natal problem"
+            },
+            "seek_treatment": {
+              "type": "string",
+              "description": "Did she seek treatment, if yes the also fill the table 2, if no go to qestion no 7"
+            },
+            "where_seek_treatment": {
+              "type": "string",
+              "description": "where seek treatment"
+            },
+            "other_treatment": {
+              "type": "string",
+              "description": "if seek treatment is other then please specify"
+            },
+            "treatment_provided": {
+              "type": "string",
+              "description": "what was the treatment provided"
+            },
+            "other_treatment_provided": {
+              "type": "string",
+              "description": "if treatment provided is other then please specify"
+            },
+            "treatment_received": {
+              "type": "string",
+              "description": "See the hospital records, if available and fill the details of treatment received"
+            },
+            "referred": {
+              "type": "string",
+              "description": "Did she referred, if no, go to question no 10"
+            },
+            "referral_center": {
+              "type": "string",
+              "description": "Did she attend the referral centre, if yes, also table 2"
+            },
+            "not_seeking_care": {
+              "type": [
+                "string"
+              ],
+              "description": "In case of not seeking care from the hospital, what were the reasons for not seeking care"
+            },
+            "other_not_seeking_care": {
+              "type": "string",
+              "description": "if not seeking care is other, then please specify"
+            },
+            "postnatal_checkup": {
+              "type": "string",
+              "description": "Did she receive the post natal checkups, if no then end the Questionnaire"
+            },
+            "checkups": {
+              "type": "number",
+              "description": "No. of post natal checkups received."
+            },
+            "checkups_by": {
+              "type": "string",
+              "description": "Who did the post natal checkups"
+            },
+            "other_checkup_by": {
+              "type": "string",
+              "description": "if post natal checkup by other then please specify"
+            }
+          }
+        },
+        "open_history": {
+          "type": "string",
+          "description": "Open history (narrative format) (explore)"
+        },
+        "prevent_death": {
+          "type": "string",
+          "description": "According to you, what could have been done to prevent the death of deceased woman"
+        }
+      },
+      "description": "This module to be filled for the maternal deaths that occurred during delivery or if the death occured during the postnatal period (after delivery of placenta)"
+    },
+    "other": {
+      "type": {
+        "leading_to_death": {
+          "type": "string",
+          "required": true
+        },
+        "cause_of_death": {
+          "type": {
+            "direct":{
+              "group_name":"string",
+              "category":"string",
+              "sub_category":"string"
+            },
+            "indirect":{
+              "group_name":"string",
+              "category":"string",
+              "sub_category":"string"
+            }
+          }
+        },
+        "consequence1": {
+          "type": "string",
+          "required": false
+        },
+        "consequence2": {
+          "type": "string",
+          "required": false
+        },
+        "consequence3": {
+          "type": "string",
+          "required": false
+        },
+        "opinion": {
+          "type": {
+            "seeking": {
+              "type": "string",
+              "required": false
+            },
+            "refusal_previous_facility": {
+              "type": "string",
+              "required": false
+            },
+            "home_to_healthcare": {
+              "type": "string",
+              "required": false
+            },
+            "between_healthcare": {
+              "type": "string",
+              "required": false
+            },
+            "referral_system": {
+              "type": "string",
+              "required": false
+            },
+            "lack_of_facility": {
+              "type": "string",
+              "required": false
+            },
+            "lack_of_blood": {
+              "type": "string",
+              "required": false
+            },
+            "lack_of_ot": {
+              "type": "string",
+              "required": false
+            },
+            "lack_of_human_resource": {
+              "type": "string",
+              "required": false
+            },
+            "lack_of_anesthetist": {
+              "type": "string",
+              "required": false
+            },
+            "lack_of_expertise": {
+              "type": "string",
+              "required": false
+            },
+            "lack_of_obstetricians": {
+              "type": "string",
+              "required": false
+            },
+            "refusal": {
+              "type": "string",
+              "required": false
+            }
+          }
+        },
+        "autopsy": {
+          "type": "string",
+          "required": false
+        },
+        "performed": {
+          "type": "string",
+          "required": false
+        },
+        "case_summary": {
+          "type": "string",
+          "required": false
+        }
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "state": {
+      "type": "belongsTo",
+      "model": "state",
+      "foreignKey": "state_id"
+    },
+    "district": {
+      "type": "belongsTo",
+      "model": "district",
+      "foreignKey": "district_id"
+    },
+    "block": {
+      "type": "belongsTo",
+      "model": "block",
+      "foreignKey": "block_id"
+    },
+    "village": {
+      "type": "belongsTo",
+      "model": "village",
+      "foreignKey": "village_id"
+    },
+    "facility": {
+      "type": "belongsTo",
+      "model": "facility",
+      "foreignKey": "facility_id"
+    },
+    "mdsrForm1": {
+      "type": "belongsTo",
+      "model": "mdsr_form_1",
+      "foreignKey": "deceased_women_id"
+    },
+   "mdsrForm1New": {
+      "type": "belongsTo",
+      "model": "mdsr_form_1",
+      "foreignKey": "deceased_women_id_new"
+    },
+    "mdsrForm6s": {
+      "type": "belongsTo",
+      "model": "mdsr_form_6",
+      "foreignKey": "deceased_women_id"
+    },
+    "referraldetails": {
+      "type": "hasMany",
+      "model": "referraldetails",
+      "foreignKey": "form_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

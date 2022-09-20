@@ -1,0 +1,37 @@
+{
+  "name": "ControlTable",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "schemeId": {
+      "type": "string",
+      "required": true
+    },
+    "installmentNum": {
+      "type": "number",
+      "required": true
+    },
+    "datePaid": {
+      "type": "date",
+      "required": true
+    },
+    "totalStudentPaid": {
+      "type": "number",
+      "required": true
+    },
+    "totalAmountPaid": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

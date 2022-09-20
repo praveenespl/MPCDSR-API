@@ -1,0 +1,41 @@
+{
+  "name": "FileLibrary",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "container": {
+      "type": "string"
+    },
+    "modifiedFileName": {
+      "type": "string"
+    },
+    "originalFileName": {
+      "type": "string"
+    },
+    "fileContentType": {
+      "type": "string"
+    },
+    "fileSize": {
+      "type": "number"
+    },
+    "filePath": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "date"
+    },
+    "updatedAt": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

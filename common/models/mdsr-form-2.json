@@ -1,0 +1,83 @@
+{
+  "name": "mdsr_form_2",
+  "description": "Form 2 is Block Level MDR Register for All Women’s Death (15-49 years)",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "block_id": {
+      "type": "any",
+      "required": true,
+      "description": "this field hold the block id"
+    },
+    "district_id": {
+      "type": "any",
+      "required": true,
+      "description": "this field hold the district id"
+    },
+    "state_id": {
+      "type": "any",
+      "required": true,
+      "description": "this field hold the state id"
+    },
+    "month": {
+      "type": "number",
+      "required": true,
+      "description": "this field hold the value for the month form_2 submitted"
+    },
+    "year": {
+      "type": "number",
+      "required": true,
+      "description": "this field hold the value for the year form_2 submitted"
+    },
+    "deceased_women_id": {
+      "type": "string",
+      "required": true,
+      "description": "this field hold the id of the deaceased women"
+    },
+    "field_investigation_date": {
+      "type": "date",
+      "required": true,
+      "description": "this field hold the value of the field investigation date"
+    },
+    "reason": {
+      "type": "string",
+      "required": false,
+      "description": "if died due to maternal death then specify the reason"
+    },
+    "action_taken": {
+      "type": "string",
+      "description": "what action has been taken by the team"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "state": {
+      "type": "belongsTo",
+      "model": "state",
+      "foreignKey": "state_id"
+    },
+    "district": {
+      "type": "belongsTo",
+      "model": "district",
+      "foreignKey": "district_id"
+    },
+    "block": {
+      "type": "belongsTo",
+      "model": "block",
+      "foreignKey": "block_id"
+    },
+    "mdsrForm1": {
+      "type": "belongsTo",
+      "model": "mdsr_form_1",
+      "foreignKey": "deceased_women_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

@@ -1,0 +1,466 @@
+{
+  "name": "cdr_form_4b",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "cdr_id": {
+      "type": "string",
+      "required": true
+    },
+    "basic": {
+      "type": {
+        "fbcdr_no": {
+          "type": "string"
+        },
+        "year": {
+          "type": "string"
+        },
+        "facility_name": {
+          "type": "string"
+        },
+        "statecode": {
+          "type": "number"
+        },
+        "statename": {
+          "type": "string"
+        },
+        "districtcode": {
+          "type": "number"
+        },
+        "districtname": {
+          "type": "string"
+        },
+        "subdistrictcode": {
+          "type": "number"
+        },
+        "subdistrictname": {
+          "type": "string"
+        },
+        "villagecode": {
+          "type": "number"
+        },
+        "villagename": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionA": {
+      "type": {
+        "inpatient_number": {
+          "type": "string"
+        },
+        "age": {
+          "type": "string"
+        },
+        "sex": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "child_name": {
+          "type": "string"
+        },
+        "mother_name": {
+          "type": "string"
+        },
+        "address": {
+          "type": {
+            "colony": {
+              "type": "string"
+            },
+            "house_number": {
+              "type": "string"
+            },
+            "pincode": {
+              "type": "string"
+            },
+            "landmark": {
+              "type": "string"
+            },
+            "statecode": {
+              "type": "number"
+            },
+            "statename": {
+              "type": "string"
+            },
+            "districtcode": {
+              "type": "number"
+            },
+            "districtname": {
+              "type": "string"
+            },
+            "subdistrictcode": {
+              "type": "number"
+            },
+            "subdistrictname": {
+              "type": "string"
+            },
+            "villagecode": {
+              "type": "number"
+            },
+            "villagename": {
+              "type": "string"
+            }
+          }
+        },
+        "date_of_birth": {
+          "type": "date"
+        },
+        "place_of_birth": {
+          "type": "string"
+        },
+        "actual_place_of_birth": {
+          "type": "string"
+        },
+        "child_weight_at_birth": {
+          "type": "number"
+        },
+        "date_of_admission": {
+          "type": "date"
+        },
+        "time_of_admission": {
+          "type": {
+            "hour": {
+              "type": "number"
+            },
+            "minute": {
+              "type": "number"
+            },
+            "second": {
+              "type": "number"
+            }
+          }
+        },
+        "date_of_death": {
+          "type": "date"
+        },
+        "time_of_death": {
+          "type": {
+            "hour": {
+              "type": "number"
+            },
+            "minute": {
+              "type": "number"
+            },
+            "second": {
+              "type": "number"
+            }
+          }
+        },
+        "certified_by": {
+          "type": "string"
+        },
+        "certified_by_designation": {
+          "type": "string"
+        },
+        "facility_type": {
+          "type": "string"
+        },
+        "inability_to_feed": {
+          "type": "string"
+        },
+        "inability_to_feed_days": {
+          "type": "string"
+        },
+        "fever": {
+          "type": "string"
+        },
+        "fever_days": {
+          "type": "string"
+        },
+        "loose_stools": {
+          "type": "string"
+        },
+        "loose_stools_days": {
+          "type": "string"
+        },
+        "vomiting": {
+          "type": "string"
+        },
+        "vomiting_days": {
+          "type": "string"
+        },
+        "cough_or_difficult_breathing": {
+          "type": "string"
+        },
+        "cough_or_difficult_breathing_days": {
+          "type": "string"
+        },
+        "convulsions": {
+          "type": "string"
+        },
+        "convulsions_days": {
+          "type": "string"
+        },
+        "lethargic_or_unconscious_days": {
+          "type": "string"
+        },
+        "appearance_of_skin_rashes": {
+          "type": "string"
+        },
+        "appearance_of_skin_rashes_days": {
+          "type": "string"
+        },
+        "bleeding": {
+          "type": "string"
+        },
+        "bleeding_days": {
+          "type": "string"
+        },
+        "injury": {
+          "type": "string"
+        },
+        "injury_days": {
+          "type": "string"
+        },
+        "corneal_ulcer": {
+          "type": "string"
+        },
+        "corneal_ulcer_days": {
+          "type": "string"
+        },
+        "stunted_growth_ulcer": {
+          "type": "string"
+        },
+        "stunted_growth_ulcer_days": {
+          "type": "string"
+        },
+        "severe_muscle_wasting": {
+          "type": "string"
+        },
+        "severe_muscle_wasting_days": {
+          "type": "string"
+        },
+        "oedema_of_both_hand_and_feet": {
+          "type": "string"
+        },
+        "oedema_of_both_hand_and_feet_days": {
+          "type": "string"
+        },
+        "unknown_bites_or_stings": {
+          "type": "string"
+        },
+        "unknown_bites_or_stings_days": {
+          "type": "string"
+        },
+        "other": {
+          "type": "string"
+        },
+        "other_days": {
+          "type": "string"
+        },
+        "child_weight_at_admission": {
+          "type": "number"
+        },
+        "immunisation_history": [
+          "string"
+        ]
+      }
+    },
+    "sectionB": {
+      "type": {
+        "breathing_status": {
+          "type": "string"
+        },
+        "consciousness_level": {
+          "type": "string"
+        },
+        "circulation_status": {
+          "type": "string"
+        },
+        "other_symptoms": {
+          "type": "string"
+        },
+        "duration_of_stay_in_health_facility": {
+          "type": "string"
+        },
+        "investigations_done": {
+          "type": {
+            "blood_glucose": {
+              "type": "string"
+            },
+            "blood_glucose_result": {
+              "type": "string"
+            },
+            "cbc": {
+              "type": "string"
+            },
+            "cbc_result": {
+              "type": "string"
+            },
+            "urine_test": {
+              "type": "string"
+            },
+            "urine_test_result": {
+              "type": "string"
+            },
+            "renal_function_tests": {
+              "type": "string"
+            },
+            "renal_function_tests_result": {
+              "type": "string"
+            },
+            "csf": {
+              "type": "string"
+            },
+            "csf_result": {
+              "type": "string"
+            },
+            "widal_test": {
+              "type": "string"
+            },
+            "widal_test_result": {
+              "type": "string"
+            },
+            "serum_bilirubin": {
+              "type": "string"
+            },
+            "serum_bilirubin_result": {
+              "type": "string"
+            },
+            "blood_culture": {
+              "type": "string"
+            },
+            "blood_culture_result": {
+              "type": "string"
+            },
+            "liver_function_test": {
+              "type": "string"
+            },
+            "liver_function_test_result": {
+              "type": "string"
+            },
+            "urine_culture": {
+              "type": "string"
+            },
+            "urine_culture_result": {
+              "type": "string"
+            },
+            "others": {
+              "type": "string"
+            },
+            "others_result": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "sectionC": {
+      "type": {
+        "referred": {
+          "type": "string"
+        },
+        "last_referred_facility_type": {
+          "type": "string"
+        },
+        "last_referred_facility_type_other": {
+          "type": "string"
+        },
+        "referred_multiple": {
+          "type": "string"
+        },
+        "how_many": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionD": {
+      "type": {
+        "resuscitation": {
+          "type": "string"
+        },
+        "oxygen_use": {
+          "type": "string"
+        },
+        "iv_fluids": {
+          "type": "string"
+        },
+        "iv_fluids_details": {
+          "type": "string"
+        },
+        "antibiotics": {
+          "type": "string"
+        },
+        "anticonvulsants": {
+          "type": "string"
+        },
+        "bronchodilators": {
+          "type": "string"
+        },
+        "blood_components": {
+          "type": "string"
+        },
+        "blood_components_details": {
+          "type": "string"
+        },
+        "steroids": {
+          "type": "string"
+        },
+        "antituvercular_drugs": {
+          "type": "string"
+        },
+        "antiretroviral_drugs": {
+          "type": "string"
+        },
+        "vasopressors": {
+          "type": "string"
+        },
+        "respiratory_support": {
+          "type": "string"
+        },
+        "surgical_interventions": {
+          "type": "string"
+        },
+        "surgical_interventions_details": {
+          "type": "string"
+        },
+        "other_interventions": {
+          "type": "string"
+        },
+        "other_interventions_details": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionE": {
+      "type": {
+        "death_was": {
+          "type": "string"
+        },
+        "provisional_diagnosis_at_time_of_admission": {
+          "type": "string"
+        },
+        "provisional_diagnosis_at_time_of_death": {
+          "type": "string"
+        },
+        "probable_direct_cause_of_death": {
+          "type": "any"
+        },
+        "indirect_cause_of_death": {
+          "type": "any"
+        },
+        "final_diagnosis": {
+          "type": "any"
+        }
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+  "cdrForm1": {
+      "type": "belongsTo",
+      "model": "cdr_form_1",
+      "foreignKey": "cdr_id"
+    }
+},
+  "acls": [],
+  "methods": {}
+}

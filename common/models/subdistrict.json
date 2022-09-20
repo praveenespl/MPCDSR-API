@@ -1,0 +1,45 @@
+{
+  "name": "subdistrict",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "required": true
+    },
+    "category": {
+      "type": "string",
+      "required": true
+    },
+    "subdistrictcode": {
+      "type": "number",
+      "required": true
+    },
+    "subdistrictname": {
+      "type": "string",
+      "required": true
+    },
+    "bounds_ne_lat": {
+      "type": "string"
+    },
+    "bounds_ne_lon": {
+      "type": "string"
+    },
+    "bounds_sw_lat": {
+      "type": "string"
+    },
+    "bounds_sw_lon": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

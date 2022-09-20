@@ -1,0 +1,159 @@
+{
+  "name": "mdsr_form_6",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": false
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "required": false
+    },
+    "state_id": {
+      "type": "object",
+      "required": false,
+      "description": "this field hold the state id"
+    },
+    "district_id": {
+      "type": "object",
+      "required": false,
+      "description": "this field hold the district id"
+    },
+    "block_id": {
+      "type": "object",
+      "description": "this field hold the block id"
+    },
+    "facility_id": {
+      "type": "object",
+      "required": false
+    },
+    "deceased_women_id": {
+      "type": "string",
+      "required": false,
+      "description": "this field hold the id of deceased women"
+    },
+    "timing_of_death": {
+      "type": "string",
+      "required": false,
+      "description": "This will define the time period of death when deceased women died"
+    },
+    "gravida": {
+      "type": "string",
+      "required": false,
+      "description": "This will define the value of gravida from previous or current history"
+    },
+    "para": {
+      "type": "number",
+      "required": false,
+      "description": "This will define the value of para from previous or current history of deceased women"
+    },
+    "infant_outcome": {
+      "type": "number",
+      "required": false,
+      "description": "This will define the value of infant outcome from previous or current history of deceased women"
+    },
+    "alive_children": {
+      "type": "number",
+      "description": "This will define the value of alive children from previous or current history of deceased women"
+    },
+    "spontaneous_abortion": {
+      "type": "number",
+      "description": "This will define the value of spontaneous abortion from previous history of deceased women"
+    },
+    "induced_abortion": {
+      "type": "number",
+      "description": "This will define the value of gravida from previous or current history of deceased women"
+    },
+    "interview_date": {
+      "type": "date",
+      "description": "This will define the date of interview during investigation of deceased women"
+    },
+    "second_interviewdate": {
+      "type": "any",
+      "description": "This will define the date of second interview during investigation of deceased women if first was missed"
+    },
+    "respondent_name": {
+      "type": "string",
+      "description": "This will define the respondent name "
+    },
+    "respondent_contact": {
+      "type": "number"
+    },
+    "delay_seeking_care": {
+      "type": "any"
+    },
+    "delay_seeking_care_other": {
+      "type": "string"
+    },
+    "delay_reaching_facility": {
+      "type": "any"
+    },
+    "delay_reaching_facility_other": {
+      "type": "string"
+    },
+    "delay_receiving": {
+      "type": "any"
+    },
+    "delay_receiving_other": {
+      "type": "string"
+    },
+    "probable_direct_obstetric_cause": {
+      "type": "string"
+    },
+    "indirect_obstetric_cause": {
+      "type": "string"
+    },
+    "contributory_cause_of_death": {
+      "type": "string"
+    },
+    "initiatives_suggested": {
+      "type": "string"
+    },
+    "doctor_name": {
+      "type": "string"
+    },
+    "doctor_designation": {
+      "type": "string"
+    },
+    "doctor_date": {
+      "type": "date"
+    },
+    "doctor_reg_no": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "mdsrForm1": {
+      "type": "belongsTo",
+      "model": "mdsr_form_1",
+      "foreignKey": "deceased_women_id"
+    },
+    "state": {
+      "type": "belongsTo",
+      "model": "state",
+      "foreignKey": "state_id"
+    },
+    "district": {
+      "type": "belongsTo",
+      "model": "district",
+      "foreignKey": "district_id"
+    },
+    "block": {
+      "type": "belongsTo",
+      "model": "block",
+      "foreignKey": "block_id"
+    },
+    "fileLibrary": {
+      "type": "hasMany",
+      "model": "FileLibrary",
+      "foreignKey": "form_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

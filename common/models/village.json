@@ -1,0 +1,63 @@
+{
+  "name": "village",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "required": true
+    },
+    "villagecode": {
+      "type": "number",
+      "required": true
+    },
+    "villageversion": {
+      "type": "number"
+    },
+    "villagename": {
+      "type": "string",
+      "required": true
+    },
+    "villagenamelocal": {
+      "type": "string"
+    },
+    "subdistrictcode": {
+      "type": "number",
+      "required": true
+    },
+    "census2001code": {
+      "type": "number"
+    },
+    "localbodycode": {
+      "type": "number"
+    },
+    "localbodyname": {
+      "type": "string"
+    },
+    "blockcode": {
+      "type": "number"
+    },
+    "status": {
+      "type": "boolean",
+      "required": true
+    },
+    "createddate": {
+      "type": "date",
+      "required": true
+    },
+    "updateddate": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

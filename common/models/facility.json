@@ -1,0 +1,269 @@
+{
+  "name": "facility",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "required": true
+    },
+    "health_facility_category": {
+      "type": "string"
+    },
+    "health_facility_category_id": {
+      "type": "number"
+    },
+    "health_facility_email": {
+      "type": "string"
+    },
+    "health_facility_phone_country_code": {
+      "type": "string",
+      "required": true
+    },
+    "health_facility_phone_mobile_number": {
+      "type": "string",
+      "required": true
+    },
+    "health_facility_phone_office_number": {
+      "type": "string"
+    },
+    "health_facility_address_building_number": {
+      "type": "string"
+    },
+    "health_facility_street_address_line1": {
+      "type": "string"
+    },
+    "health_facility_street_address_line2": {
+      "type": "string"
+    },
+    "health_facility_geo_address_auto_google": {
+      "type": "string"
+    },
+    "health_facility_landmark": {
+      "type": "string"
+    },
+    "health_facility_village_name": {
+      "type": "string"
+    },
+    "health_facility_village_code": {
+      "type": "number"
+    },
+    "health_facility_sub_district_name_english": {
+      "type": "string"
+    },
+    "health_facility_sub_district_name_local": {
+      "type": "string"
+    },
+    "health_facility_sub_district_code": {
+      "type": "number"
+    },
+    "health_facility_sub_district_version": {
+      "type": "number"
+    },
+    "health_facility_lb_name_english": {
+      "type": "string"
+    },
+    "health_facility_lb_name_local": {
+      "type": "string"
+    },
+    "health_facility_lb_name_code": {
+      "type": "number"
+    },
+    "health_facility_lb_version": {
+      "type": "number"
+    },
+    "health_facility_pincode": {
+      "type": "string"
+    },
+    "health_facility_lb_type_code": {
+      "type": "number"
+    },
+    "health_facility_lb_ward_name": {
+      "type": "string"
+    },
+    "health_facility_lb_ward_number": {
+      "type": "number"
+    },
+    "health_facility_lb_type_name": {
+      "type": "string"
+    },
+    "heath_facility_parent_lb_code": {
+      "type": "number"
+    },
+    "health_facility_lb_census2001_code": {
+      "type": "string"
+    },
+    "health_facility_district_name": {
+      "type": "string"
+    },
+    "health_facility_district_code": {
+      "type": "number"
+    },
+    "health_facility_state_name": {
+      "type": "string"
+    },
+    "health_facility_state_code": {
+      "type": "number"
+    },
+    "health_facility_country_name": {
+      "type": "string"
+    },
+    "health_facility_country_code": {
+      "type": "number"
+    },
+    "health_facility_longitude": {
+      "type": "number"
+    },
+    "health_facility_latitude": {
+      "type": "number"
+    },
+    "health_facility_reporting_officer_id": {
+      "type": "string"
+    },
+    "health_facility_data_entry_user_id": {
+      "type": "number"
+    },
+    "health_facility_record_created_date": {
+      "type": "string"
+    },
+    "health_facility_record_update_date": {
+      "type": "string"
+    },
+    "health_facility_data_update_user_id": {
+      "type": "number"
+    },
+    "health_facility_date_of_enrollment": {
+      "type": "string"
+    },
+    "health_facility_phone_number_std": {
+      "type": "string"
+    },
+    "health_facility_type_from_source": {
+      "type": "string"
+    },
+    "health_facility_contact_person_name": {
+      "type": "string"
+    },
+    "health_facility_website": {
+      "type": "string"
+    },
+    "health_facility_idsp_reporting_site": {
+      "type": "string"
+    },
+    "heath_facility_data_source": {
+      "type": "string"
+    },
+    "health_facility_urban_rural": {
+      "type": "number"
+    },
+    "health_facility_owner_public_private_others": {
+      "type": "string"
+    },
+    "health_facility_damaged": {
+      "type": "string"
+    },
+    "empdesigcode": {
+      "type": "string"
+    },
+    "sitecode": {
+      "type": "string"
+    },
+    "emptrngstatus": {
+      "type": "string"
+    },
+    "postedblock": {
+      "type": "string"
+    },
+    "postedru": {
+      "type": "string"
+    },
+    "empcode": {
+      "type": "string"
+    },
+    "health_facility_status": {
+      "type": "string"
+    },
+    "health_facility_primary_key_id": {
+      "type": "number"
+    },
+    "health_facility_name": {
+      "type": "string"
+    },
+    "health_facility_type_id": {
+      "type": "number"
+    },
+    "geom": {
+      "type": "object"
+    },
+    "health_facility_nin": {
+      "type": "string"
+    },
+    "health_facility_type": {
+      "type": "string"
+    },
+    "health_facility_urban_rural_code": {
+      "type": "string"
+    },
+    "health_facility_altitude": {
+      "type": "number"
+    },
+    "heath_facility_internal_laboratory": {
+      "type": "string"
+    },
+    "notional_physical": {
+      "type": "string"
+    },
+    "bedcount": {
+      "type": "string"
+    },
+    "isiphssurvey": {
+      "type": "string"
+    },
+    "areacatname": {
+      "type": "string"
+    },
+    "areacovered": {
+      "type": "number"
+    },
+    "populationcovered": {
+      "type": "number"
+    },
+    "serving_urban_slum": {
+      "type": "string"
+    },
+    "health_facility_block_code": {
+      "type": "number"
+    },
+    "health_facility_block_name": {
+      "type": "string"
+    },
+    "health_facility_lb_ward_code": {
+      "type": "string"
+    },
+    "health_facility_health_block_code": {
+      "type": "string"
+    },
+    "health_facility_health_block_name": {
+      "type": "string"
+    },
+    "health_facility_approval": {
+      "type": "string"
+    },
+    "hwc": {
+      "type": "string"
+    },
+    "health_facility_block_subdistrict": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

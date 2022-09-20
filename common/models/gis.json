@@ -1,0 +1,80 @@
+{
+  "name": "gis",
+  "plural": "gis",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "required": true,
+      "enum": [
+        "country",
+        "state",
+        "district",
+        "tehsil",
+        "block",
+        "village"
+      ]
+    },
+    "code": {
+      "type": "number",
+      "required": true,
+      "description": "The census code for this type. For examples, for sates this would be stateCode, for districts this would be districtCode."
+    },
+    "parentCode": {
+      "type": "number",
+      "required": true,
+      "description": "The code of the parent of this level. For states this would be 0, for districts this would be the state code and so on.",
+      "default": 0
+    },
+    "stateCode": {
+      "type": "number",
+      "required": false
+    },
+    "stateName": {
+      "type": "string",
+      "required": false
+    },
+    "districtCode": {
+      "type": "number",
+      "required": false
+    },
+    "districtName": {
+      "type": "string",
+      "required": false
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "area": {
+      "type": "number",
+      "required": false
+    },
+    "geometry": {
+      "type": "any",
+      "required": true
+    },
+    "created": {
+      "type": "date",
+      "required": true
+    },
+    "modified": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

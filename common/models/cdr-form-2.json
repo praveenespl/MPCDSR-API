@@ -1,0 +1,247 @@
+{
+  "name": "cdr_form_2",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true
+  },
+  "properties": {
+    "statecode": {
+      "type": "number"
+    },
+    "districtcode": {
+      "type": "number"
+    },
+    "subdistrictcode": {
+      "type": "number"
+    },
+    "villagecode": {
+      "type": "number"
+    },
+    "cdr_id": {
+      "type": "string",
+      "required": true
+    },
+    "sectionA": {
+      "type": {
+        "child_name": {
+          "type": "string"
+        },
+        "date_of_birth": {
+          "type": "date"
+        },
+        "age": {
+          "type": "string"
+        },
+        "sex": {
+          "type": "string"
+        },
+        "address": {
+          "type": {
+            "colony": {
+              "type": "string"
+            },
+            "house_number": {
+              "type": "string"
+            },
+            "pincode": {
+              "type": "string"
+            },
+            "landmark": {
+              "type": "string"
+            },
+            "statecode": {
+              "type": "string"
+            },
+            "statename": {
+              "type": "string"
+            },
+            "districtcode": {
+              "type": "number"
+            },
+            "districtname": {
+              "type": "string"
+            },
+            "subdistrictcode": {
+              "type": "number"
+            },
+            "subdistrictname": {
+              "type": "string"
+            },
+            "villagecode": {
+              "type": "number"
+            },
+            "villagename": {
+              "type": "string"
+            }
+          }
+        },
+        "phc_area_name": {
+          "type": "string"
+        },
+        "sub_center_name": {
+          "type": "string"
+        },
+        "order_of_birth": {
+          "type": "string"
+        },
+        "belongs_to": {
+          "type": "string"
+        },
+        "below_poverty_line": {
+          "type": "string"
+        },
+        "immunization_status": {
+          "type": "any"
+        },
+        "weight": {
+          "type": "string"
+        },
+        "growth_curve": {
+          "type": "any"
+        },
+        "any_ho_illness_injury": {
+          "type": "string"
+        },
+        "nature_of_illness": {
+          "type": "string"
+        },
+        "symptoms_during_illness": {
+          "type": {
+            "inability_to_feed": {
+              "type": "string"
+            },
+            "inability_to_feed_days": {
+              "type": "string"
+            },
+            "fever": {
+              "type": "string"
+            },
+            "fever_days": {
+              "type": "string"
+            },
+            "loose_stools": {
+              "type": "string"
+            },
+            "loose_stools_days": {
+              "type": "string"
+            },
+            "vomiting": {
+              "type": "string"
+            },
+            "vomiting_days": {
+              "type": "string"
+            },
+            "fast_breathing": {
+              "type": "string"
+            },
+            "fast_breathing_days": {
+              "type": "string"
+            },
+            "convulsions": {
+              "type": "string"
+            },
+            "convulsions_days": {
+              "type": "string"
+            },
+            "appearance_of_skin_rashes": {
+              "type": "string"
+            },
+            "appearance_of_skin_rashes_days": {
+              "type": "string"
+            },
+            "injury": {
+              "type": "string"
+            },
+            "injury_days": {
+              "type": "string"
+            },
+            "other": {
+              "type": "string"
+            },
+            "other_days": {
+              "type": "string"
+            }
+          }
+        },
+        "treatment_for_illness_was_taken": {
+          "type": "string"
+        },
+        "where_was_child_treated": {
+          "type": "any"
+        }
+      }
+    },
+    "sectionB": {
+      "type": {
+        "diarrhoea": {
+          "type": "boolean"
+        },
+        "pneumonia": {
+          "type": "boolean"
+        },
+        "malaria": {
+          "type": "boolean"
+        },
+        "measles": {
+          "type": "boolean"
+        },
+        "septicemia": {
+          "type": "boolean"
+        },
+        "meningitis": {
+          "type": "boolean"
+        },
+        "injury": {
+          "type": "boolean"
+        },
+        "other": {
+          "type": "string"
+        },
+        "no_identifiable_cause": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sectionC": {
+      "type": {
+        "cause_of_death": {
+          "type": "string"
+        }
+      }
+    },
+    "sectionD": {
+      "type": {
+        "delay_at_home": {
+          "type": "boolean"
+        },
+        "delay_in_transportation": {
+          "type": "boolean"
+        },
+        "delay_at_facility": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sectionE": {
+      "type": {
+        "case_summary": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "cdrForm1": {
+      "type": "belongsTo",
+      "model": "cdr_form_1",
+      "foreignKey": "cdr_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

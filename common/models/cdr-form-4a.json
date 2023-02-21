@@ -474,12 +474,12 @@
   },
   "validations": [],
   "relations": {
-"cdrForm1": {
+    "cdrForm1": {
       "type": "belongsTo",
       "model": "cdr_form_1",
       "foreignKey": "cdr_id"
     }
-},
+  },
   "acls": [],
   "methods": {}
 }

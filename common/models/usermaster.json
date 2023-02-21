@@ -92,9 +92,9 @@
     "user_block_id": {
       "type": "string"
     },
-    "nin":{
-      "type":"string",
-      "description":"this field is used for the facility logins "
+    "nin": {
+      "type": "string",
+      "description": "this field is used for the facility logins "
     },
     "usertype": {
       "type": "string"

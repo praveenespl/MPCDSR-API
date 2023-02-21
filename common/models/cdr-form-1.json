@@ -21,7 +21,7 @@
     "date_of_birth": {
       "type": "date"
     },
-	"createdBy": {
+    "createdBy": {
       "type": "string"
     },
     "age": {
@@ -93,8 +93,8 @@
     },
     "hospital_name": {
       "type": {
-        "health_facility_name":"string",
-        "health_facility_primary_key_id":"number"
+        "health_facility_name": "string",
+        "health_facility_primary_key_id": "number"
       }
     },
     "primary_informant_name": {
@@ -151,7 +151,7 @@
       "model": "cdr_form_4b",
       "foreignKey": "cdr_id"
     },
-	"createdBy": {
+    "createdBy": {
       "type": "belongsTo",
       "model": "usermaster",
       "foreignKey": "createdBy"

@@ -7,6 +7,7 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "dev": "nodemon --max-old-space-size=8192 ",
     "start": "node .",
     "posttest": "npm run lint && npm audit"
   },
@@ -22,6 +23,7 @@
     "loopback-component-storage": "^3.6.3",
     "loopback-connector-mongodb": "^4.2.0",
     "moment": "^2.24.0",
+    "nodemon": "^2.0.20",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^3.0.0",
     "svg-captcha": "^1.4.0"

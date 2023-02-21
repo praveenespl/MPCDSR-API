@@ -110,7 +110,7 @@
               "type": "number",
               "description": "Number of hours stay in hospital"
             },
-			"minutes": {
+            "minutes": {
               "type": "number",
               "description": "Number of hours stay in hospital"
             }
@@ -126,7 +126,7 @@
               "type": "number",
               "description": "Number of hours stay in hospital"
             },
-			"minutes": {
+            "minutes": {
               "type": "number",
               "description": "Number of minutes stay in hospital"
             }
@@ -525,15 +525,15 @@
           "type": "string",
           "description": "Direct/Indirect"
         },
-        "direct":{
-          "group_name":"string",
-          "category":"string",
-          "sub_category":"string"
+        "direct": {
+          "group_name": "string",
+          "category": "string",
+          "sub_category": "string"
         },
-		"indirect":{
-          "group_name":"string",
-          "category":"string",
-          "sub_category":"string"
+        "indirect": {
+          "group_name": "string",
+          "category": "string",
+          "sub_category": "string"
         }
       },
       "consequence1": {
@@ -629,12 +629,12 @@
     "year": {
       "type": "number"
     },
-    "doctor":{
-      "type":{
-        "name":  "string",
-        "designation":  "string",
-        "date":  "date",
-        "reg_no":  "string"
+    "doctor": {
+      "type": {
+        "name": "string",
+        "designation": "string",
+        "date": "date",
+        "reg_no": "string"
       }
     }
   },

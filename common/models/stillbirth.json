@@ -9,35 +9,35 @@
     "TimeStamp": true
   },
   "properties": {
-	 "state": {
-      "type":{
-			"statecode": {
-			  "type": "number"
-			},
-			"statename": {
-			  "type": "string"
-			}
-		}
+    "state": {
+      "type": {
+        "statecode": {
+          "type": "number"
+        },
+        "statename": {
+          "type": "string"
+        }
+      }
     },
     "district": {
-      "type":{
-			"districtcode": {
-			  "type": "number"
-			},
-			"districtname": {
-			  "type": "string"
-			}
-		}
+      "type": {
+        "districtcode": {
+          "type": "number"
+        },
+        "districtname": {
+          "type": "string"
+        }
+      }
     },
     "block": {
-      "type":{
-			"subdistrictcode": {
-			  "type": "number"
-			},
-			"subdistrictname": {
-			  "type": "string"
-			}
-		}
+      "type": {
+        "subdistrictcode": {
+          "type": "number"
+        },
+        "subdistrictname": {
+          "type": "string"
+        }
+      }
     },
     "stillBirthNo": {
       "type": "number"
@@ -46,193 +46,193 @@
       "type": "number",
       "required": true
     },
-"other_block_name": {
-			"type": "string"
-		},
-		"deliveries_in_month": {
-			"type": "number"
-		},
+    "other_block_name": {
+      "type": "string"
+    },
+    "deliveries_in_month": {
+      "type": "number"
+    },
     "mother_hospital_record_no": {
       "type": "number"
     },
     "basic_information": {
-		"type":{
-			"date_of_still_birth": {
-			  "type": "date"
-			},
-			"intramural": {
-			  "type": "string"
-			},
-			"mother_age": {
-			  "type": "number"
-			},
-			"consanguineous_marriage": {
-			  "type": "string"
-			}
-		}
+      "type": {
+        "date_of_still_birth": {
+          "type": "date"
+        },
+        "intramural": {
+          "type": "string"
+        },
+        "mother_age": {
+          "type": "number"
+        },
+        "consanguineous_marriage": {
+          "type": "string"
+        }
+      }
     },
-   "pregnancy_care": {
-		 "type":{
-				"obstetrical_history":{
-					"type": {
-						"gravida": {
-						"type": "number"
-						},
-						"para": {
-						"type": "number"
-						},
-						"abortion": {
-						"type": "number"
-						}
-					}
-				},
-				"past_history": {
-				  "type": "string"
-				},
-				"past_history_details": {
-				  "type": "object"
-				},
-				"previous_still_birth": {
-				  "type": "string"
-				},
-				"previous_birth_defect": {
-				  "type": "string"
-				},
-				"prev_c_section": {
-				  "type": "string"
-				},
-				"rh_negative": {
-				  "type": "string"
-				},
-				"antenatal_care_received": {
-				  "type": "string"
-				},
-				"tt_Vaccination": {
-				  "type": "string"
-				},
-				"iron_folic_acid": {
-				  "type": "string"
-				},
-				"syphilis_test": {
-				  "type": "string"
-				},
-				"hemoglobin": {
-				  "type": "string"
-				},
-				"hiv_Status": {
-				  "type": "string"
-				},
-				"malaria": {
-				  "type": "string"
-				},
-				"gestational_diabetes_mellitus": {
-				  "type": "string"
-				},
-				"pre_natal_ultrasound": {
-				  "type": "string"
-				}
-			}
+    "pregnancy_care": {
+      "type": {
+        "obstetrical_history": {
+          "type": {
+            "gravida": {
+              "type": "number"
+            },
+            "para": {
+              "type": "number"
+            },
+            "abortion": {
+              "type": "number"
+            }
+          }
+        },
+        "past_history": {
+          "type": "string"
+        },
+        "past_history_details": {
+          "type": "object"
+        },
+        "previous_still_birth": {
+          "type": "string"
+        },
+        "previous_birth_defect": {
+          "type": "string"
+        },
+        "prev_c_section": {
+          "type": "string"
+        },
+        "rh_negative": {
+          "type": "string"
+        },
+        "antenatal_care_received": {
+          "type": "string"
+        },
+        "tt_Vaccination": {
+          "type": "string"
+        },
+        "iron_folic_acid": {
+          "type": "string"
+        },
+        "syphilis_test": {
+          "type": "string"
+        },
+        "hemoglobin": {
+          "type": "string"
+        },
+        "hiv_Status": {
+          "type": "string"
+        },
+        "malaria": {
+          "type": "string"
+        },
+        "gestational_diabetes_mellitus": {
+          "type": "string"
+        },
+        "pre_natal_ultrasound": {
+          "type": "string"
+        }
+      }
     },
-   "examination": {
-      "type":{
-			"examination_on_admission":{
-					"type": {
-						"fetal_heart_sound": {
-						"type": "string"
-						},
-						"blood_pressure": {
-						"type": "string"
-						},
-						"systolic": {
-						"type": "string"
-						},
-						"diastolic": {
-						"type": "string"
-						},
-						"per_vaginal_bleeding": {
-						"type": "string"
-						},
-						"fever": {
-						"type": "string"
-						}
-					}
-				},
-				"delivery_details":{
-					"type": {
-						"partograph_used": {
-						"type": "string"
-						},
-						"type_of_labour": {
-						"type": "string"
-						},
-						"mode_of_delivery": {
-						"type": "string"
-						}
-					}
-				},
-				"birth_details":{
-					"type": {
-						"baby_weight": {
-						"type": "number"
-						},
-						"sex_of_baby": {
-						"type": "string"
-						},
-						"gestation_age_week": {
-						"type": "number"
-						},
-						"gestation_age_days": {
-						"type": "number"
-						},
-						"confirmation_of_gestation_age_by": {
-						"type": "string"
-						}
-					}
-				}
-			}
+    "examination": {
+      "type": {
+        "examination_on_admission": {
+          "type": {
+            "fetal_heart_sound": {
+              "type": "string"
+            },
+            "blood_pressure": {
+              "type": "string"
+            },
+            "systolic": {
+              "type": "string"
+            },
+            "diastolic": {
+              "type": "string"
+            },
+            "per_vaginal_bleeding": {
+              "type": "string"
+            },
+            "fever": {
+              "type": "string"
+            }
+          }
+        },
+        "delivery_details": {
+          "type": {
+            "partograph_used": {
+              "type": "string"
+            },
+            "type_of_labour": {
+              "type": "string"
+            },
+            "mode_of_delivery": {
+              "type": "string"
+            }
+          }
+        },
+        "birth_details": {
+          "type": {
+            "baby_weight": {
+              "type": "number"
+            },
+            "sex_of_baby": {
+              "type": "string"
+            },
+            "gestation_age_week": {
+              "type": "number"
+            },
+            "gestation_age_days": {
+              "type": "number"
+            },
+            "confirmation_of_gestation_age_by": {
+              "type": "string"
+            }
+          }
+        }
+      }
     },
-   "details_of_still_birth": {
-     "type":{
-			"type_of_still_birth": {
-			  "type": "string"
-			},
-			"maternal_condition_associated_with_fetal_death": {
-			  "type": "object"
-			},
-			"details_of_MCAWFD": {
-				"type": "string"
-			  },
-			"fetal_death_main_cause": {
-			  "type": "object"
-			},
-			"birthDefect" : {
-				"type": "string"
-			  },
-			  "birthDefectOption" : {
-				  "type": "string"
-				},
-			"modifiable_factors": {
-			  "type": "string"
-			},
-			"family_related": {
-			  "type": "any"
-			},
-			"administration_related": {
-			  "type": "any"
-			},
-			"provider_related": {
-			  "type": "any"
-			}
-		}
+    "details_of_still_birth": {
+      "type": {
+        "type_of_still_birth": {
+          "type": "string"
+        },
+        "maternal_condition_associated_with_fetal_death": {
+          "type": "object"
+        },
+        "details_of_MCAWFD": {
+          "type": "string"
+        },
+        "fetal_death_main_cause": {
+          "type": "object"
+        },
+        "birthDefect": {
+          "type": "string"
+        },
+        "birthDefectOption": {
+          "type": "string"
+        },
+        "modifiable_factors": {
+          "type": "string"
+        },
+        "family_related": {
+          "type": "any"
+        },
+        "administration_related": {
+          "type": "any"
+        },
+        "provider_related": {
+          "type": "any"
+        }
+      }
     },
-	"name_of_facility": {
-		"type": "string",
-		"required": true
-	  },
-	  "type_of_facility": {
-		"type": "string",
-		"required": true
-	  },
+    "name_of_facility": {
+      "type": "string",
+      "required": true
+    },
+    "type_of_facility": {
+      "type": "string",
+      "required": true
+    },
     "filled_by": {
       "type": "string",
       "required": true

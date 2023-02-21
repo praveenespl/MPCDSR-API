@@ -10,26 +10,40 @@
   },
   "properties": {
     "_id": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "villagecode": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "villageversion": {
       "type": "number"
     },
+    "category":{
+      "type":"string"
+    },
     "villagename": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "villagenamelocal": {
       "type": "string"
     },
-    "subdistrictcode": {
-      "type": "number",
-      "required": true
+    "stateCode":{
+      "type":"number"
+    },
+    "stateName":{
+      "type":"string"
+    },
+    "districtCode":{
+      "type":"string"
+    },
+    "districtName":{
+      "type":"string"
+    },
+    "subdistrictCode": {
+      "type": "number"
+    },
+    "subdistrictName":{
+      "type":"string"
     },
     "census2001code": {
       "type": "number"
@@ -44,16 +58,13 @@
       "type": "number"
     },
     "status": {
-      "type": "boolean",
-      "required": true
+      "type": "boolean"
     },
-    "createddate": {
-      "type": "date",
-      "required": true
+    "createdAt": {
+      "type": "date"
     },
-    "updateddate": {
-      "type": "date",
-      "required": true
+    "updatedAt": {
+      "type": "date"
     }
   },
   "validations": [],

@@ -52,12 +52,10 @@
     },
     "husband_name": {
       "type": "string",
-     
       "description": "husband name of the deceased women"
     },
     "father_name": {
       "type": "string",
-     
       "description": "father name of the deceased women"
     },
     "date_of_birth": {
@@ -150,14 +148,14 @@
       "type": "date",
       "description": "Modification date"
     },
-    "uuid":{
-      "type":"string",
-      "description":"uniqe id for the maternal case"
+    "uuid": {
+      "type": "string",
+      "description": "uniqe id for the maternal case"
     }
   },
   "validations": [],
   "relations": {
-  "created_by": {
+    "created_by": {
       "type": "belongsTo",
       "model": "usermaster",
       "foreignKey": "created_by"

@@ -5,7 +5,7 @@ const {
     getCDRDeathAndVerifiedCount,
     getCDRDeathForMapData
 } = require("../utils/dashboardQueries");
-
+var app=require('../../server/server')
 
 module.exports = function (Cdrform1) {
     Cdrform1.getCDRDeathAgeWise = async function (params) {
@@ -16,7 +16,7 @@ module.exports = function (Cdrform1) {
             const data = await getCDRDeathAgeWiseDeath(CdrForm1Aggregate, params)
             return data;
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             return e;
         }
     }
@@ -52,7 +52,7 @@ module.exports = function (Cdrform1) {
             const data = await getCDRDeathAndVerifiedCount(CdrForm1Aggregate, params);
             return data;
         } catch (error) {
-            console.log(e);
+            // console.log(e);
             return e;
         }
     }
@@ -86,7 +86,7 @@ module.exports = function (Cdrform1) {
             const finalResult = getDataForMap(data, params);
             return finalResult;
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             return err;
         }
     }
@@ -139,12 +139,14 @@ module.exports = function (Cdrform1) {
     }
 
     //Done by ravindra on 23-01-2021
-    Cdrform1.getDashboardData = function (params, cb) {
+    Cdrform1.getDashboardData = async function (params) {
+        try {
         params.updatedAt.$gte = new Date(params.updatedAt.$gte);
         params.updatedAt.$lte = new Date(params.updatedAt.$lte);
         var self = this;
         var Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
-        let cursor = Cdrform1Collection.aggregate(
+        // console.log("params---->",params)
+        let cursor = await Cdrform1Collection.aggregate(
 
             // Pipeline
             [
@@ -214,8 +216,7 @@ module.exports = function (Cdrform1) {
                 },
 
                 // Stage 7
-                {
-                    $project: {
+                { $project: {
                         form2: {
                             $cond: {
                                 if: {
@@ -227,6 +228,7 @@ module.exports = function (Cdrform1) {
                                 else: 0
                             }
                         },
+                   
                         form3A: {
                             $cond: {
                                 if: {
@@ -275,6 +277,7 @@ module.exports = function (Cdrform1) {
                             $cond: {
                                 if: {
                                     $size: "$Form4B"
+                                
                                 },
                                 then: {
                                     $size: "$Form4B"
@@ -337,11 +340,78 @@ module.exports = function (Cdrform1) {
                     }
                 }
             ]
-        );
-        cursor.get(function (err, data) {
-            if (err) return cb(err);
-            return cb(false, data);
-        });
+        ).toArray();
+      const result=await Cdrform1Collection.aggregate([
+        {
+            $match: {"statecode":params.statecode,"updatedAt":{"$gte":params.updatedAt.$gte,"$lte":params.updatedAt.$lte},palce_of_death: {
+                '$in': [
+                  'Home',
+                  'In transit',
+                  'Other',
+                  'Others/Private',
+                  'Health facility (Govt.)'
+                ]
+              },}
+        },
+
+        // Stage 1
+        {
+            $lookup: {
+                "from": "cdr_form_2",
+                "localField": "_id",
+                "foreignField": "cdr_id",
+                "as": "Form2"
+            }
+        },
+        { $project: {
+            form2: {
+                $cond: {
+                    if: {
+                        $size: "$Form2"
+                    },
+                    then: {
+                        $size: "$Form2"
+                    },
+                    else: 0
+                }
+            }}},
+            {
+                $group: {
+                    _id: {},
+                    Form2: { $sum: "$form2" },
+                }
+            }
+      ]).toArray()
+    
+      const all=[].concat(cursor,result);
+    //   const fbcdr=await Cdrform1Collection.aggregate([
+    //     {
+    //         $match: {"statecode":params.statecode,"updatedAt":{"$gte":params.updatedAt.$gte,"$lte":params.updatedAt.$lte},palce_of_death: {
+    //             '$in': [
+    //               'Home',
+    //               'In transit',
+    //               'Other',
+    //               'Others/Private',
+    //               'Health facility (Govt.)'
+    //             ]
+    //           },}
+    //     },
+
+    //     // Stage 1
+    //     {
+    //         $lookup: {
+    //             "from": "cdr_form_2",
+    //             "localField": "_id",
+    //             "foreignField": "cdr_id",
+    //             "as": "Form2"
+    //         }
+    //     },]).toArray()
+    
+            return (all);
+    }catch(e){
+    //  console.log(e)
+    }
+    
     }
 
     Cdrform1.remoteMethod("getDashboardData", {
@@ -359,7 +429,7 @@ module.exports = function (Cdrform1) {
         }
     });
 
-    Cdrform1.getDeathsWhereCbmdsrAndFbmdsrConducted = function (params, cb) {
+    Cdrform1.getDeathsWhereCbmdsrAndFbmdsrConducted = async function (params) {
         let self = this;
         let Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
         let masterAPIArg = {};
@@ -421,25 +491,30 @@ module.exports = function (Cdrform1) {
                 whereFBMDSRConducted: 1
             }
         }
-        //console.log('where',where);
-        //console.log('groupUnderscoreId',groupUnderscoreId);
+        // console.log('where-------->',where);
+        // console.log('groupUnderscoreId',groupUnderscoreId);
         //console.log('project',project);
-        async.parallel({
-            master: (callback) => {
-                Cdrform1.app.models.Ihipaccess.getIhipAccessToken({
-                    accesstype: "new",
-                    oldAccessToken: ""
-                }, (err, res) => {
-                    let obj = {
-                        accessToken: res.ihipAccessToken
-                    }
-                    Cdrform1.app.models.Ihipaccess.getIhipData({ accessToken: res.ihipAccessToken }, masterAPIArg, (err, ihipData) => {
-                        callback(null, ihipData);
-                    })
-                })
-            },
-            whereCBMDSRAndFBMDSRConducted: function (callback) {
-                let cursor = Cdrform1Collection.aggregate(
+ 
+              
+    if (masterAPIArg.type == "getStates") {
+        const stateModel = app.models.state;
+        var master = await stateModel.find({});
+      } else if (masterAPIArg.type == "getDistricts") {
+        const districtModel = app.models.district;
+        var master = await districtModel.find({ where: { stateCode: masterAPIArg.statecode } });
+  
+      } else if (masterAPIArg.type == "getSubDistricts") {
+        const subdistrictModel = app.models.subdistrict;
+        var master = await subdistrictModel.find({ where: { districtcode: masterAPIArg.districtcode } })
+  
+      } else if (masterAPIArg.type == "getVillages") {
+  
+        const villageModel = app.models.village;
+        var master = await villageModel.find({ where: { subdistrictCode: masterAPIArg.subdistrictcode } })
+  
+      }
+
+      let whereCBMDSRAndFBMDSRConducted =await Cdrform1Collection.aggregate(
                     // Pipeline
                     [
                         {
@@ -472,6 +547,18 @@ module.exports = function (Cdrform1) {
                                                             "Other"
                                                         ]
                                                     },
+                                                    {
+                                                      "$eq": [
+                                                          "$palce_of_death",
+                                                          "Others/Private"
+                                                      ]
+                                                  },
+                                                  {
+                                                    "$eq": [
+                                                        "$palce_of_death",
+                                                        "Health facility (Govt.)"
+                                                    ]
+                                                }
                                                 ]
                                             },
                                             1,
@@ -485,11 +572,21 @@ module.exports = function (Cdrform1) {
                                             {
                                                 "$and": [
                                                     {
+                                                "$or": [
+                                                    {
                                                         "$eq": [
                                                             "$palce_of_death",
                                                             "Hospital"
                                                         ]
-                                                    }
+                                                    },
+                                                    {
+                                                      "$eq": [
+                                                          "$palce_of_death",
+                                                          "Health facility"
+                                                      ]
+                                                  }
+                                                ]
+                                            },
                                                 ]
                                             },
                                             1,
@@ -520,18 +617,13 @@ module.exports = function (Cdrform1) {
                             batchSize: 50
                         }
                     }
-                );
-                cursor.get(function (err, data) {
-                    callback(null, data);
-                });
-            }
-        },
-            function (err, results) {
+                ).toArray()
+       
                 let data = [];
-                results.master.forEach((item, i) => {
+                master.forEach((item, i) => {
                     let obj = {};
                     if (params.accessUpto == "National") {
-                        const foundState = results.whereCBMDSRAndFBMDSRConducted.find(state => state.statecode === item.statecode);
+                        const foundState = whereCBMDSRAndFBMDSRConducted.find(state => state.statecode === item.statecode);
                         obj = {
                             "category": item.statename,
                             "statecode": item.statecode,
@@ -539,7 +631,7 @@ module.exports = function (Cdrform1) {
                             "column-2": foundState ? foundState.whereCBMDSRConducted : 0
                         }
                     } else if (params.accessUpto == "State") {
-                        const foundDistrict = results.whereCBMDSRAndFBMDSRConducted.find(district => district.districtcode === item.districtcode);
+                        const foundDistrict = whereCBMDSRAndFBMDSRConducted.find(district => district.districtcode === item.districtcode);
                         obj = {
                             "category": item.districtname,
                             "districtcode": item.districtcode,
@@ -548,7 +640,7 @@ module.exports = function (Cdrform1) {
                             "column-2": foundDistrict ? foundDistrict.whereCBMDSRConducted : 0
                         }
                     } else if (params.accessUpto == "District") {
-                        const foundSubDistrict = results.whereCBMDSRAndFBMDSRConducted.find(subdistrict => subdistrict.subdistrictcode === item.subdistrictcode);
+                        const foundSubDistrict = whereCBMDSRAndFBMDSRConducted.find(subdistrict => subdistrict.subdistrictcode === item.subdistrictcode);
                         obj = {
                             "category": item.subdistrictname,
                             "subdistrictcode": item.subdistrictcode,
@@ -560,14 +652,15 @@ module.exports = function (Cdrform1) {
                 });
                 if (params.accessUpto == "Block") {
                     obj = {
-                        "category": results.whereCBMDSRAndFBMDSRConducted.subdistrictname,
-                        "column-1": results.whereCBMDSRAndFBMDSRConducted ? results.whereCBMDSRAndFBMDSRConducted.whereFBMDSRConducted : 0,
-                        "column-2": results.whereCBMDSRAndFBMDSRConducted ? results.whereCBMDSRAndFBMDSRConducted.whereCBMDSRConducted : 0
+                        "category": whereCBMDSRAndFBMDSRConducted.subdistrictname,
+                        "column-1": whereCBMDSRAndFBMDSRConducted ? results.whereCBMDSRAndFBMDSRConducted.whereFBMDSRConducted : 0,
+                        "column-2": whereCBMDSRAndFBMDSRConducted ? results.whereCBMDSRAndFBMDSRConducted.whereCBMDSRConducted : 0
                     }
                     data.push(obj);
                 }
-                return cb(false, data)
-            });
+               
+                return  data;
+    
     }
 
     Cdrform1.remoteMethod("getDeathsWhereCbmdsrAndFbmdsrConducted", {
@@ -586,7 +679,7 @@ module.exports = function (Cdrform1) {
         }
     })
 
-    Cdrform1.getNotificationDetails = function (params, cb) {
+    Cdrform1.getNotificationDetails =async function (params) {
         var self = this;
         var Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
         params.updatedAt.$gte = new Date(params.updatedAt.$gte);
@@ -600,11 +693,10 @@ module.exports = function (Cdrform1) {
                 }
             ]
             // Created with 3T MongoChef, the GUI for MongoDB - http://3t.io/mongochef
-        );
-        cursor.get(function (err, data) {
-            if (err) return cb(err);
-            return cb(false, data);
-        });
+        ).toArray()
+    
+            return  cursor;
+       
     }
     Cdrform1.remoteMethod("getNotificationDetails", {
         description: "Get Notification Details",
@@ -622,7 +714,7 @@ module.exports = function (Cdrform1) {
     });
 
 
-    Cdrform1.getSubmittedFormsStatus = function (params, cb) {
+    Cdrform1.getSubmittedFormsStatus =async function (params) {
         let self = this;
         let Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
         let where1 = {};
@@ -715,9 +807,9 @@ module.exports = function (Cdrform1) {
             form4B: 1,
         };
         let sort = {}
-        where1["palce_of_death"] = { $in: ['Home', 'In transit', 'Other'] }
+        where1["palce_of_death"] = { $in: ['Home', 'In transit', 'Other','Others/Private', 'Health facility (Govt.)'] }
         where1['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
-        where2["palce_of_death"] = { $in: ['Hospital'] }
+        where2["palce_of_death"] = { $in: ['Hospital','Health facility'] }
         where2['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
         if (params.accessUpto == "National") {
             groupUnderscoreId = {
@@ -778,15 +870,14 @@ module.exports = function (Cdrform1) {
             project2['subdistrictcode'] = "$_id.subdistrictcode";
             sort['subdistrictname'] = 1;
         }
-        // console.log('where1', where1);
-        // console.log('where2', where2);
+            console.log('where1', where1);
+           console.log('where2', where2);
         // console.log('project1', project1);
         // console.log('project2', project2);
         // console.log('groupUnderscoreId', groupUnderscoreId);
         // console.log('sort', sort);
-        async.parallel({
-            cbmdsrFormsStatus: function (callback) {
-                let cursor = Cdrform1Collection.aggregate(
+       
+                let cbmdsrFormsStatus =await Cdrform1Collection.aggregate(
                     // Pipeline
                     // Pipeline
                     [
@@ -872,13 +963,9 @@ module.exports = function (Cdrform1) {
                             batchSize: 50
                         }
                     }
-                );
-                cursor.get(function (err, data) {
-                    callback(null, data);
-                });
-            },
-            fbmdsrFormsStatus: function (callback) {
-                let cursor = Cdrform1Collection.aggregate(
+                ).toArray()
+            
+                let fbmdsrFormsStatus = await Cdrform1Collection.aggregate(
                     // Pipeline
                     // Pipeline
                     [
@@ -917,8 +1004,20 @@ module.exports = function (Cdrform1) {
                             $group: {
                                 _id: groupUnderscoreId,
                                 "form1": { $sum: 1 },
-                                "form4A": { $sum: "$form4A" },
-                                "form4B": { $sum: "$form4B" },
+                                "form4A": {
+                                    $sum: {
+                                        $cond: [{
+                                            $ne: ["$form4A", 0]
+                                        }, 1, 0]
+                                    }
+                                },
+                                 "form4B": {
+                                    $sum: {
+                                        $cond: [{
+                                            $ne: ["$form4B", 0]
+                                        }, 1, 0]
+                                    }
+                                },
                             }
                         },
 
@@ -939,15 +1038,10 @@ module.exports = function (Cdrform1) {
                             batchSize: 50
                         }
                     }
-                );
-                cursor.get(function (err, data) {
-                    callback(null, data);
-                });
-            }
-        },
-            function (err, results) {
-                return cb(false, results)
-            });
+                ).toArray()
+           const results={cbmdsrFormsStatus:cbmdsrFormsStatus,fbmdsrFormsStatus:fbmdsrFormsStatus}
+                return  results
+       
     }
 
     Cdrform1.remoteMethod("getSubmittedFormsStatus", {
@@ -967,6 +1061,383 @@ module.exports = function (Cdrform1) {
     })
 
     //End by ravindra
+
+
+
+
+
+    //End by ravindra
+    Cdrform1.getCdrReportsDetails = async function (params) {
+        try {
+            if(params.statecode>0){
+                var dmatch={statecode: params.statecode,
+                    updatedAt: {$gte: new Date(params.fromDate), $lte: new Date(params.toDate)
+                              }}
+            }
+            if( params.districtcode>0){
+                var dmatch={districtcode:params.districtcode,
+                    updatedAt: {$gte: new Date(params.fromDate), $lte: new Date(params.toDate)
+                              }}
+            }
+            if(params.subdistrictcode>0){
+                var dmatch={subdistrictcode:params.subdistrictcode,
+                    updatedAt: {$gte: new Date(params.fromDate), $lte: new Date(params.toDate)
+                              }}
+            }
+            
+            const self = this;
+            const Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
+            const res = await Cdrform1Collection.aggregate([
+                {
+                    $match:dmatch
+                },
+                {
+                    $lookup: {
+                        "from": "cdr_form_2",
+                        "localField": "_id",
+                        "foreignField": "cdr_id",
+                        "as": "Form2"
+                    }
+                },
+                {
+                    $unwind: {
+                        "path": "$Form2",
+                        "includeArrayIndex": "0",
+                        "preserveNullAndEmptyArrays": true
+                    }
+                },
+                // {
+                //     $addFields: {
+                //       form2Category: { $arrayElemAt: ["$Form2.sectionA.belongs_to", 0] }
+                //     }
+                //   },
+                {
+                    $lookup: {
+                        "from": "cdr_form_4a",
+                        "localField": "_id",
+                        "foreignField": "cdr_id",
+                        "as": "form4a"
+                    }
+                },
+                {
+                    $unwind: {
+                        "path": "$form4a",
+                        "includeArrayIndex": "0",
+                        "preserveNullAndEmptyArrays": true
+                    }
+                },
+                // {
+                //     $addFields: {
+                //       form4aCategory: { $arrayElemAt: ["$form4a.sectionA.category", 0] }
+                //     }
+                //   },
+                {
+                    $lookup: {
+                        "from": "cdr_form_4b",
+                        "localField": "_id",
+                        "foreignField": "cdr_id",
+                        "as": "form4b"
+                    }
+                },
+                {
+                    $unwind: {
+                        "path": "$form4b",
+                        "includeArrayIndex":"0",
+                        "preserveNullAndEmptyArrays": true
+                    }
+                },
+                // {
+                //     $addFields: {
+                //       form4bCategory: { $arrayElemAt: ["$form4b.sectionA.category", 0] }
+                //     }
+                //   },
+                {
+                    $project: {
+                        statecode: "$statecode",
+                        districtcode: "$districtcode",
+                        subdistrictcode: "$subdistrictcode",
+                        statename: "$address.statename",
+                        districtname: "$address.districtname",
+                        subdistrictname: "$address.subdistrictname",
+                        total: { $sum: 1 },
+                        days: { $divide: [{ $subtract: ["$date_of_death", "$date_of_birth"] }, 86400000] },
+                        lessThanMonth: { "$cond": [{ "$lte": [{ $divide: [{ $subtract: ["$date_of_death", "$date_of_birth"] }, 86400000] }, 28] }, 1, 0] },
+                        lessThanYear: { "$cond": [{ "$and": [{ "$gte": [{ $divide: [{ $subtract: ["$date_of_death", "$date_of_birth"] }, 86400000] }, 29] }, { "$lte": [{ $divide: [{ $subtract: ["$date_of_death", "$date_of_birth"] }, 86400000] }, 365] }] }, 1, 0] },
+                        lessThanFiveYear: { "$cond": [{ "$and": [{ "$gte": [{ $divide: [{ $subtract: ["$date_of_death", "$date_of_birth"] }, 86400000] }, 366] }, { "$lte": [{ $divide: [{ $subtract: ["$date_of_death", "$date_of_birth"] }, 86400000] }, 1825] }] }, 1, 0] },
+                        male: { $cond: [{ $eq: ["$sex", "Male"] }, 1, 0] },
+                        ambiguous: { $cond: [{ $eq: ["$sex", "Ambiguous"] }, 1, 0] },
+                        female: { $cond: [{ $eq: ["$sex", "Female"] }, 1, 0] },
+                        home: { $cond: [{ $eq: ["$palce_of_death", "Home"] }, 1, 0] },
+                        hospital: { $cond: [{ $eq: ["$palce_of_death", "Hospital"] }, 1, 0] },
+                        healthFacility: { $cond: [{ $eq: ["$palce_of_death", "Health facility"] }, 1, 0] },
+                        inTransit: { $cond: [{ $eq: ["$palce_of_death", "In transit"] }, 1, 0] },
+                         general: { $cond: [{ $eq: ["$Form2.sectionA.belongs_to", "General"] }, 1, 0] },
+                         generalone: { $cond: [{ $eq: ["$form4a.sectionA.category", "General"] }, 1, 0] },
+                        generaltwo: { $cond: [{ $eq: ["$form4b.sectionA.category", "General"] }, 1, 0] },
+                        sc: { $cond: [{ $eq: ["$Form2.sectionA.category", "SC"] }, 1, 0] },
+                         scone: { $cond: [{ $eq: ["$form4a.sectionA.category", "SC"] }, 1, 0] },
+                         sctwo: { $cond: [{ $eq: ["$form4b.sectionA.category", "SC"] }, 1, 0] },
+                        st: { $cond: [{ $eq: ["$Form2.sectionA.belongs_to", "ST"] }, 1, 0] },
+                         stone: { $cond: [{ $eq: ["$form4a.sectionA.category", "ST"] }, 1, 0] },
+                         sttwo: { $cond: [{ $eq: ["$form4b.sectionA.category", "ST"] }, 1, 0] },
+                         obc: { $cond: [{ $eq: ["$Form2.sectionA.belongs_to", "OBC"] }, 1, 0] },
+                         obcone: { $cond: [{ $eq: ["$form4a.sectionA.category", "OBC"] }, 1, 0] },
+                         obctwo: { $cond: [{ $eq: ["$form4b.sectionA.category", "OBC"] }, 1, 0] },
+                         na: { $cond: [{ $eq: ["$Form2.sectionA.belongs_to", "NA"] }, 1, 0] },
+                         naOne: { $cond: [{ $eq: ["$form4a.sectionA.category", "Na"] }, 1, 0] },
+                         naTwo: { $cond: [{ $eq: ["$form4b.sectionA.category", "NA"] }, 1, 0] }
+                    }
+                },
+                // {
+                //     $group: {
+                //         _id: "$subdistrictcode",
+                //         statecode: { "$first": "$statecode" },
+                //         districtcode: { "$first": "$districtcode" },
+                //         statename: { "$first": "$statename" },
+                //         districtname: { "$first": "$districtname" },
+                //         subdsitrictname: { "$first": "$subdistrictname" },
+                //         days: { "$first": "$days" },
+                //         lessThanMonth: { "$sum": "$lessThanMonth" },
+                //         lessThanYear: { "$sum": "$lessThanYear" },
+                //         lessThanFiveYear: { "$sum": "$lessThanFiveYear" },
+                //         male: { $sum: "$male" },
+                //         female: { $sum: "$female" },
+                //         ambiguous:{ $sum:"$ambiguous"},
+                //         home: { $sum: "$home" },
+                //         hospital: { $sum: { $add: ["$hospital", "$healthFacility"] } },
+                //         inTransit: { $sum: "$inTransit" },
+                //         general: { $sum: { $add: ["$general", "$generalone", "$generaltwo"] } },
+                //         sc: { $sum: { $add: ["$sc", "$scone", "$sctwo"] } },
+                //         st: { $sum: { $add: ["$st", "$stone", "$sttwo"] } },
+                //         obc: { $sum: { $add: ["$obc", "$obcone", "$obctwo"] } },
+                //         na: { $sum: { $add: ["$na", "$naOne", "$naTwo"] } },
+                //         total: { $sum: 1 },
+                //     }
+                // }
+
+            ]).toArray();
+          
+            var seenNames = {};
+
+            const array = res.filter(function(currentObject) {
+                if (currentObject._id in seenNames) {
+                    return false;
+                } else {
+                    seenNames[currentObject._id] = true;
+                    return true;
+                }
+            });
+            var result = [];
+            array.reduce(function(res, value) {
+                if (!res[value.subdistrictcode]) {
+                  res[value.subdistrictcode] = { _id: value._id,ambiguous: 0,total:0,subdistrictcode:0,statename:0,districtname:0,subdistrictname:0,districtcode:0, female:0, general:0,generalone: 0,generaltwo: 0,healthFacility:0, home:0,hospital: 0,inTransit: 0,lessThanFiveYear: 0,lessThanMonth:0,lessThanYear: 0,male: 0 ,na: 0, naOne: 0 ,naTwo:0,obc:0,obcone: 0,obctwo: 0,sc:0,scone:0,sctwo: 0,st: 0,stone:0,sttwo : 0};
+                  result.push(res[value.subdistrictcode])
+                }
+                res[value.subdistrictcode].statename = value.statename;
+                res[value.subdistrictcode].districtname = value.districtname;
+                res[value.subdistrictcode].subdistrictname = value.subdistrictname;
+                res[value.subdistrictcode].male += value.male;
+                res[value.subdistrictcode].ambiguous += value.ambiguous;
+                res[value.subdistrictcode].female += value.female;
+                res[value.subdistrictcode].total += value.total;
+                res[value.subdistrictcode].general += value.general;
+                res[value.subdistrictcode].generalone += value.generalone;
+                res[value.subdistrictcode].generaltwo += value.generaltwo;
+                res[value.subdistrictcode].healthFacility += value.healthFacility;
+                res[value.subdistrictcode].home += value.home;
+                res[value.subdistrictcode].hospital += value.hospital;
+                res[value.subdistrictcode].inTransit += value.inTransit;
+                res[value.subdistrictcode].lessThanFiveYear += value.lessThanFiveYear;
+                res[value.subdistrictcode].lessThanMonth += value.lessThanMonth;
+                res[value.subdistrictcode].lessThanYear += value.lessThanYear;
+                res[value.subdistrictcode].na += value.na;
+                res[value.subdistrictcode].naOne += value.naOne;
+                res[value.subdistrictcode].naTwo += value.naTwo;
+                res[value.subdistrictcode].obc += value.obc;
+                res[value.subdistrictcode].obcone += value.obcone;
+                res[value.subdistrictcode].obctwo += value.obctwo;
+                res[value.subdistrictcode].sc += value.sc;
+                res[value.subdistrictcode].scone += value.scone;
+                res[value.subdistrictcode].sctwo += value.sctwo;
+                res[value.subdistrictcode].st += value.st;
+                res[value.subdistrictcode].stone += value.stone;
+                res[value.subdistrictcode].sttwo += value.sttwo;
+                return res;
+              }, {});           
+            return result;
+        } catch (e) {
+        //  console.log(e)
+        }
+    }
+    Cdrform1.remoteMethod("getCdrReportsDetails", {
+        "description": "",
+        description: "getCdrReportsDetails",
+        accepts: [{
+            arg: "params",
+            type: "object"
+        }],
+        returns: {
+            root: true,
+            type: "array"
+        },
+        http: {
+            verb: "get"
+        }
+    })
+
+
+
+    Cdrform1.getFormStatusReport = async function (params) {
+        try {
+            if(params.statecode>0){
+                var dmatch={statecode: params.statecode,
+                    updatedAt: {$gte: new Date(params.fromDate), $lte: new Date(params.toDate)
+                              }}
+            }
+            if( params.districtcode>0){
+                var dmatch={districtcode:params.districtcode,
+                    updatedAt: {$gte: new Date(params.fromDate), $lte: new Date(params.toDate)
+                              }}
+            }
+            if(params.subdistrictcode>0){
+                var dmatch={subdistrictcode:params.subdistrictcode,
+                    updatedAt: {$gte: new Date(params.fromDate), $lte: new Date(params.toDate)
+                              }}
+            }
+             
+            const self = this;
+            const Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
+            const result = await Cdrform1Collection.aggregate([
+                { $match: dmatch },
+                {
+                    $lookup: {
+                        "from": "cdr_form_2",
+                        "localField": "_id",
+                        "foreignField": "cdr_id",
+                        "as": "Form2"
+                    }
+                },
+                {
+                    $lookup: {
+                        "from": "cdr_form_3",
+                        "localField": "_id",
+                        "foreignField": "cdr_id",
+                        "as": "form3a"
+                    }
+                },
+                {
+                    $lookup: {
+                        "from": "cdr_form_3b",
+                        "localField": "_id",
+                        "foreignField": "cdr_id",
+                        "as": "form3b"
+                    }
+                },
+                {
+                    $lookup: {
+                        "from": "cdr_form_3c",
+                        "localField": "_id",
+                        "foreignField": "cdr_id",
+                        "as": "form3c"
+                    }
+                },
+                {
+                    $lookup: {
+                        "from": "cdr_form_4a",
+                        "localField": "_id",
+                        "foreignField": "cdr_id",
+                        "as": "form4a"
+                    }
+                },
+                {
+                    $lookup: {
+                        "from": "cdr_form_4b",
+                        "localField": "_id",
+                        "foreignField": "cdr_id",
+                        "as": "form4b"
+                    }
+                },
+                {  
+                    $project: {
+                        statecode: "$statecode",
+                        districtcode: "$districtcode",
+                        subdistrictcode: "$subdistrictcode",
+                        statename: "$address.statename",
+                        dateofdeath: "$date_of_death",
+                        districtname: "$address.districtname",
+                        subdistrictname: "$address.subdistrictname",
+                        form1fb: { $cond: [{ $eq: ["$palce_of_death", "Hospital"] }, 1, 0] },
+                        form1fbcd: { $cond: [{ $eq: ["$palce_of_death", "Health facility"] }, 1, 0] },
+                        form1cbcd: { $cond: [{ $eq: ["$palce_of_death", "In transit"] }, 1, 0] },
+                        form1cbcdr: { $cond: [{ $eq: ["$palce_of_death", "Home"] }, 1, 0] },
+                        form1cbcr: { $cond: [{ $eq: ["$palce_of_death", "Other"] }, 1, 0] },
+                        form1cbr: { $cond: [{ $eq: ["$palce_of_death", "Others/Private"] }, 1, 0] },
+                        form1cb: { $cond: [{ $eq: ["$palce_of_death", "Health facility (Govt.)"] }, 1, 0] },
+                        form2: { $cond: { if: { $size: "$Form2" }, then: 1, else: 0 } },
+                        form3a: { $cond: { if: { $size: "$form3a" }, then: 1, else: 0 } },
+                        form3b: { $cond: { if: { $size: "$form3b" }, then: 1, else: 0 } },
+                        form3c: { $cond: { if: { $size: "$form3c" }, then: 1, else: 0 } },
+                        form4a: { $cond: { if: { $size: "$form4a" }, then: 1, else: 0 } },
+                        form4b: { $cond: { if: { $size: "$form4b" }, then: 1, else: 0 } },
+                    }
+
+                },
+                {
+                    $group: {
+                        _id: "$subdistrictcode",
+                        statecode: { "$first": "$statecode" },
+                        districtcode: { "$first": "$districtcode" },
+                        statename: { "$first": "$statename" },
+                        districtname: { "$first": "$districtname" },
+                        subdsitrictname: { "$first": "$subdistrictname" },
+                        total: { $sum: 1 },
+                        form1fbcdsr: { $sum: { $add: ["$form1fb", "$form1fbcd"] } },
+                        form1cbcdsr: { $sum: { $add: ["$form1cbcd", "$form1cbcdr","$form1cbcr","$form1cbr","$form1cb"] }  },
+                        form2: { $sum: "$form2" },
+                        form3a: { $sum: "$form3a" },
+                        form3b: { $sum: "$form3b" },
+                        form3c: { $sum: "$form3c" },
+                        form4a: {
+                            $sum: {
+                                $cond: [{
+                                    $ne: ["$form4a", 0]
+                                }, 1, 0]
+                            }
+                        },
+                         form4b: {
+                            $sum: {
+                                $cond: [{
+                                    $ne: ["$form4b", 0]
+                                }, 1, 0]
+                            }
+                        },
+                    }
+                }
+
+            ]).toArray();
+              
+            return (result);
+        } catch (e) {
+            //  console.log(e)
+        }
+
+
+    }
+    Cdrform1.remoteMethod("getFormStatusReport", {
+        "description": "",
+        description: "getFormStatusReport",
+        accepts: [{
+            arg: "params",
+            type: "object"
+        }],
+        returns: {
+            root: true,
+            type: "array"
+        },
+        http: {
+            verb: "get"
+        }
+    })
 };
 
 

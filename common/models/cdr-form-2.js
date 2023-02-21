@@ -2,7 +2,7 @@
 
 module.exports = function(Cdrform2) {
 
-    Cdrform2.getCDRMajorCausesPrevious = function (params, cb) {
+    Cdrform2.getCDRMajorCausesPrevious =async function (params) {
      
       let dmatch={};
         let self = this;
@@ -25,7 +25,7 @@ module.exports = function(Cdrform2) {
         }
        
 	   console.log("dmatch : ",dmatch)
-    let cursor = Cdrform2Collection.aggregate(
+    let cursor = await Cdrform2Collection.aggregate(
       // Pipeline
       [
           
@@ -128,15 +128,10 @@ module.exports = function(Cdrform2) {
   
     
       ]
-    );
-    cursor.get(function (err, data) {
-        console.log("data : ",data);
-      if (err) return cb(err);
-      return cb(false, data);
-    });
-
-
-
+    ).toArray();
+ 
+      return cursor
+ 
     }
 
     Cdrform2.remoteMethod("getCDRMajorCausesPrevious", {

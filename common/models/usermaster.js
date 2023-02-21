@@ -39,7 +39,7 @@ module.exports = function(Usermaster) {
   //login method
   Usermaster.login = function(credentials, include, cb) {
     var self = this;
-    console.log("credentials--", credentials);
+    // console.log("credentials--", credentials);
     //let credentials = credentials.options;
     if (credentials.username === undefined || credentials.username == "") {
       var err = new Error('Username is required');
@@ -71,7 +71,7 @@ module.exports = function(Usermaster) {
 
     }, function(err, user) {
       if (err) {
-        console.log(err);
+        // console.log(err);
         return cb(err);
       }
       if (!user) {
@@ -90,7 +90,7 @@ module.exports = function(Usermaster) {
       if (user.useridactive) {
         bcrypt.compare(credentials.password, user.password, function(err, isMatch) {
           if (err) {
-            console.log(err);
+            // console.log(err);
             return cb(err);
           }
           if (!isMatch) {
@@ -115,7 +115,7 @@ module.exports = function(Usermaster) {
                 if (err) {
                   console.log(err);
                 }
-                console.log(user)
+                // console.log(user)
                 let obj = JSON.parse(JSON.stringify(user))
                 delete obj.viewPassword;
                 return cb(false, obj);
@@ -170,7 +170,6 @@ let params=param.updateObj;
 
     this.findById(params.userId, function (err, user) {
         if (err) {
-            console.log(err);
             return cb(err);
         }
         if (!user) {

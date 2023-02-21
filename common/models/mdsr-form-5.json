@@ -14,7 +14,7 @@
       "type": "string",
       "required": true
     },
-	"deceased_women_id_new": {
+    "deceased_women_id_new": {
       "type": "string",
       "required": true
     },
@@ -676,15 +676,15 @@
         },
         "cause_of_death": {
           "type": {
-            "direct":{
-              "group_name":"string",
-              "category":"string",
-              "sub_category":"string"
+            "direct": {
+              "group_name": "string",
+              "category": "string",
+              "sub_category": "string"
             },
-            "indirect":{
-              "group_name":"string",
-              "category":"string",
-              "sub_category":"string"
+            "indirect": {
+              "group_name": "string",
+              "category": "string",
+              "sub_category": "string"
             }
           }
         },
@@ -803,7 +803,7 @@
       "model": "mdsr_form_1",
       "foreignKey": "deceased_women_id"
     },
-   "mdsrForm1New": {
+    "mdsrForm1New": {
       "type": "belongsTo",
       "model": "mdsr_form_1",
       "foreignKey": "deceased_women_id_new"

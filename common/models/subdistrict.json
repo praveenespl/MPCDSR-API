@@ -10,20 +10,16 @@
   },
   "properties": {
     "_id": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "category": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "subdistrictcode": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "subdistrictname": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "bounds_ne_lat": {
       "type": "string"

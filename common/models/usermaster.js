@@ -236,4 +236,34 @@ let params=param.updateObj;
         }
     }
 )
+
+
+Usermaster.getUsersList = async function (params) {
+      try {
+        //var self = this;
+          var Users = await Usermaster.find({});
+          // Return the Users list with the appropriate HTTP password Code and Message.
+          return Users;
+      } catch (e) {
+          //Return an Error Response Message with Code and the Error Message.
+          return res.status(400).json({status: 400, message: "Error"});
+      }
+  }
+
+  Usermaster.remoteMethod("getUsersList", {
+    description: "Get User List",
+    accepts: [{
+        arg: "params",
+        type: "object"
+    }],
+    returns: {
+        root: true,
+        type: "array"
+    },
+    http: {
+        verb: "get"
+    }
+});
+
+  
 };

@@ -144,6 +144,19 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "changePasswordAPI"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "getUsersList"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "find"
     }
   ],
   "methods": {}

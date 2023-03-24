@@ -7,7 +7,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "dev": "nodemon --max-old-space-size=8192 ",
+    "dev": "nodemon --max-old-space-size=8192 .",
     "start": "node .",
     "posttest": "npm run lint && npm audit"
   },

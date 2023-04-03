@@ -40,7 +40,6 @@ module.exports = function(Captcha) {
     }
   )
   Captcha.validateCaptcha = function(param, cb) {
-    console.log(JSON.stringify(param));
 
     if (param.captchaid === undefined || param.captchaid === "" || param.text === undefined || param.text == "") {
       var err = new Error('Invalid Captcha');

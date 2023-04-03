@@ -3,6 +3,7 @@ var ObjectId = require('mongodb').ObjectID;
 
 module.exports = function (Container) {
   Container.afterRemote('upload', function (ctx, unused, next) {
+    console.log(ctx.result.result.files)
     var self = this;
     let file = ctx.result.result.files.file[0];
     let fields = ctx.result.result.fields.fields[0];

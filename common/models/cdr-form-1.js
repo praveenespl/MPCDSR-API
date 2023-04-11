@@ -5,9 +5,26 @@ const {
     getCDRDeathAndVerifiedCount,
     getCDRDeathForMapData
 } = require("../utils/dashboardQueries");
-var app = require('../../server/server')
+var app = require('../../server/server');
+const { ObjectID } = require('loopback-connector-mongodb');
 
 module.exports = function (Cdrform1) {
+    // Cdrform1.observe('after save', async function (ctx) {
+    //     try {
+    //       if (ctx.isNewInstance) {
+    //         console.log(ctx.instance)
+    //      const usermasterModel = app.models.usermaster;
+    //         const data= await usermasterModel.find({_id:ctx.instance.createdBy})
+    //         if (data){
+    //             console.log(data)
+    //         }
+    //       }
+    //       return;
+    //     } catch (err) {
+    //       console.log(err);
+    //       return err;
+    //     }
+    //   });
     Cdrform1.getCDRDeathAgeWise = async function (params) {
         const self = this;
 
@@ -920,24 +937,22 @@ module.exports = function (Cdrform1) {
                         $gte: new Date(params.fromDate), $lte: new Date(params.toDate)
                     }
                 }
-            }
-            if (params.districtcode > 0) {
+            }else if (params.districtcode > 0) {
                 var dmatch = {
                     districtcode: params.districtcode,
                     updatedAt: {
                         $gte: new Date(params.fromDate), $lte: new Date(params.toDate)
                     }
                 }
-            }
-            if (params.subdistrictcode > 0) {
+            }else if (params.createdBy.length > 0) {
                 var dmatch = {
-                    subdistrictcode: params.subdistrictcode,
+                    createdBy: ObjectID(params.createdBy),
                     updatedAt: {
                         $gte: new Date(params.fromDate), $lte: new Date(params.toDate)
                     }
                 }
             }
-
+        
             const self = this;
             const Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
             const res = await Cdrform1Collection.aggregate([
@@ -1137,18 +1152,23 @@ module.exports = function (Cdrform1) {
                         $gte: new Date(params.fromDate), $lte: new Date(params.toDate)
                     }
                 }
-            }
-            if (params.districtcode > 0) {
+            }else if (params.districtcode > 0) {
                 var dmatch = {
                     districtcode: params.districtcode,
                     updatedAt: {
                         $gte: new Date(params.fromDate), $lte: new Date(params.toDate)
                     }
                 }
-            }
-            if (params.subdistrictcode > 0) {
+            }else if (params.subdistrictcode > 0) {
                 var dmatch = {
                     subdistrictcode: params.subdistrictcode,
+                    updatedAt: {
+                        $gte: new Date(params.fromDate), $lte: new Date(params.toDate)
+                    }
+                }
+            } else if (params.createdBy.length > 0) {
+                var dmatch = {
+                    createdBy: ObjectID(params.createdBy),
                     updatedAt: {
                         $gte: new Date(params.fromDate), $lte: new Date(params.toDate)
                     }
@@ -1292,7 +1312,7 @@ module.exports = function (Cdrform1) {
         const { fromDate, toDate, accessUpto, districtcodes, statecodes, subdistrictcodes } = params;
 
         const where = {
-            createdAt: { $gte: new Date(fromDate), $lte: new Date(toDate) }
+            updatedAt: { $gte: new Date(fromDate), $lte: new Date(toDate) }
         }
 
         if (statecodes.length > 0 && districtcodes.length === 0 && subdistrictcodes.length === 0) {
@@ -1313,10 +1333,11 @@ module.exports = function (Cdrform1) {
         } else {
             var groupId = "$statecode"
         }
+
         const self = this;
         const Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
-        // console.log(where)
-        // console.log(groupId)
+        //  console.log("--->",where)
+        //  console.log("-------->",groupId)
         const res = await Cdrform1Collection.aggregate([
             {
                 $match: where
@@ -1391,6 +1412,9 @@ module.exports = function (Cdrform1) {
                     healthFacilityPvt: { $cond: [{ $eq: ["$palce_of_death", "Others/Private"] }, 1, 0] },
                     healthFacility: { $cond: [{ $eq: ["$palce_of_death", "Health facility"] }, 1, 0] },
                     inTransit: { $cond: [{ $eq: ["$palce_of_death", "In transit"] }, 1, 0] },
+                    delayAtHome: { $cond: [{ $eq: ["$Form2.sectionD.delay_at_home", true] }, 1, 0] },
+                    delayInTransportation: { $cond: [{ $eq: ["$Form2.sectionD.delay_in_transportation", true] }, 1, 0] },
+                    delayAtFacility: { $cond: [{ $eq: ["$Form2.sectionD.delay_at_facility", true] }, 1, 0] },
                     general: { $cond: [{ $eq: ["$Form2.sectionA.belongs_to", "General"] }, 1, 0] },
                     generalone: { $cond: [{ $eq: ["$form4a.sectionA.category", "General"] }, 1, 0] },
                     generaltwo: { $cond: [{ $eq: ["$form4b.sectionA.category", "General"] }, 1, 0] },
@@ -1423,6 +1447,9 @@ module.exports = function (Cdrform1) {
                     male: { $sum: "$male" },
                     female: { $sum: "$female" },
                     ambiguous: { $sum: "$ambiguous" },
+                    delayAtHome: { $sum: "$delayAtHome" },
+                    delayAtFacility: { $sum: "$delayAtFacility" },
+                    delayInTransportation: { $sum: "$delayInTransportation" },
                     home: { $sum: "$home" },
                     healthFacilityGovt: { $sum: { $add: ["$hospital", "$healthFacilityGovt"] } },
                     healthFacilityPvt: { $sum: { $add: ["$healthFacilityPvt", "$healthFacility"] } },

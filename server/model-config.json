@@ -196,7 +196,7 @@
     "dataSource": "MPDSRDB",
     "public": true
   },
-  "state-mdr-meeting": {
+  "state-mdr-meeting":{
     "dataSource": "MPDSRDB",
     "public": true
   },

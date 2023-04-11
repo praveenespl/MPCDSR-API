@@ -24,7 +24,7 @@ module.exports = function(Cdrform2) {
         }
         }
        
-	   console.log("dmatch : ",dmatch)
+
     let cursor = await Cdrform2Collection.aggregate(
       // Pipeline
       [
@@ -124,9 +124,7 @@ module.exports = function(Cdrform2) {
               injury: 1,
               other: 1
         }
-      }
-  
-    
+      }   
       ]
     ).toArray();
  

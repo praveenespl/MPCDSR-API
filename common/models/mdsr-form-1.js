@@ -3128,9 +3128,7 @@ module.exports = function (Mdsrform1) {
       const form4id = form5?.find(form4id => form4id.deceased_women_id_new.toString() === item.id.toString());
       const form6id = form6?.find(form6id => form6id.deceased_women_id_new.toString() === item.id.toString());
       if (found || form4id || form6id) {
-        console.log("---->found", found)
         const hours = Math.round((found.createdAt.getTime() - item.createdAt.getTime()) / 259200000);
-        console.log(hours)
         if (hours > 2) {
           delayedform5.push({ ...item, delayedBy: hours, formdate: found.createdAt, form5_id: found?.id, form4_id: form4id?.id, form6_id: form6id?.id })
         }
@@ -3143,7 +3141,7 @@ module.exports = function (Mdsrform1) {
       }
     }
 
-    if (type === "count") {
+    if (type==="count") {
       const obj = {
         "total": delayedform4.length + delayedform5.length,
         "delayform4": delayedform4.length,

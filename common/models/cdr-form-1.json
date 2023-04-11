@@ -92,10 +92,7 @@
       "type": "string"
     },
     "hospital_name": {
-      "type": {
-        "health_facility_name": "string",
-        "health_facility_primary_key_id": "number"
-      }
+      "type": "string"
     },
     "primary_informant_name": {
       "type": "string"

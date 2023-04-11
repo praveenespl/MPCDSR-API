@@ -2093,7 +2093,6 @@ module.exports = function (Mdsrform1) {
     }
   })
 
-  //END
 
   Mdsrform1.getPlaceOfDeath = async function (params) {
     const self = this;
@@ -2328,7 +2327,6 @@ module.exports = function (Mdsrform1) {
       verb: "get"
     }
   })
-  //END
 
   Mdsrform1.getPlaceOfDeathValues = async function (id, field) {
     const self = this;
@@ -2694,7 +2692,7 @@ module.exports = function (Mdsrform1) {
         }
       },
     };
-   
+
     let newGroup = {
       _id: groupId,
       districtcode: { "$first": "$districtcode" },
@@ -2714,7 +2712,7 @@ module.exports = function (Mdsrform1) {
       }
     }
     let _group
-    if (typeof(causes)===undefined) {
+    if (typeof (causes) === undefined) {
       _group = newGroup
     } else {
       _group = { ...group, _id: groupId }
@@ -2814,8 +2812,8 @@ module.exports = function (Mdsrform1) {
     function sumSameKeys(arr, excludeList) {
       let result = [];
       let map = {};
-    
-      arr.forEach(function(obj) {
+
+      arr.forEach(function (obj) {
         let id = obj._id;
         if (!map[id]) {
           map[id] = { _id: id };
@@ -2842,12 +2840,12 @@ module.exports = function (Mdsrform1) {
           }
         }
       });
-    
+
       return result;
     }
     const excludeList = ["districtcode", "statecode", "subdistrictcode"];
     let _arr = sumSameKeys(resultData, excludeList);
-    const arr= _arr.filter(c => c._id != null)
+    const arr = _arr.filter(c => c._id != null)
     var output = [{}];
 
 
@@ -2869,8 +2867,6 @@ module.exports = function (Mdsrform1) {
     return arr;
 
   }
-
-
 
   Mdsrform1.remoteMethod("getReportOfMaternalCauseOfdeaths", {
     "description": "",
@@ -2991,9 +2987,9 @@ module.exports = function (Mdsrform1) {
           { "other.cause_of_death.direct.category": "Chorioamnionitis without or with obstructed labour / prolonged labour" }
         ]
       })
-  
+
       const finalResult = cursor.concat(result)
-     
+
       if (cursor) {
         return finalResult;
       }
@@ -3054,14 +3050,14 @@ module.exports = function (Mdsrform1) {
         ]
       }
     }
- 
+
 
 
     let cursor = await Mdsrform4Collection.find({ where: where, data })
     let result = await Mdsrform5Collection.find({ where: where1, secondData })
 
     const finalResult = cursor.concat(result)
- 
+
     if (cursor) {
       return finalResult;
     }
@@ -3175,4 +3171,97 @@ module.exports = function (Mdsrform1) {
       verb: "get"
     }
   })
+
+  // api for SUMAN portal data
+  Mdsrform1.sumanData = async function (params) {
+    const mdsrForm1Connection = this.getDataSource().connector.collection(Mdsrform1.modelName);
+    try {
+      let { state_code, district_code, block_code, fromDate, toDate } = params;
+      let matchobj = {};
+      if (state_code) {
+        matchobj['state_id.statecode'] = state_code;
+      }
+      if (district_code) {
+        matchobj['district_id.districtcode'] = district_code
+      }
+      if (block_code) {
+        matchobj['block_id.subdistrictcode'] = block_code
+      }
+      if (fromDate && toDate) {
+        matchobj['death_date_time'] = { gte: fromDate, lte: toDate }
+      }
+      return await mdsrForm1Connection.aggregate(
+        [
+          {
+            "$match": matchobj
+          },
+          {
+            "$project": {
+              "_id": 0.0,
+              "name_of_mother": {
+                "$concat": [
+                  "$deceased_women_fname",
+                  " ",
+                  "$deceased_women_mname",
+                  " ",
+                  "$deceased_women_lname"
+                ]
+              },
+              "age_of_mother": "$age",
+              "husband_name": "$husband_name",
+              "state_code": "$state_id.statecode",
+              "district_code": "$district_id.districtcode",
+              "block": "$block_id.subdistrictname",
+              "village": "$village_name",
+              "panchayat": "",
+              "date_of_death": {
+                "$dateToString": {
+                  "format": "%Y-%m-%d",
+                  "date": "$death_date_time"
+                }
+              },
+              "time_of_death": {
+                "$dateToString": {
+                  "format": "%H:%M:%S",
+                  "date": "$death_date_time"
+                }
+              },
+              "name_of_responder": "$reporting_person",
+              "contact_no": "$reporting_person_mobile",
+              "address_of_responder": "$reporting_person_address"
+            }
+          },
+          {
+            "$sort": {
+              "state_code": 1.0,
+              "district_code": 1.0,
+              "block": 1.0
+            }
+          }
+        ]
+      ).toArray();
+    } catch (e) {
+      console.log(e)
+    }
+  };
+  Mdsrform1.remoteMethod('sumanData', {
+    description: 'get Data for Suman Portal',
+    accepts: [
+      {
+        arg: 'params',
+        type: 'object',
+        http: {
+          source: 'body'
+        }
+      }
+    ],
+    returns: {
+      root: true,
+      type: 'array'
+    },
+    http: {
+      verb: 'post'
+    }
+  });
+
 };

@@ -135,32 +135,31 @@ module.exports = function(Usermaster) {
 //----------------------------------------------
 
 Usermaster.changePasswordAPI = function(param, cb) {
-let params=param.updateObj;
     var self = this;
     var userLoginCollection = this.getDataSource().connector.collection(Usermaster.modelName);
 
-    if (params.userId === undefined || params.userId == "") {
+    if (param.id === undefined || param.id == "") {
         var err = new Error('User Id is undefined or empty');
         err.statusCode = 401;
         err.code = 'LOGIN_FAILED';
         return cb(err);
     }
 
-    if (params.oldPassword === undefined || params.oldPassword == "") {
+    if (param.oldPassword === undefined || param.oldPassword == "") {
         var err = new Error('Old Password is undefined or empty');
         err.statusCode = 401;
         err.code = 'LOGIN_FAILED';
         return cb(err);
     }
 
-    if (params.newPassword === undefined || params.newPassword == "") {
+    if (param.newPasswords === undefined || param.newPasswords == "") {
         var err = new Error('New Password is undefined or empty');
         err.statusCode = 401;
         err.code = 'LOGIN_FAILED';
         return cb(err);
     }
     let MAX_PASSWORD_LENGTH = 72;
-    let len = Buffer.byteLength(params.newPassword, 'utf8');
+    let len = Buffer.byteLength(param.newPasswords, 'utf8');
     if (len > MAX_PASSWORD_LENGTH) {
         err = new Error('The password entered was too long. Max length is ' + MAX_PASSWORD_LENGTH + '(entered ' + len + ')');
         err.code = 'PASSWORD_TOO_LONG';
@@ -168,20 +167,20 @@ let params=param.updateObj;
         return cb(err);
     }
 
-    this.findById(params.userId, function (err, user) {
+    this.findById(param.id, function (err, user) {
         if (err) {
             return cb(err);
         }
         if (!user) {
-            const err = new Error(`User ${params.userId} not found`);
+            const err = new Error(`User ${param.id} not found`);
             err.statusCode = 401;
             err.code = 'USER_NOT_FOUND';
             return cb(err);
         }
 
 
-        if (user.password && params.oldPassword) {
-            bcrypt.compare(params.oldPassword, user.password, function (err, isMatch) {
+        if (user.password && param.oldPassword) {
+            bcrypt.compare(param.oldPassword, user.password, function (err, isMatch) {
                 if (err) return cb(false, err);
                 if (!isMatch) {
                     var defaultError = new Error('Invalid Current Password');
@@ -190,18 +189,18 @@ let params=param.updateObj;
                     return cb(defaultError);
                 }
 
-                bcrypt.hash(params.newPassword, 10, function (err, hash) {
+                bcrypt.hash(param.newPasswords, 10, function (err, hash) {
                     if (err) {
                         return (err);
                     }
 
                     userLoginCollection.update({
-                        _id: ObjectId(params.userId)
+                        _id: ObjectId(param.id)
 
                     }, {
                             $set: {
                                 password: hash,
-                                viewPassword: params.newPassword,
+                                viewPassword: param.newPasswords,
                                 updatedAt: new Date()
                             }
                         },

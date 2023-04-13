@@ -18,8 +18,8 @@
     "villageversion": {
       "type": "number"
     },
-    "category":{
-      "type":"string"
+    "category": {
+      "type": "string"
     },
     "villagename": {
       "type": "string"
@@ -27,23 +27,23 @@
     "villagenamelocal": {
       "type": "string"
     },
-    "stateCode":{
-      "type":"number"
+    "stateCode": {
+      "type": "number"
     },
-    "stateName":{
-      "type":"string"
+    "stateName": {
+      "type": "string"
     },
-    "districtCode":{
-      "type":"string"
+    "districtCode": {
+      "type": "string"
     },
-    "districtName":{
-      "type":"string"
+    "districtName": {
+      "type": "string"
     },
     "subdistrictCode": {
       "type": "number"
     },
-    "subdistrictName":{
-      "type":"string"
+    "subdistrictName": {
+      "type": "string"
     },
     "census2001code": {
       "type": "number"

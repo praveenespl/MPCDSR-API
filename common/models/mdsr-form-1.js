@@ -3219,7 +3219,6 @@ module.exports = function (Mdsrform1) {
               "district_code": "$district_id.districtcode",
               "block": "$block_id.subdistrictname",
               "village": "$village_name",
-              "panchayat": "",
               "date_of_death": {
                 "$dateToString": {
                   "format": "%Y-%m-%d",

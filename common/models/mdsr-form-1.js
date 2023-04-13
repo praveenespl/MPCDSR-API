@@ -1,10 +1,7 @@
 'use strict';
-var async = require('async');
+const jwt = require('jsonwebtoken');
 var ObjectId = require('mongodb').ObjectID;
-// var { ObjectID } = require('loopback-connector-mongodb');
-const { STATES_CODES } = require('../../shared/states/state');
 const app = require("../../server/server");
-const { ObjectID } = require('loopback-connector-mongodb');
 module.exports = function (Mdsrform1) {
   Mdsrform1.observe('before save', async (ctx) => {
     if (ctx.isNewInstance) {
@@ -3172,8 +3169,19 @@ module.exports = function (Mdsrform1) {
 
   // api for SUMAN portal data
   Mdsrform1.sumanData = async function (params) {
-    const mdsrForm1Connection = this.getDataSource().connector.collection(Mdsrform1.modelName);
     try {
+    const secretKey = "97258185-7987-4c0d-91de-a93b01274ca5"
+      if (!params.token) {
+        const err = new Error('Unauthorized');
+        err.statusCode = 401;
+        err.code = "Unauthorized Request";
+        return err;
+      }else{
+        // verify the token using the secret key
+        const decoded = jwt.verify(params.token, secretKey);
+    if(decoded.authorized){
+    const mdsrForm1Connection = this.getDataSource().connector.collection(Mdsrform1.modelName);
+
       let { state_code, district_code, block_code, fromDate, toDate } = params;
       let matchobj = {};
       if (state_code) {
@@ -3238,8 +3246,16 @@ module.exports = function (Mdsrform1) {
           }
         ]
       ).toArray();
-    } catch (e) {
+    }
+  }
+ }catch (e) {
       console.log(e)
+      if(e.name==='JsonWebTokenError'){
+        const err = new Error('Forbidden');
+        err.statusCode = 403;
+        err.code = "Invalid token";
+        return err;
+      }
     }
   };
   Mdsrform1.remoteMethod('sumanData', {

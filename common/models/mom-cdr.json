@@ -1,0 +1,56 @@
+{
+  "name": "MOM_CDR",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "date": {
+      "type": "date"
+    },
+    "description": {
+      "type": "string"
+    },
+    "attachment_url": {
+      "type": "string"
+    },
+    "createdBy": {
+      "type": "string"
+    },
+    "state_id": {
+      "type": "string"
+    },
+    "district_id": {
+      "type": "string"
+    },
+    "block_id": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "state": {
+      "type": "belongsTo",
+      "model": "state",
+      "foreignKey": "user_state_id"
+    },
+    "district": {
+      "type": "belongsTo",
+      "model": "district",
+      "foreignKey": "user_district_id"
+    },
+    "block": {
+      "type": "belongsTo",
+      "model": "block",
+      "foreignKey": "user_block_id"
+    },
+    "createdBy": {
+      "type": "belongsTo",
+      "model": "usermaster",
+      "foreignKey": "createdBy"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

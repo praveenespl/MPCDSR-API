@@ -98,6 +98,9 @@
     },
     "usertype": {
       "type": "string"
+    },
+    "facilityInchargeName": {
+      "type": "string"
     }
   },
   "validations": [],

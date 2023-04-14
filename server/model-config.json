@@ -196,7 +196,7 @@
     "dataSource": "MPDSRDB",
     "public": true
   },
-  "state-mdr-meeting":{
+  "state-mdr-meeting": {
     "dataSource": "MPDSRDB",
     "public": true
   },
@@ -209,6 +209,10 @@
     "public": true
   },
   "MOM-DRUDCMs": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "orderDirectives": {
     "dataSource": "MPDSRDB",
     "public": true
   }

@@ -18,13 +18,16 @@
     "createdBy": {
       "type": "string"
     },
-    "state_id": {
+    "statecode": {
       "type": "string"
     },
-    "district_id": {
+    "statename": {
       "type": "string"
     },
-    "block_id": {
+    "districtcode": {
+      "type": "string"
+    },
+    "districtname": {
       "type": "string"
     }
   },

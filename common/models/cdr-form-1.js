@@ -1,4 +1,5 @@
 'use strict';
+const ObjectId = require('mongodb').ObjectId;
 var async = require('async');
 const {
     getCDRDeathAgeWiseDeath,
@@ -1141,8 +1142,6 @@ module.exports = function (Cdrform1) {
         }
     })
 
-
-
     Cdrform1.getFormStatusReport = async function (params) {
         try {
             if (params.statecode > 0) {
@@ -1309,7 +1308,7 @@ module.exports = function (Cdrform1) {
         }
     })
     Cdrform1.goiReport = async function (params) {
-        const { fromDate, toDate, accessUpto, districtcodes, statecodes, subdistrictcodes } = params;
+        const { fromDate, toDate, accessUpto, districtcodes, statecodes, subdistrictcodes,createdBy } = params;
 
         const where = {
             updatedAt: { $gte: new Date(fromDate), $lte: new Date(toDate) }
@@ -1329,6 +1328,7 @@ module.exports = function (Cdrform1) {
             // console.log("subdistrict")
             where["districtcode"] = { $in: districtcodes };
             where["subdistrictcode"] = { $in: subdistrictcodes };
+            where["createdBy"] = ObjectId(createdBy);
             var groupId = "$subdistrictcode"
         } else {
             var groupId = "$statecode"
@@ -1336,8 +1336,8 @@ module.exports = function (Cdrform1) {
 
         const self = this;
         const Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
-        //  console.log("--->",where)
-        //  console.log("-------->",groupId)
+          console.log("--->",where)
+          console.log("-------->",groupId)
         const res = await Cdrform1Collection.aggregate([
             {
                 $match: where

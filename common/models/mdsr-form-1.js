@@ -640,16 +640,16 @@ module.exports = function (Mdsrform1) {
                 "$cond": [
                   {
                     "$and": [
-                      {
-                        "$or": [
+                      // {
+                      //   "$or": [
                           {
                             "$eq": [
                               "$place_of_death",
                               "Health Facility"
                             ]
-                          }
-                        ]
-                      },
+                          },
+                      //   ]
+                      // },
                       {
                         "$eq": [
                           "$is_maternal_death",
@@ -1266,24 +1266,6 @@ module.exports = function (Mdsrform1) {
       }
     }
 
-    if (masterAPIArg.type == "getStates") {
-      const stateModel = app.models.state;
-      var results = await stateModel.find({});
-    } else if (masterAPIArg.type == "getDistricts") {
-      const districtModel = app.models.district;
-      var results = await districtModel.find({ where: { stateCode: masterAPIArg.statecode } });
-
-    } else if (masterAPIArg.type == "getSubDistricts") {
-      const subdistrictModel = app.models.subdistrict;
-      var results = await subdistrictModel.find({ where: { districtcode: masterAPIArg.districtcode } })
-
-    } else if (masterAPIArg.type == "getVillages") {
-
-      const villageModel = app.models.village;
-      var results = await villageModel.find({ where: { subdistrictCode: masterAPIArg.subdistrictcode } })
-
-    }
-
     let cursor = await Mdsrform1Collection.aggregate(
       // Pipeline
       [
@@ -1394,57 +1376,53 @@ module.exports = function (Mdsrform1) {
         }
       }
     ).toArray()
-
-    if (results) {
-      let data = [];
-      results.forEach((item, i) => {
-        let obj = {};
-        if (params.accessUpto == "National") {
-          const foundState = cursor.find(state => state.statecode === item.statecode);
-          obj = {
-            "category": item.statename,
-            "statecode": item.statecode,
-            "column-1": foundState ? foundState.whereFBMDSRConducted : 0,
-            "column-2": foundState ? foundState.whereCBMDSRConducted : 0,
-            "totalMDs": foundState ? foundState.totalMDs : 0,
-            "reported": foundState ? foundState.reported : 0
-          }
-        } else if (params.accessUpto == "State") {
-          const foundDistrict = cursor.find(district => district.districtcode === item.districtcode);
-          obj = {
-            "category": item.districtname,
-            "districtcode": item.districtcode,
-            //"statename":item.statename,
-            "column-1": foundDistrict ? foundDistrict.whereFBMDSRConducted : 0,
-            "column-2": foundDistrict ? foundDistrict.whereCBMDSRConducted : 0,
-            "totalMDs": foundDistrict ? foundDistrict.totalMDs : 0,
-            "reported": foundDistrict ? foundDistrict.reported : 0
-          }
-        } else if (params.accessUpto == "District") {
-          const foundSubDistrict = cursor.find(subdistrict => subdistrict.subdistrictcode === item.subdistrictcode);
-          obj = {
-            "category": item.subdistrictname,
-            "subdistrictcode": item.subdistrictcode,
-            "column-1": foundSubDistrict ? foundSubDistrict.whereFBMDSRConducted : 0,
-            "column-2": foundSubDistrict ? foundSubDistrict.whereCBMDSRConducted : 0,
-            "totalMDs": foundSubDistrict ? foundSubDistrict.totalMDs : 0,
-            "reported": foundSubDistrict ? foundSubDistrict.reported : 0
-          }
+    let response=[]
+     cursor.forEach((i)=>{
+      let obj={}
+      if (params.accessUpto === "National") {
+        obj = {
+          "category": i.statename,
+          "statecode": i.statecode,
+          "column-1": i.whereFBMDSRConducted,
+          "column-2": i.whereCBMDSRConducted ,
+          "totalMDs": i.totalMDs,
+          "reported": i.reported 
         }
-        data.push(obj);
-      });
-      if (params.accessUpto == "Block") {
-        let obj = {
-          "category": results.whereCBMDSRAndFBMDSRConducted.subdistrictname,
-          "column-1": results.whereCBMDSRAndFBMDSRConducted ? results.whereCBMDSRAndFBMDSRConducted.whereFBMDSRConducted : 0,
-          "column-2": results.whereCBMDSRAndFBMDSRConducted ? results.whereCBMDSRAndFBMDSRConducted.whereCBMDSRConducted : 0,
-          "totalMDs": results.totalMDs ? results.totalMDs : 0,
-          "reported": results.reported ? results.reported : 0
+        response.push(obj)
+      }else if (params.accessUpto == "State") {
+        obj = {
+          "category": i.districtname,
+          "districtcode": i.districtcode,
+          "column-1": i.whereFBMDSRConducted,
+          "column-2": i.whereCBMDSRConducted ,
+          "totalMDs": i.totalMDs,
+          "reported": i.reported 
         }
-        data.push(obj);
-      }
-      return data
+        response.push(obj)
+      }else if (params.accessUpto=="District"){
+        obj = {
+                  "category": i.subdistrictname,
+                  "subdistrictcode": i.subdistrictcode,
+                  "column-1": i.whereFBMDSRConducted,
+                  "column-2": i.whereCBMDSRConducted,
+                  "totalMDs": i.totalMDs,
+                  "reported": i.reported 
+                }
+        response.push(obj)
+      }else if(params.accessUpto == "Block"){
+        obj = {
+                "category": i.whereCBMDSRAndFBMDSRConducted.subdistrictname,
+                "column-1": i.whereCBMDSRAndFBMDSRConducted,
+                "column-2": i.whereCBMDSRAndFBMDSRConducted,
+                "totalMDs": i.totalMDs,
+                "reported": i.reported
+              }
+              data.push(obj);
+     }
     }
+     )
+     console.log(response)
+     return response
 
   }
 
@@ -1747,59 +1725,40 @@ module.exports = function (Mdsrform1) {
       is_maternal_death: 1,
       mdsrForm2: {
         $cond: {
-          if: {
-            $size: "$mdsrForm2"
-          },
-          then: {
-            $size: "$mdsrForm2"
-          },
+          if: { $gt: [{ $size: "$mdsrForm2" }, 0] },
+          then: 1,
           else: 0
         }
       },
       mdsrForm3: {
         $cond: {
-          if: {
-            $size: "$mdsrForm3"
-          },
-          then: {
-            $size: "$mdsrForm3"
-          },
+          if: { $gt: [{ $size: "$mdsrForm3" }, 0] },
+          then: 1,
           else: 0
         }
       },
       mdsrForm4: {
         $cond: {
-          if: {
-            $size: "$mdsrForm4"
-          },
-          then: {
-            $size: "$mdsrForm4"
-          },
+          if: { $gt: [{ $size: "$mdsrForm4" }, 0] },
+          then: 1,
           else: 0
         }
       },
       mdsrForm5: {
         $cond: {
-          if: {
-            $size: "$mdsrForm5"
-          },
-          then: {
-            $size: "$mdsrForm5"
-          },
+          if: { $gt: [{ $size: "$mdsrForm5" }, 0] },
+          then: 1,
           else: 0
         }
       },
-      mdsrForm6: {
+      mdsrForm6:{
         $cond: {
-          if: {
-            $size: "$mdsrForm6"
-          },
-          then: {
-            $size: "$mdsrForm6"
-          },
+          if: { $gt: [{ $size: "$mdsrForm6" }, 0] },
+          then: 1,
           else: 0
         }
       }
+      
     };
     let project2 = {
       _id: 0,
@@ -2069,7 +2028,6 @@ module.exports = function (Mdsrform1) {
         }
       }
     ).toArray()
-
     const results = { cbmdsrFormsStatus: cbmdsrFormsStatus, fbmdsrFormsStatus: fbmdsrFormsStatus }
     return results
   }
@@ -2715,7 +2673,6 @@ module.exports = function (Mdsrform1) {
       _group = { ...group, _id: groupId }
 
     }
-    console.log(_group)
     const form4data = await Mdsrform4Collection.aggregate(
       // Pipeline
       [
@@ -3248,7 +3205,7 @@ module.exports = function (Mdsrform1) {
     }
   }
  }catch (e) {
-      console.log(e)
+      // console.log(e)
       if(e.name==='JsonWebTokenError'){
         const err = new Error('Forbidden');
         err.statusCode = 403;

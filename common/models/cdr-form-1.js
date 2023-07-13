@@ -311,11 +311,13 @@ module.exports = function (Cdrform1) {
             masterAPIArg['type'] = "getStates";
             groupUnderscoreId = {
                 statecode: "$statecode",
+                statename:"$address.statename"
             }
             where['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
             project = {
                 _id: 0,
                 statecode: "$_id.statecode",
+                statename:"$_id.statename",
                 whereCBMDSRConducted: 1,
                 whereFBMDSRConducted: 1
             }
@@ -325,13 +327,14 @@ module.exports = function (Cdrform1) {
             where['statecode'] = params.where['statecode'];
             where['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
             groupUnderscoreId = {
-                statecode: "$statecode",
+                districtname: "$address.districtname",
                 districtcode: "$districtcode",
             }
             project = {
                 _id: 0,
                 statecode: "$_id.statecode",
                 districtcode: "$_id.districtcode",
+                districtname: "$_id.districtname",
                 whereCBMDSRConducted: 1,
                 whereFBMDSRConducted: 1
             }
@@ -342,10 +345,12 @@ module.exports = function (Cdrform1) {
             where['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
             groupUnderscoreId = {
                 subdistrictcode: "$subdistrictcode",
+                subdistrictname:"$address.subdistrictname"
             }
             project = {
                 _id: 0,
                 subdistrictcode: "$_id.subdistrictcode",
+                subdistrictname:"$_id.subdistrictname",
                 whereCBMDSRConducted: 1,
                 whereFBMDSRConducted: 1
             }
@@ -486,32 +491,32 @@ module.exports = function (Cdrform1) {
         ).toArray()
 
         let data = [];
-        master.forEach((item, i) => {
+        whereCBMDSRAndFBMDSRConducted.forEach((item, i) => {
             let obj = {};
             if (params.accessUpto == "National") {
-                const foundState = whereCBMDSRAndFBMDSRConducted.find(state => state.statecode === item.statecode);
+                // const foundState = whereCBMDSRAndFBMDSRConducted.find(state => state.statecode === item.statecode);
                 obj = {
                     "category": item.statename,
                     "statecode": item.statecode,
-                    "column-1": foundState ? foundState.whereFBMDSRConducted : 0,
-                    "column-2": foundState ? foundState.whereCBMDSRConducted : 0
+                    "column-1": item ? item.whereFBMDSRConducted : 0,
+                    "column-2": item ? item.whereCBMDSRConducted : 0
                 }
             } else if (params.accessUpto == "State") {
-                const foundDistrict = whereCBMDSRAndFBMDSRConducted.find(district => district.districtcode === item.districtcode);
+                // const foundDistrict = whereCBMDSRAndFBMDSRConducted.find(district => district.districtcode === item.districtcode);
                 obj = {
                     "category": item.districtname,
                     "districtcode": item.districtcode,
-                    //"statename":item.statename,
-                    "column-1": foundDistrict ? foundDistrict.whereFBMDSRConducted : 0,
-                    "column-2": foundDistrict ? foundDistrict.whereCBMDSRConducted : 0
+                    "districtname":item.statename,
+                    "column-1": item ? item.whereFBMDSRConducted : 0,
+                    "column-2": item ? item.whereCBMDSRConducted : 0
                 }
             } else if (params.accessUpto == "District") {
                 const foundSubDistrict = whereCBMDSRAndFBMDSRConducted.find(subdistrict => subdistrict.subdistrictcode === item.subdistrictcode);
                 obj = {
                     "category": item.subdistrictname,
                     "subdistrictcode": item.subdistrictcode,
-                    "column-1": foundSubDistrict ? foundSubDistrict.whereFBMDSRConducted : 0,
-                    "column-2": foundSubDistrict ? foundSubDistrict.whereCBMDSRConducted : 0
+                    "column-1": item ? item.whereFBMDSRConducted : 0,
+                    "column-2": item ? item.whereCBMDSRConducted : 0
                 }
             }
             data.push(obj);

@@ -1234,7 +1234,6 @@ module.exports = function (Mdsrform1) {
       if (subdistrictcodes && subdistrictcodes.length) {
         where["block_id.subdistrictcode"] = { $in: subdistrictcodes }
       }
-
       groupUnderscoreId = {
         subdistrictcode: "$block_id.subdistrictcode",
         subdistrictname: "$block_id.subdistrictname"

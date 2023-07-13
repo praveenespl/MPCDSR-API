@@ -755,8 +755,6 @@ module.exports = function (Cdrform1) {
                 {
                     $match: where1
                 },
-
-                // Stage 1
                 {
                     $lookup: {
                         "from": "cdr_form_2",

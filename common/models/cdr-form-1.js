@@ -404,7 +404,8 @@ module.exports = function (Cdrform1) {
         whereCBMDSRConducted: 1,
         whereFBMDSRConducted: 1,
       };
-    } else if (params.accessUpto == "District") {
+    }
+     else if (params.accessUpto == "District") {
       masterAPIArg["type"] = "getSubDistricts";
       masterAPIArg["districtcode"] = params.where["districtcode"];
       where["districtcode"] = params.where["districtcode"];
@@ -423,7 +424,8 @@ module.exports = function (Cdrform1) {
         whereCBMDSRConducted: 1,
         whereFBMDSRConducted: 1,
       };
-    } else if (params.accessUpto == "Block") {
+    }
+     else if (params.accessUpto == "Block") {
       where["block_id.subdistrictcode"] = params.where["subdistrictcode"];
       where["updatedAt"] = {
         $gte: new Date(params.previousYearFromDate),
@@ -458,7 +460,6 @@ module.exports = function (Cdrform1) {
         where: { subdistrictCode: masterAPIArg.subdistrictcode },
       });
     }
-
     let whereCBMDSRAndFBMDSRConducted = await Cdrform1Collection.aggregate(
       // Pipeline
       [
@@ -546,7 +547,7 @@ module.exports = function (Cdrform1) {
     whereCBMDSRAndFBMDSRConducted.forEach((item, i) => {
       let obj = {};
       if (params.accessUpto == "National") {
-        // const foundState = whereCBMDSRAndFBMDSRConducted.find(state => state.statecode === item.statecode);
+        //const foundState = whereCBMDSRAndFBMDSRConducted.find(state => state.statecode === item.statecode);
         obj = {
           category: item.statename,
           statecode: item.statecode,
@@ -658,9 +659,7 @@ module.exports = function (Cdrform1) {
           if: {
             $size: "$Form2",
           },
-          then: {
-            $size: "$Form2",
-          },
+          then: 1,
           else: 0,
         },
       },
@@ -669,9 +668,7 @@ module.exports = function (Cdrform1) {
           if: {
             $size: "$Form3A",
           },
-          then: {
-            $size: "$Form3A",
-          },
+          then: 1,
           else: 0,
         },
       },
@@ -680,9 +677,7 @@ module.exports = function (Cdrform1) {
           if: {
             $size: "$Form3B",
           },
-          then: {
-            $size: "$Form3B",
-          },
+          then: 1,
           else: 0,
         },
       },
@@ -691,9 +686,7 @@ module.exports = function (Cdrform1) {
           if: {
             $size: "$Form3C",
           },
-          then: {
-            $size: "$Form3C",
-          },
+          then: 1,
           else: 0,
         },
       },
@@ -742,7 +735,7 @@ module.exports = function (Cdrform1) {
       $in: [
         "Home",
         "In transit",
-        "Other",
+        "Other", 
         "Others/Private",
         "Health facility (Govt.)",
       ],
@@ -867,7 +860,7 @@ module.exports = function (Cdrform1) {
         {
           $project: project1CbCdr,
         },
-
+        
         // Stage 8
         {
           $group: {
@@ -879,6 +872,7 @@ module.exports = function (Cdrform1) {
             form3C: { $sum: "$form3C" },
           },
         },
+        
 
         // Stage 9
         {

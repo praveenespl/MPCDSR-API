@@ -162,7 +162,6 @@ module.exports = function (Cdrform1) {
   Cdrform1.getDashboardData = async function (params) {
     try {
       const self = this;
-
       const Cdrform1Collection = self
         .getDataSource()
         .connector.collection(Cdrform1.modelName);
@@ -233,7 +232,7 @@ module.exports = function (Cdrform1) {
         {
           $project: {
             count: 1,
-            ids: 1,
+            ids: 1, 
             totCBCDRDeath: {
               $size: {
                 $filter: {
@@ -325,10 +324,10 @@ module.exports = function (Cdrform1) {
 
       const res = [];
       res[0] = {
-        form3C: form3cData[0].form3cs ? form3cData[0].form3cs : 0,
-        form4A: form4aData[0].form4as ? form4aData[0].form4as : 0,
-        form4B: form4bData[0].form4bs ? form4bData[0].form4bs : 0,
-        totDeath: form1Data[0].count ? form1Data[0].count : 0,
+        form3C: form3cData[0]?.form3cs ? form3cData[0].form3cs : 0,
+        form4A: form4aData[0]?.form4as ? form4aData[0].form4as : 0,
+        form4B: form4bData[0]?.form4bs ? form4bData[0].form4bs : 0,
+        totDeath: form1Data[0]?.count ? form1Data[0].count : 0,
       };
       res[1] = {
         Form2: form2Data[0].count ? form2Data[0].count : 0,

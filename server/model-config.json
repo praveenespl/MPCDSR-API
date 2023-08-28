@@ -212,12 +212,15 @@
     "dataSource": "MPDSRDB",
     "public": true
   },
-
   "orderDirectives": {
-   "dataSource": "MPDSRDB",
+    "dataSource": "MPDSRDB",
     "public": true
   },
   "MOM_CDR": {
+    "dataSource": "MPDSRDB",
+    "public": true
+  },
+  "goi_report": {
     "dataSource": "MPDSRDB",
     "public": true
   }

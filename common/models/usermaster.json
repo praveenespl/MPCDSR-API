@@ -102,8 +102,8 @@
     "facilityInchargeName": {
       "type": "string"
     },
-    "diff_address_Status":{
-      "type":"boolean",
+    "diff_address_Status": {
+      "type": "boolean",
       "default": false
     }
   },

@@ -1,6 +1,6 @@
 "use strict";
 const ObjectId = require("mongodb").ObjectId;
-var async = require("async");
+
 const {
   getCDRDeathAgeWiseDeath,
   getCDRDeathAndVerifiedCount,
@@ -8,8 +8,153 @@ const {
 } = require("../utils/dashboardQueries");
 var app = require("../../server/server");
 const { ObjectID } = require("loopback-connector-mongodb");
-
+function daysCalculation(death, birth) {
+  const date1 = new Date(death);
+  const date2 = new Date(birth);
+  const Difference_In_Time = date1.getTime() - date2.getTime();
+  const days = Difference_In_Time / (1000 * 3600 * 24);
+  return days;
+}
 module.exports = function (Cdrform1) {
+  Cdrform1.observe("after save", async function (ctx) {
+    let update = {},data={};
+    if (ctx.isNewInstance) {
+      data = ctx.instance;
+    } else {
+      data = ctx.data;
+    }
+    if (data.sex == "Male" || data.sex == "male") {
+      update["Male"] = 1;
+      update["Female"] = 0;
+      update["Ambiguous"] = 0;
+    }
+    if (data.sex == "Female" || data.sex == "female") {
+      update["Female"] = 1;
+      update["Male"] = 0;
+      update["Ambiguous"] = 0;
+    }
+    if (data.sex == "Ambiguous" || data.sex == "ambiguous") {
+      update["Ambiguous"] = 1;
+      update["Male"] = 0;
+      update["Female"] = 0;
+    }
+    if (
+      daysCalculation(data.date_of_death, data.date_of_birth) >= 0 &&
+      daysCalculation(data.date_of_death, data.date_of_birth) <= 28
+    ) {
+      update["LessThanMonth"] = 1;
+      update["LessThanOneYear"] = 0;
+      update["LessThanFiveYear"] = 0;
+    }
+    if (
+      daysCalculation(data.date_of_death, data.date_of_birth) >= 29 &&
+      daysCalculation(data.date_of_death, data.date_of_birth) < 366
+    ) {
+      update["LessThanOneYear"] = 1;
+      update["LessThanMonth"] = 0;
+      update["LessThanFiveYear"] = 0;
+    }
+    if (
+      daysCalculation(data.date_of_death, data.date_of_birth) >= 366 &&
+      daysCalculation(data.date_of_death, data.date_of_birth) < 1827
+    ) {
+      update["LessThanFiveYear"] = 1;
+      update["LessThanMonth"] = 0;
+      update["LessThanOneYear"] = 0;
+    }
+    if (data.palce_of_death == "In transit") {
+      update["Others/Private"] = 0;
+      update["Home"] = 0;
+      update["InTransit"] = 1;
+      update["HealthFacility (Gov)"] = 0;
+      update["Hospital"] = 0;
+      update["HealthFacility"] = 0;
+    }
+    if (data.palce_of_death == "Home") {
+      update["Others/Private"] = 0;
+      update["Home"] = 1;
+      update["InTransit"] = 0;
+      update["HealthFacility (Gov)"] = 0;
+      update["Hospital"] = 0;
+      update["HealthFacility"] = 0;
+    }
+    if (data.palce_of_death == "Health facility") {
+      update["Others/Private"] = 0;
+      update["Home"] = 0;
+      update["InTransit"] = 0;
+      update["HealthFacility (Gov)"] = 0;
+      update["Hospital"] = 0;
+      update["HealthFacility"] = 1;
+    }
+    if (data.palce_of_death == "Hospital") {
+      update["Others/Private"] = 0;
+      update["Home"] = 0;
+      update["InTransit"] = 0;
+      update["HealthFacility (Gov)"] = 0;
+      update["Hospital"] = 1;
+      update["HealthFacility"] = 0;
+    }
+    if (data.palce_of_death == "Health facility (Govt.)") {
+      update["Others/Private"] = 1;
+      update["Home"] = 0;
+      update["InTransit"] = 0;
+      update["HealthFacility (Gov)"] = 1;
+      update["Hospital"] = 0;
+      update["HealthFacility"] = 0;
+    }
+    if (data.palce_of_death == "Others/Private") {
+      update["Others/Private"] = 1;
+      update["Home"] = 0;
+      update["InTransit"] = 0;
+      update["HealthFacility (Gov)"] = 0;
+      update["Hospital"] = 0;
+      update["HealthFacility"] = 0;
+    }
+    if (data.updatedAt) {
+      update["updatedAt"] = data.updatedAt;
+    }
+    if (data.createdAt) {
+      update["createdAt"] = data.createdAt;
+    }
+    if (data.statecode) {
+      update["statecode"] = data.statecode;
+    }
+    if (data.districtcode) {
+      update["districtcode"] = data.districtcode;
+    }
+    if (data.subdistrictcode) {
+      update["subdistrictcode"] = data.subdistrictcode;
+    }
+    if (data.date_of_birth) {
+      update["date_of_birth"] = data.date_of_birth;
+    }
+    if (data.date_of_death) {
+      update["date_of_death"] = data.date_of_death;
+    }
+    if (data.address.statename) {
+      update["statename"] = data.address.statename;
+    }
+    if (data.address.districtname) {
+      update["districtname"] = data.address.districtname;
+    }
+    if (data.address.subdistrictname) {
+      update["subdistrictname"] = data.address.subdistrictname;
+    }
+    if (data.id) {
+      update["cdr_id"] = ObjectId(data.id);
+    }
+    if (data) {
+      update["total"] = 1;
+    }
+    console.log("update",update)
+    const goiReportCollection = app.models.goi_report;
+    if (ctx.isNewInstance){
+      await goiReportCollection.create(update);
+    }else{
+      await goiReportCollection.update({cdr_id:ctx.where._id},update);
+    }
+  });
+
   Cdrform1.getCDRDeathAgeWise = async function (params) {
     const self = this;
 
@@ -404,8 +549,7 @@ module.exports = function (Cdrform1) {
         whereCBMDSRConducted: 1,
         whereFBMDSRConducted: 1,
       };
-    }
-     else if (params.accessUpto == "District") {
+    } else if (params.accessUpto == "District") {
       masterAPIArg["type"] = "getSubDistricts";
       masterAPIArg["districtcode"] = params.where["districtcode"];
       where["districtcode"] = params.where["districtcode"];
@@ -424,8 +568,7 @@ module.exports = function (Cdrform1) {
         whereCBMDSRConducted: 1,
         whereFBMDSRConducted: 1,
       };
-    }
-     else if (params.accessUpto == "Block") {
+    } else if (params.accessUpto == "Block") {
       where["block_id.subdistrictcode"] = params.where["subdistrictcode"];
       where["updatedAt"] = {
         $gte: new Date(params.previousYearFromDate),
@@ -735,7 +878,7 @@ module.exports = function (Cdrform1) {
       $in: [
         "Home",
         "In transit",
-        "Other", 
+        "Other",
         "Others/Private",
         "Health facility (Govt.)",
       ],
@@ -860,7 +1003,7 @@ module.exports = function (Cdrform1) {
         {
           $project: project1CbCdr,
         },
-        
+
         // Stage 8
         {
           $group: {
@@ -872,7 +1015,6 @@ module.exports = function (Cdrform1) {
             form3C: { $sum: "$form3C" },
           },
         },
-        
 
         // Stage 9
         {
@@ -1574,7 +1716,6 @@ module.exports = function (Cdrform1) {
     const {
       fromDate,
       toDate,
-      accessUpto,
       districtcodes,
       statecodes,
       subdistrictcodes,
@@ -1584,13 +1725,17 @@ module.exports = function (Cdrform1) {
     const where = {
       updatedAt: { $gte: new Date(fromDate), $lte: new Date(toDate) },
     };
-
+    const where2 = {
+      updatedAt: { $gte: new Date(fromDate), $lte: new Date(toDate) },
+      palce_of_death: { $in: ["Hospital", "Health facility"] },
+    };
     if (
       statecodes.length > 0 &&
       districtcodes.length === 0 &&
       subdistrictcodes.length === 0
     ) {
       where["statecode"] = { $in: statecodes };
+      where2["statecode"] = { $in: statecodes };
       var groupId = "$districtcode";
     } else if (
       districtcodes.length > 0 &&
@@ -1599,6 +1744,8 @@ module.exports = function (Cdrform1) {
     ) {
       where["statecode"] = { $in: statecodes };
       where["districtcode"] = { $in: districtcodes };
+      where2["statecode"] = { $in: statecodes };
+      where2["districtcode"] = { $in: districtcodes };
       var groupId = "$subdistrictcode";
     } else if (
       subdistrictcodes.length > 0 &&
@@ -1609,275 +1756,94 @@ module.exports = function (Cdrform1) {
       where["districtcode"] = { $in: districtcodes };
       where["subdistrictcode"] = { $in: subdistrictcodes };
       where["createdBy"] = ObjectId(createdBy);
+      where2["statecode"] = { $in: statecodes };
+      where2["districtcode"] = { $in: districtcodes };
+      where2["subdistrictcode"] = { $in: subdistrictcodes };
+      where2["createdBy"] = ObjectId(createdBy);
       var groupId = "$subdistrictcode";
     } else {
       var groupId = "$statecode";
     }
 
     const self = this;
-    const Cdrform1Collection = self
+    const goi_reportCollection = self
       .getDataSource()
-      .connector.collection(Cdrform1.modelName);
-    const res = await Cdrform1Collection.aggregate([
-      {
-        $match: where,
-      },
-      {
-        $lookup: {
-          from: "cdr_form_2",
-          localField: "_id",
-          foreignField: "cdr_id",
-          as: "Form2",
+      .connector.collection(app.models.goi_report.modelName);
+    const res = await goi_reportCollection
+      .aggregate([
+        {
+          $match: where,
         },
-      },
-      {
-        $unwind: {
-          path: "$Form2",
-          includeArrayIndex: "0",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-
-      {
-        $lookup: {
-          from: "cdr_form_4a",
-          localField: "_id",
-          foreignField: "cdr_id",
-          as: "form4a",
-        },
-      },
-      {
-        $unwind: {
-          path: "$form4a",
-          includeArrayIndex: "0",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-
-      {
-        $lookup: {
-          from: "cdr_form_4b",
-          localField: "_id",
-          foreignField: "cdr_id",
-          as: "form4b",
-        },
-      },
-      {
-        $unwind: {
-          path: "$form4b",
-          includeArrayIndex: "0",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-
-      {
-        $project: {
-          statecode: "$statecode",
-          districtcode: "$districtcode",
-          subdistrictcode: "$subdistrictcode",
-          statename: "$address.statename",
-          districtname: "$address.districtname",
-          subdistrictname: "$address.subdistrictname",
-          total: { $sum: 1 },
-          days: {
-            $divide: [
-              { $subtract: ["$date_of_death", "$date_of_birth"] },
-              86400000,
-            ],
-          },
-          lessThanMonth: {
-            $cond: [
-              {
-                $lte: [
-                  {
-                    $divide: [
-                      { $subtract: ["$date_of_death", "$date_of_birth"] },
-                      86400000,
-                    ],
-                  },
-                  28,
-                ],
-              },
-              1,
-              0,
-            ],
-          },
-          lessThanYear: {
-            $cond: [
-              {
-                $and: [
-                  {
-                    $gte: [
-                      {
-                        $divide: [
-                          { $subtract: ["$date_of_death", "$date_of_birth"] },
-                          86400000,
-                        ],
-                      },
-                      29,
-                    ],
-                  },
-                  {
-                    $lte: [
-                      {
-                        $divide: [
-                          { $subtract: ["$date_of_death", "$date_of_birth"] },
-                          86400000,
-                        ],
-                      },
-                      365,
-                    ],
-                  },
-                ],
-              },
-              1,
-              0,
-            ],
-          },
-          lessThanFiveYear: {
-            $cond: [
-              {
-                $and: [
-                  {
-                    $gte: [
-                      {
-                        $divide: [
-                          { $subtract: ["$date_of_death", "$date_of_birth"] },
-                          86400000,
-                        ],
-                      },
-                      366,
-                    ],
-                  },
-                  {
-                    $lte: [
-                      {
-                        $divide: [
-                          { $subtract: ["$date_of_death", "$date_of_birth"] },
-                          86400000,
-                        ],
-                      },
-                      1825,
-                    ],
-                  },
-                ],
-              },
-              1,
-              0,
-            ],
-          },
-          male: { $cond: [{ $eq: ["$sex", "Male"] }, 1, 0] },
-          ambiguous: { $cond: [{ $eq: ["$sex", "Ambiguous"] }, 1, 0] },
-          female: { $cond: [{ $eq: ["$sex", "Female"] }, 1, 0] },
-          home: { $cond: [{ $eq: ["$palce_of_death", "Home"] }, 1, 0] },
-          hospital: { $cond: [{ $eq: ["$palce_of_death", "Hospital"] }, 1, 0] },
-          healthFacilityGovt: {
-            $cond: [
-              { $eq: ["$palce_of_death", "Health facility (Govt.)"] },
-              1,
-              0,
-            ],
-          },
-          healthFacilityPvt: {
-            $cond: [{ $eq: ["$palce_of_death", "Others/Private"] }, 1, 0],
-          },
-          healthFacility: {
-            $cond: [{ $eq: ["$palce_of_death", "Health facility"] }, 1, 0],
-          },
-          inTransit: {
-            $cond: [{ $eq: ["$palce_of_death", "In transit"] }, 1, 0],
-          },
-          delayAtHome: {
-            $cond: [{ $eq: ["$Form2.sectionD.delay_at_home", true] }, 1, 0],
-          },
-          delayInTransportation: {
-            $cond: [
-              { $eq: ["$Form2.sectionD.delay_in_transportation", true] },
-              1,
-              0,
-            ],
-          },
-          delayAtFacility: {
-            $cond: [{ $eq: ["$Form2.sectionD.delay_at_facility", true] }, 1, 0],
-          },
-          general: {
-            $cond: [{ $eq: ["$Form2.sectionA.belongs_to", "General"] }, 1, 0],
-          },
-          generalone: {
-            $cond: [{ $eq: ["$form4a.sectionA.category", "General"] }, 1, 0],
-          },
-          generaltwo: {
-            $cond: [{ $eq: ["$form4b.sectionA.category", "General"] }, 1, 0],
-          },
-          sc: { $cond: [{ $eq: ["$Form2.sectionA.category", "SC"] }, 1, 0] },
-          scone: {
-            $cond: [{ $eq: ["$form4a.sectionA.category", "SC"] }, 1, 0],
-          },
-          sctwo: {
-            $cond: [{ $eq: ["$form4b.sectionA.category", "SC"] }, 1, 0],
-          },
-          st: { $cond: [{ $eq: ["$Form2.sectionA.belongs_to", "ST"] }, 1, 0] },
-          stone: {
-            $cond: [{ $eq: ["$form4a.sectionA.category", "ST"] }, 1, 0],
-          },
-          sttwo: {
-            $cond: [{ $eq: ["$form4b.sectionA.category", "ST"] }, 1, 0],
-          },
-          obc: {
-            $cond: [{ $eq: ["$Form2.sectionA.belongs_to", "OBC"] }, 1, 0],
-          },
-          obcone: {
-            $cond: [{ $eq: ["$form4a.sectionA.category", "OBC"] }, 1, 0],
-          },
-          obctwo: {
-            $cond: [{ $eq: ["$form4b.sectionA.category", "OBC"] }, 1, 0],
-          },
-          na: { $cond: [{ $eq: ["$Form2.sectionA.belongs_to", "NA"] }, 1, 0] },
-          naOne: {
-            $cond: [{ $eq: ["$form4a.sectionA.category", "Na"] }, 1, 0],
-          },
-          naTwo: {
-            $cond: [{ $eq: ["$form4b.sectionA.category", "NA"] }, 1, 0],
+        {
+          $group: {
+            _id: groupId,
+            statecode: { $first: "$statecode" },
+            districtcode: { $first: "$districtcode" },
+            subdistrictcode: { $first: "$subdistrictcode" },
+            statename: { $first: "$statename" },
+            districtname: { $first: "$districtname" },
+            subdistrictname: { $first: "$subdistrictname" },
+            lessThanMonth: { $sum: "$LessThanMonth" },
+            lessThanYear: { $sum: "$LessThanOneYear" },
+            lessThanFiveYear: { $sum: "$LessThanFiveYear" },
+            male: { $sum: "$Male" },
+            female: { $sum: "$Female" },
+            ambiguous: { $sum: "$Ambiguous" },
+            delayAtHome: { $sum: "$delayAtHome" },
+            delayAtFacility: { $sum: "$delayAtFacility" },
+            delayInTransportation: { $sum: "$delayInTransportation" },
+            home: { $sum: "$Home" },
+            healthFacilityGovt: { $sum: "$HealthFacility (Gov)" },
+            healthFacilityPvt: { $sum: "$Others/Private" },
+            inTransit: { $sum: "$InTransit" },
+            hospital: { $sum: "$Hospital" },
+            healthFacility: { $sum: "$HealthFacility" },
+            general: { $sum: "$General" },
+            sc: { $sum: "$SC" },
+            st: { $sum: "$ST" },
+            obc: { $sum: "$OBC" },
+            na: { $sum: "$NA" },
+            total: { $sum: "$total" },
+            fbcdrSC: { $sum: "$fbcdrSC" },
+            fbcdrST: { $sum: "$fbcdrST" },
+            fbcdrOBC: { $sum: "$fbcdrOBC" },
+            fbcdrGeneral: { $sum: "$fbcdrGeneral" },
+            fbcdrNA: { $sum: "$fbcdrNA" },
+            fbcdrMale: { $sum: "$fbcdrMale" },
+            fbcdrFemale: { $sum: "$fbcdrFemale" },
+            fbcdrAmbiguous: { $sum: "$fbcdrAmbiguous" },
+            fbcdrLessThanMonth: { $sum: "$fbcdrLessThanOneMonth" },
+            fbcdrLessThanYear: { $sum: "$fbcdrLessThanOneYear" },
+            fbcdrLessThanFiveYear: { $sum: "$fbcdrLessThanFiveYear" },
+            totalFbcdr: { $sum: "$totalFbcdr" },
+            cbcdrSC: { $sum: "$cbcdrSC" },
+            cbcdrST: { $sum: "$cbcdrST" },
+            cbcdrOBC: { $sum: "$cbcdrOBC" },
+            cbcdrGeneral: { $sum: "$cbcdrGeneral" },
+            cbcdrNA: { $sum: "$cbcdrNA" },
+            cbcdrMale: { $sum: "$cbcdrMale" },
+            cbcdrFemale: { $sum: "$cbcdrFemale" },
+            cbcdrAmbiguous: { $sum: "$cbcdrAmbiguous" },
+            cbcdrLessThanMonth: { $sum: "$cbcdrLessThanOneMonth" },
+            cbcdrLessThanYear: { $sum: "$cbcdrLessThanOneYear" },
+            cbcdrLessThanFiveYear: { $sum: "$cbcdrLessThanFiveYear" },
+            totalCbcdr: { $sum: "$totalCbcdr" },
+            autopsy_sc: { $sum: "$autopsy_sc" },
+            autopsy_st: { $sum: "$autopsy_st" },
+            autopsy_obc: { $sum: "$autopsy_obc" },
+            autopsy_general: { $sum: "$autopsy_general" },
+            autopsy_na: { $sum: "$autopsy_na" },
+            autopsy_male: { $sum: "$autopsy_male" },
+            autopsy_female: { $sum: "$autopsy_female" },
+            autopsy_ambiguous: { $sum: "$autopsy_ambiguous" },
+            autopsy_lessThanOneMonth: { $sum: "$autopsy_lessThanOneMonth" },
+            autopsy_lessThanOneYear: { $sum: "$autopsy_lessThanOneYear" },
+            autopsy_lessThanFiveYear: { $sum: "$autopsy_lessThanFiveYear" },
+            autopsy_total: { $sum: "$autopsy_total" },
           },
         },
-      },
-      {
-        $group: {
-          _id: groupId,
-          statecode: { $first: "$statecode" },
-          districtcode: { $first: "$districtcode" },
-          statename: { $first: "$statename" },
-          districtname: { $first: "$districtname" },
-          subdistrictname: { $first: "$subdistrictname" },
-          days: { $sum: "$days" },
-          lessThanMonth: { $sum: "$lessThanMonth" },
-          lessThanYear: { $sum: "$lessThanYear" },
-          lessThanFiveYear: { $sum: "$lessThanFiveYear" },
-          male: { $sum: "$male" },
-          female: { $sum: "$female" },
-          ambiguous: { $sum: "$ambiguous" },
-          delayAtHome: { $sum: "$delayAtHome" },
-          delayAtFacility: { $sum: "$delayAtFacility" },
-          delayInTransportation: { $sum: "$delayInTransportation" },
-          home: { $sum: "$home" },
-          healthFacilityGovt: {
-            $sum: { $add: ["$hospital", "$healthFacilityGovt"] },
-          },
-          healthFacilityPvt: {
-            $sum: { $add: ["$healthFacilityPvt", "$healthFacility"] },
-          },
-          inTransit: { $sum: "$inTransit" },
-          general: {
-            $sum: { $add: ["$general", "$generalone", "$generaltwo"] },
-          },
-          sc: { $sum: { $add: ["$sc", "$scone", "$sctwo"] } },
-          st: { $sum: { $add: ["$st", "$stone", "$sttwo"] } },
-          obc: { $sum: { $add: ["$obc", "$obcone", "$obctwo"] } },
-          na: { $sum: { $add: ["$na", "$naOne", "$naTwo"] } },
-          total: { $sum: 1 },
-        },
-      },
-    ]).toArray();
+      ])
+      .toArray();
     return res;
   };
   Cdrform1.remoteMethod("goiReport", {

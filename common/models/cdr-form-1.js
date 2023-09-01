@@ -1720,13 +1720,8 @@ module.exports = function (Cdrform1) {
       subdistrictcodes,
       createdBy,
     } = params;
-
     const where = {
       updatedAt: { $gte: new Date(fromDate), $lte: new Date(toDate) },
-    };
-    const where2 = {
-      updatedAt: { $gte: new Date(fromDate), $lte: new Date(toDate) },
-      palce_of_death: { $in: ["Hospital", "Health facility"] },
     };
     if (
       statecodes?.length > 0 &&
@@ -1734,7 +1729,6 @@ module.exports = function (Cdrform1) {
       subdistrictcodes?.length === 0
     ) {
       where["statecode"] = { $in: statecodes };
-      where2["statecode"] = { $in: statecodes };
       var groupId = "$districtcode";
     } else if (
       districtcodes?.length > 0 &&
@@ -1743,8 +1737,6 @@ module.exports = function (Cdrform1) {
     ) {
       where["statecode"] = { $in: statecodes };
       where["districtcode"] = { $in: districtcodes };
-      where2["statecode"] = { $in: statecodes };
-      where2["districtcode"] = { $in: districtcodes };
       var groupId = "$subdistrictcode";
     } else if (
       subdistrictcodes?.length > 0 &&
@@ -1755,10 +1747,6 @@ module.exports = function (Cdrform1) {
       where["districtcode"] = { $in: districtcodes };
       where["subdistrictcode"] = { $in: subdistrictcodes };
       where["createdBy"] = ObjectId(createdBy);
-      where2["statecode"] = { $in: statecodes };
-      where2["districtcode"] = { $in: districtcodes };
-      where2["subdistrictcode"] = { $in: subdistrictcodes };
-      where2["createdBy"] = ObjectId(createdBy);
       var groupId = "$subdistrictcode";
     } else {
       var groupId = "$statecode";

@@ -1729,17 +1729,17 @@ module.exports = function (Cdrform1) {
       palce_of_death: { $in: ["Hospital", "Health facility"] },
     };
     if (
-      statecodes.length > 0 &&
-      districtcodes.length === 0 &&
-      subdistrictcodes.length === 0
+      statecodes?.length > 0 &&
+      districtcodes?.length === 0 &&
+      subdistrictcodes?.length === 0
     ) {
       where["statecode"] = { $in: statecodes };
       where2["statecode"] = { $in: statecodes };
       var groupId = "$districtcode";
     } else if (
-      districtcodes.length > 0 &&
-      statecodes.length > 0 &&
-      subdistrictcodes.length === 0
+      districtcodes?.length > 0 &&
+      statecodes?.length > 0 &&
+      subdistrictcodes?.length === 0
     ) {
       where["statecode"] = { $in: statecodes };
       where["districtcode"] = { $in: districtcodes };
@@ -1747,9 +1747,9 @@ module.exports = function (Cdrform1) {
       where2["districtcode"] = { $in: districtcodes };
       var groupId = "$subdistrictcode";
     } else if (
-      subdistrictcodes.length > 0 &&
-      statecodes.length > 0 &&
-      districtcodes.length > 0
+      subdistrictcodes?.length > 0 &&
+      statecodes?.length > 0 &&
+      districtcodes?.length > 0
     ) {
       where["statecode"] = { $in: statecodes };
       where["districtcode"] = { $in: districtcodes };

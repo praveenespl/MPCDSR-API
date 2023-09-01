@@ -7,6 +7,7 @@ const {
   getCDRDeathForMapData,
 } = require("../utils/dashboardQueries");
 var app = require("../../server/server");
+const axios = require("axios");
 const { ObjectID } = require("loopback-connector-mongodb");
 function daysCalculation(death, birth) {
   const date1 = new Date(death);
@@ -15,9 +16,29 @@ function daysCalculation(death, birth) {
   const days = Difference_In_Time / (1000 * 3600 * 24);
   return days;
 }
+
+// fetch data from third party api
+const congif = {
+  headers: {
+    ApiKey: "40d1d2676e0cea032d9203a109edb116a3",
+  },
+};
+const getData = async () => {
+  try {
+    const res = await axios.get(
+      `https://sncuindiaonline.org/SNCUAPI/api/v1/patients_custom?date=01-02-2023`,
+      congif
+    );
+    return res.data.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
 module.exports = function (Cdrform1) {
   Cdrform1.observe("after save", async function (ctx) {
-    let update = {},data={};
+    let update = {},
+      data = {};
     if (ctx.isNewInstance) {
       data = ctx.instance;
     } else {
@@ -146,12 +167,11 @@ module.exports = function (Cdrform1) {
     if (data) {
       update["total"] = 1;
     }
-    console.log("update",update)
     const goiReportCollection = app.models.goi_report;
-    if (ctx.isNewInstance){
+    if (ctx.isNewInstance) {
       await goiReportCollection.create(update);
-    }else{
-      await goiReportCollection.update({cdr_id:ctx.where._id},update);
+    } else {
+      await goiReportCollection.update({ cdr_id: ctx.where._id }, update);
     }
   });
 
@@ -377,7 +397,7 @@ module.exports = function (Cdrform1) {
         {
           $project: {
             count: 1,
-            ids: 1, 
+            ids: 1,
             totCBCDRDeath: {
               $size: {
                 $filter: {
@@ -1846,7 +1866,6 @@ module.exports = function (Cdrform1) {
     return res;
   };
   Cdrform1.remoteMethod("goiReport", {
-    description: "",
     description: "goiReport",
     accepts: [
       {
@@ -1854,6 +1873,144 @@ module.exports = function (Cdrform1) {
         type: "object",
       },
     ],
+    returns: {
+      root: true,
+      type: "array",
+    },
+    http: {
+      verb: "get",
+    },
+  });
+
+  Cdrform1.getSnCUData = async function () {
+    const cdr_form1Collection = app.models.cdr_form_1;
+    const stateCollection = app.models.state;
+    const districtCollection = app.models.district;
+    try {
+      const sncuData = await getData();
+      let stateCode, districtCode;
+      sncuData?.map(async (record) => {
+        try {
+          const state = await stateCollection.find({});
+          const foundState = state.filter((x) => {
+            if (x.statename.toLowerCase() == record.sncu_state.toLowerCase()) {
+              return x;
+            }
+          });
+
+          if (foundState) {
+            stateCode = foundState[0]?.statecode;
+          }
+
+          const district = await districtCollection.find({
+            stateCode: Number(stateCode),
+          });
+          const foundDistrict = district.filter((x) => {
+            if (
+              x.districtname.toLowerCase() == record.sncu_district.toLowerCase()
+            ) {
+              return x;
+            }
+          });
+
+          if (foundDistrict) {
+            districtCode = foundDistrict[0]?.districtcode;
+          }
+         
+          //console.log("sncu_district "+record.sncu_district+" district "+foundDistrict[0]?.districtname)
+          if (districtCode) {
+            const new_form = {
+              notification_received_date: record?.admision_date,
+              notification_received_person_name:
+                record?.discharge_doctor_incharge,
+              name: record?.mother_name,
+              date_of_birth: record?.baby_date_of_birth,
+              createdBy: "",
+              age: record?.baby_age_admission_time,
+              sex:
+                record?.baby_sex == "M"
+                  ? "Male"
+                  : record?.baby_sex == "F"
+                  ? "Female"
+                  : "Ambiguous",
+              mother_name: record?.mother_name,
+              father_name: record?.father_name,
+              address: {
+                colony: "",
+                house_number: "",
+                pincode: "",
+                landmark: "",
+                statecode: stateCode,
+                statename: record?.sncu_state,
+                districtcode: districtCode,
+                districtname: record?.permanent_district,
+                subdistrictcode: record?.permanent_block_id,
+                subdistrictname: record?.permanent_block,
+                villagecode: record?.current_district_id,
+                villagename: record?.current_village,
+              },
+              sncu_address: {
+                colony: "",
+                house_number: "",
+                pincode: "",
+                landmark: "",
+                statecode: stateCode,
+                statename: record?.sncu_state,
+                districtcode: districtCode,
+                districtname: record?.current_district,
+                subdistrictcode: record?.current_block_id,
+                subdistrictname: record?.current_block,
+                villagecode: record?.current_district_id,
+                villagename: record?.current_village,
+              },
+              landline: "",
+              mobile: record?.contact_number1,
+              date_of_death: record?.discharge_modified_date,
+              palce_of_death: "Hospital",
+              actual_palce_of_death: "",
+              hospital_name: {
+                health_facility_name: record?.sncu_name,
+              },
+              primary_informant_name: record?.contact_name1,
+              time: record?.discharge_date,
+              date_of_notification: record?.discharge_date,
+              statecode: stateCode,
+              districtcode: districtCode,
+              subdistrictcode: "",
+              villagecode: "",
+              discharge_date: record?.discharge_date,
+              discharge_doctor_incharge_id:
+                record?.discharge_doctor_incharge_id,
+              sncu_surname: record?.surname,
+              sncu_category: record?.category,
+              sncu_baby_weight: record?.baby_weight_on_admission_kgs,
+              sncu_other_district_admission: record?.other_district_admission,
+              sncu_current_address: record?.current_address,
+              sncu_permanent_center_id: record?.permanent_center_id,
+              sncu_contact_relation1: record?.contact_relation1,
+              sncu_permanent_address: record?.permanent_address,
+              sncu_discharge_bcg: record?.discharge_bcg,
+              sncu_discharge_outcome: record?.discharge_outcome,
+              sncu_center_id: record?.sncu_center_id,
+              sncu_contact_name2: record?.contact_name2,
+              sncu_contact_number2: record?.contact_number2,
+              sncu_contact_relation2: record?.contact_relation2,
+            };
+           // console.log("first",new_form)
+            await cdr_form1Collection.create(new_form);           
+          }
+        } catch (error) {
+          console.log("error while adding record", error);
+        }
+      });
+      return sncuData;
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  Cdrform1.remoteMethod("getSnCUData", {
+    description: "Get SnCUData from third party API",
     returns: {
       root: true,
       type: "array",

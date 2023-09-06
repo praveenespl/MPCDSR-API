@@ -84,13 +84,16 @@
       "type": "string"
     },
     "user_state_id": {
-      "type": "string"
+      "statename": "string",
+      "statecode": "number"
     },
     "user_district_id": {
-      "type": "string"
+      "districtname": "string",
+      "districtcode": "number"
     },
     "user_block_id": {
-      "type": "string"
+      "subdistrictname": "string",
+      "subdistrictcode": "number"
     },
     "nin": {
       "type": "string",

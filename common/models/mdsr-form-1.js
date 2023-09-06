@@ -759,8 +759,6 @@ module.exports = function (Mdsrform1) {
     }
     const project = {
       _id: 0,
-      //month: "$_id.month",
-      //year: "$_id.year",
       abortion: 1,
       Hypertension: 1,
       sepsis: 1,
@@ -776,6 +774,7 @@ module.exports = function (Mdsrform1) {
       Enhephalitis: 1,
       OtherInDirectCauses: 1
     }
+
     const group = {
       _id: null,
       abortion: {
@@ -922,13 +921,12 @@ module.exports = function (Mdsrform1) {
           $project: {
             statecode: "$general_information.state.statecode",
             statename: "$general_information.state.statename",
-            //month: 1,
-            //year: 1,
             icd_category: "$cause_of_death.direct.category",
             icd_indirect_category: "$cause_of_death.indirect.category",
             icd_indirect_sub_category: '$cause_of_death.indirect.sub_category'
           }
         },
+       
 
         // Stage 3
         {
@@ -972,7 +970,7 @@ module.exports = function (Mdsrform1) {
             icd_indirect_sub_category: "$other.cause_of_death.indirect.sub_category"
           }
         },
-
+       
         // Stage 3
         {
           $group: group
@@ -1032,6 +1030,7 @@ module.exports = function (Mdsrform1) {
       }
     }
     data.push(obj);
+    console.log(obj)
     return data;
 
   }

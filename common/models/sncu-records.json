@@ -1,0 +1,212 @@
+{
+  "name": "sncu_records",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "notification_received_date": {
+      "type": "date"
+    },
+    "notification_received_person_name": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "date_of_birth": {
+      "type": "date"
+    },
+    "createdBy": {
+      "type": "string"
+    },
+    "age": {
+      "type": "string"
+    },
+    "sex": {
+      "type": "string"
+    },
+    "mother_name": {
+      "type": "string"
+    },
+    "father_name": {
+      "type": "string"
+    },
+    "address": {
+      "type": {
+        "colony": {
+          "type": "string"
+        },
+        "house_number": {
+          "type": "string"
+        },
+        "pincode": {
+          "type": "string"
+        },
+        "landmark": {
+          "type": "string"
+        },
+        "statecode": {
+          "type": "number"
+        },
+        "statename": {
+          "type": "string"
+        },
+        "districtcode": {
+          "type": "number"
+        },
+        "districtname": {
+          "type": "string"
+        },
+        "subdistrictcode": {
+          "type": "number"
+        },
+        "subdistrictname": {
+          "type": "string"
+        },
+        "villagecode": {
+          "type": "string"
+        },
+        "villagename": {
+          "type": "string"
+        }
+      }
+    },
+    "sncu_address": {
+      "type": {
+        "colony": {
+          "type": "string"
+        },
+        "house_number": {
+          "type": "string"
+        },
+        "pincode": {
+          "type": "string"
+        },
+        "landmark": {
+          "type": "string"
+        },
+        "statecode": {
+          "type": "number"
+        },
+        "statename": {
+          "type": "string"
+        },
+        "districtcode": {
+          "type": "number"
+        },
+        "districtname": {
+          "type": "string"
+        },
+        "subdistrictcode": {
+          "type": "number"
+        },
+        "subdistrictname": {
+          "type": "string"
+        },
+        "villagecode": {
+          "type": "string"
+        },
+        "villagename": {
+          "type": "string"
+        }
+      }
+    },
+    "landline": {
+      "type": "string"
+    },
+    "mobile": {
+      "type": "string"
+    },
+    "date_of_death": {
+      "type": "date"
+    },
+    "palce_of_death": {
+      "type": "string"
+    },
+    "actual_palce_of_death": {
+      "type": "string"
+    },
+    "hospital_name": {
+      "type": {
+        "health_facility_name": {
+          "type": "string"
+        }
+      }
+    },
+    "primary_informant_name": {
+      "type": "string"
+    },
+    "time": {
+      "type": "date"
+    },
+    "date_of_notification": {
+      "type": "date"
+    },
+    "statecode": {
+      "type": "number"
+    },
+    "districtcode": {
+      "type": "number"
+    },
+    "subdistrictcode": {
+      "type": "number"
+    },
+    "villagecode": {
+      "type": "number"
+    },
+    "discharge_date": {
+      "type": "date"
+    },
+    "discharge_doctor_incharge_id": {
+      "type": "string"
+    },
+    "sncu_surname": {
+      "type": "string"
+    },
+    "sncu_category": {
+      "type": "string"
+    },
+    "sncu_baby_weight": {
+      "type": "string"
+    },
+    "sncu_other_district_admission": {
+      "type": "string"
+    },
+    "sncu_current_address": {
+      "type": "string"
+    },
+    "sncu_permanent_center_id": {
+      "type": "string"
+    },
+    "sncu_contact_relation1": {
+      "type": "string"
+    },
+    "sncu_permanent_address": {
+      "type": "string"
+    },
+    "sncu_discharge_bcg": {
+      "type": "string"
+    },
+    "sncu_discharge_outcome": {
+      "type": "string"
+    },
+    "sncu_center_id": {
+      "type": "string"
+    },
+    "sncu_contact_name2": {
+      "type": "string"
+    },
+    "sncu_contact_number2": {
+      "type": "string"
+    },
+    "sncu_contact_relation2": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

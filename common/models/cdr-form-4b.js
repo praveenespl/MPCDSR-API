@@ -9,13 +9,30 @@ function daysCalculation(death, birth) {
 }
 
 module.exports = function (Cdrform4b) {
+  Cdrform4b.observe("before save", async function (ctx) {
+    const data = ctx.instance;
+    const cdrForm4BCollectoin = app.models.cdr_form_4b;
+    const newRecord = await cdrForm4BCollectoin.find({
+      where: {
+        cdr_id: new ObjectID(data.cdr_id)
+      }
+    });
+
+    if (newRecord.length > 0) {
+      let err = new Error('This Record already exists!');
+      err.statusCode = 402;
+      throw err
+    }
+    return;
+  });
+
   Cdrform4b.observe("after save", async function (ctx) {
     let update = {},
       data = {};
     if (ctx.isNewInstance) {
       data = ctx.instance;
     } else {
-      data = ctx.data;
+      data = ctx.instance;
     }
     if (
       data.sectionA.category == "General" ||

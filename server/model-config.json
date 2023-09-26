@@ -223,5 +223,9 @@
   "goi_report": {
     "dataSource": "MPDSRDB",
     "public": true
+  },
+  "sncu_records": {
+    "dataSource": "MPDSRDB",
+    "public": true
   }
 }

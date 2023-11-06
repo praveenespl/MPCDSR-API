@@ -1030,7 +1030,7 @@ module.exports = function (Mdsrform1) {
       }
     }
     data.push(obj);
-  //  console.log(obj)
+    //  console.log(obj)
     return data;
 
   }
@@ -3231,5 +3231,228 @@ module.exports = function (Mdsrform1) {
       verb: 'post'
     }
   });
+
+  Mdsrform1.userLoginCountsInSpecificDuration = async function (params) {
+    var userMasterCollection = this.getDataSource().connector.collection(app.models.Usermaster.modelName);
+    const stateModel = app.models.state;
+    const districtModel = app.models.district;
+    const subdistrictModel = app.models.subdistrict;
+    const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode, } = params;
+    let masterAPiArg = {}, masterAPiGroup = {}, match = {};
+    match['usertype'] = 'MDSR';
+
+    if (accessUpto === 'National') {
+      masterAPiArg['type'] = 'getState';
+      masterAPiGroup = {
+        statecode: "$statecode",
+        statename: "$statename"
+      }
+    }
+    else if (accessUpto === 'State') {
+      match = {
+        "user_state_id.statecode": statecode,
+        "user_state_id.statename": statename
+      };
+      masterAPiArg['type'] = 'getDistrict';
+      masterAPiGroup = {
+        districtname: "$districtname",
+        districtcode: "$districtcode"
+      }
+    }
+    else if (accessUpto === 'District') {
+      match = {
+        "user_state_id.statecode": statecode,
+        "user_state_id.statename": statename,
+        "user_district_id.districtname": districtname,
+        "user_district_id.districtcode": districtcode
+      };
+      masterAPiArg['type'] = 'getSubDistricts';
+      masterAPiGroup = {
+        subdistrictcode: "$subdistrictcode",
+        subdistrictname: "$subdistrictname"
+      }
+    }
+    else if (accessUpto === 'Block') {
+      match = {
+        "user_state_id.statecode": statecode,
+        "user_state_id.statename": statename,
+        "user_district_id.districtname": districtname,
+        "user_district_id.districtcode": districtcode,
+        "user_block_id.subdistrictcode": subdistrictcode
+      };
+      masterAPiGroup = {
+        subdistrictcode: "$subdistrictcode"
+      }
+    }
+
+    try {
+      const response = await userMasterCollection.aggregate([
+        {
+          $match: match
+        },
+        {
+          $lookup: {
+            from: "logininfo",
+            localField: "_id",
+            foreignField: "user_id",
+            as: "loginInfo"
+          }
+        },
+        {
+          $match: {
+            "loginInfo": { "$ne": [] }
+          }
+        },
+        {
+          $addFields: {
+            dateRange: {
+              $dateFromString: {
+                dateString: {
+                  $dateToString: {
+                    format: "%Y-%m-%dT%H:%M:%S.%LZ",
+                    date: {
+                      $subtract: [new Date(), 60 * 24 * 60 * 60 * 1000]
+                    }
+                  }
+                }
+              }
+            },
+          }
+        },
+        {
+          $project: {
+            statecode: "$user_state_id.statecode",
+            statename: "$user_state_id.statename",
+            districtname: "$user_district_id.districtname",
+            districtcode: "$user_district_id.districtcode",
+            subdistrictcode: "$user_block_id.subdistrictcode",
+            subdistrictname: "$user_block_id.subdistrictname",
+            facilityLogin: { $cond: [{ $eq: ["$designation", "FNO"] }, 1, 0] },
+            blockLogin: { $cond: [{ $eq: ["$designation", "BMO"] }, 1, 0] },
+            facility_active: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "FNO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 2] }
+                ]
+              }, 1, 0]
+            },
+            block_active: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "BMO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 2] }
+                ]
+              }, 1, 0]
+            },
+            facility_30days: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "FNO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 30] }
+                ]
+              }, 1, 0]
+            },
+            block_30days: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "BMO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 30] }
+                ]
+              }, 1, 0]
+            },
+            facility_60days: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "FNO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 60] }
+                ]
+              }, 1, 0]
+            },
+            block_60days: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "BMO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 60] }
+                ]
+              }, 1, 0]
+            },
+          }
+        },
+        {
+          $group: {
+            _id: masterAPiGroup,
+            facilityLogin: { $sum: "$facilityLogin" },
+            blockLogin:{$sum:"$blockLogin"},
+            facility_active: { $sum: "$facility_active" },
+            block_active: { $sum: "$block_active" },
+            facility_30days: { $sum: "$facility_30days" },
+            block_30days: { $sum: "$block_30days" },
+            facility_60days: { $sum: "$facility_60days" },
+            block_60days: { $sum: "$block_60days" }
+          }
+        }
+      ],
+        {
+          allowDiskUse: true
+        }
+      ).toArray();
+
+     // console.log("response", response.length);
+
+      const data = [];
+      for (const item of response) {
+        let record = {
+          facilityLogin: item.facilityLogin,
+          blockLogin:item.blockLogin,
+          facility_active: item.facility_active,
+          block_active: item.block_active,
+          facility_30days: item.facility_30days,
+          block_30days: item.block_30days,
+          facility_60days: item.facility_60days,
+          block_60days: item.block_60days
+        }
+        if (masterAPiArg.type === 'getState') {
+          const steteInfo = await stateModel.findOne({ where: { statecode: item?._id?.statecode, statename: item?._id?.statename } });
+          if (steteInfo) {
+            data.push({ ...record, name: steteInfo.statename });
+          }
+        }
+        else if (masterAPiArg.type === 'getDistrict') {
+          const districtInfo = await districtModel.findOne({ where: { districtcode: item?._id?.districtcode, districtname: item?._id?.districtname } });
+          if (districtInfo) {
+            data.push({ ...record, name: districtInfo?.districtname });
+          }
+        }
+        else if (masterAPiArg.type === 'getSubDistricts') {
+          const blockInfo = await subdistrictModel.findOne({ where: { subdistrictcode: item?._id?.subdistrictcode, subdistrictname: item?._id?.subdistrictname } });
+          if (blockInfo) {
+            data.push({ ...record, name: blockInfo?.subdistrictname });
+          }
+        }
+      }
+      return data;
+    } catch (error) {
+      console.log("error ", error);
+      throw error;
+    }
+  }
+
+  Mdsrform1.remoteMethod('userLoginCountsInSpecificDuration', {
+    description: 'get users login count for last 30 and 60 days',
+    accepts: [
+      {
+        arg: "params",
+        type: "object",
+      },
+    ],
+    returns: {
+      root: true,
+      type: "array",
+    },
+    http: {
+      verb: "get",
+    },
+  })
 
 };

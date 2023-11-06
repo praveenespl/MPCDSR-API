@@ -3240,6 +3240,7 @@ module.exports = function (Mdsrform1) {
     const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode, } = params;
     let masterAPiArg = {}, masterAPiGroup = {}, match = {};
     match['usertype'] = 'MDSR';
+    match['designation'] = { $in: ['BMO', 'FNO'] };
 
     if (accessUpto === 'National') {
       masterAPiArg['type'] = 'getState';
@@ -3415,19 +3416,24 @@ module.exports = function (Mdsrform1) {
         if (masterAPiArg.type === 'getState') {
           const steteInfo = await stateModel.findOne({ where: { statecode: item?._id?.statecode, statename: item?._id?.statename } });
           if (steteInfo) {
-            data.push({ ...record, name: steteInfo.statename });
+            data.push({ ...record, statename: steteInfo.statename,statecode:steteInfo.statecode });
           }
         }
         else if (masterAPiArg.type === 'getDistrict') {
           const districtInfo = await districtModel.findOne({ where: { districtcode: item?._id?.districtcode, districtname: item?._id?.districtname } });
           if (districtInfo) {
-            data.push({ ...record, name: districtInfo?.districtname });
+            data.push({
+              ...record, districtname: districtInfo?.districtname, districtcode: districtInfo?.districtcode,
+            statename: districtInfo?.stateName,statecode:districtInfo?.stateCode});
           }
         }
         else if (masterAPiArg.type === 'getSubDistricts') {
           const blockInfo = await subdistrictModel.findOne({ where: { subdistrictcode: item?._id?.subdistrictcode, subdistrictname: item?._id?.subdistrictname } });
           if (blockInfo) {
-            data.push({ ...record, name: blockInfo?.subdistrictname });
+            data.push({
+              ...record, subdistrictname: blockInfo?.subdistrictname, subdistrictcode: blockInfo?.subdistrictcode,
+              statename: blockInfo?.statename, statecode: blockInfo?.statecode,
+              districtname: blockInfo?.districtname,districtcode:blockInfo?.districtcode});
           }
         }
       }

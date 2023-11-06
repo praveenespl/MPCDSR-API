@@ -59,7 +59,7 @@ module.exports = function (Cdrform1) {
           createdBy: new ObjectID(data.createdBy)
         }
       });
-      if (newRecord.length>0) {
+      if (newRecord.length > 0) {
         let err = new Error('This Record already exists!');
         err.statusCode = 402;
         throw err
@@ -803,6 +803,7 @@ module.exports = function (Cdrform1) {
   });
 
   Cdrform1.getNotificationDetails = async function (params) {
+    console.log("params", params)
     var self = this;
     var Cdrform1Collection = self
       .getDataSource()

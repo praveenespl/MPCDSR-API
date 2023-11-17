@@ -35,6 +35,8 @@ module.exports = function (Cdrform2) {
       data = {};
     if (ctx.isNewInstance) {
       data = ctx.instance;
+    } else if (ctx.instance) {
+      data = ctx.instance;
     } else {
       data = ctx.instance;
     }
@@ -184,6 +186,7 @@ module.exports = function (Cdrform2) {
       update["cbcdrLessThanOneYear"] = 0;
       update["cbcdrLessThanFiveYear"] = 1;
     }
+
     const goiReportCollection = app.models.goi_report;
     await goiReportCollection.update({ cdr_id: data.cdr_id }, update);
   });

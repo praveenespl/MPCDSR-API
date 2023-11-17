@@ -1,4 +1,5 @@
 "use strict";
+const { ObjectID } = require("loopback-connector-mongodb");
 const app = require("../../server/server");
 
 function daysCalculation(death, birth) {
@@ -10,7 +11,26 @@ function daysCalculation(death, birth) {
 }
 
 module.exports = function (Cdrform2) {
+  Cdrform2.observe("before save", async function (ctx) {
+    const data = ctx.instance;
+    const cdrFormTwoCollectoin = app.models.cdr_form_2;
+    const newRecord = await cdrFormTwoCollectoin.find({
+      where: {
+        cdr_id: new ObjectID(data.cdr_id)
+      }
+    });
+
+    if (newRecord.length > 0) {
+      let err = new Error('This Record already exists!');
+      err.statusCode = 402;
+      throw err
+    }
+    return;
+  });
+
+  
   Cdrform2.observe("after save", async function (ctx) {
+    //console.log(ctx)
     let update = {},
       data = {};
     if (ctx.isNewInstance) {
@@ -18,7 +38,7 @@ module.exports = function (Cdrform2) {
     } else if (ctx.instance) {
       data = ctx.instance;
     } else {
-      data = ctx.data;
+      data = ctx.instance;
     }
     if (data.sectionD.delay_in_transportation) {
       update["delayInTransportation"] = 1;
@@ -166,7 +186,7 @@ module.exports = function (Cdrform2) {
       update["cbcdrLessThanOneYear"] = 0;
       update["cbcdrLessThanFiveYear"] = 1;
     }
-    console.log("update", update);
+
     const goiReportCollection = app.models.goi_report;
     await goiReportCollection.update({ cdr_id: data.cdr_id }, update);
   });

@@ -36,13 +36,46 @@ const getData = async () => {
 };
 
 module.exports = function (Cdrform1) {
+  Cdrform1.observe("before save", async function (ctx) {
+    const cdrFormOneCollectoin = app.models.cdr_form_1;
+    if (ctx.isNewInstance) {
+      const data = ctx.instance;
+      const newRecord = await cdrFormOneCollectoin.find({
+        where: {
+          notification_received_date: data.notification_received_date,
+          notification_received_person_name: data.notification_received_person_name,
+          date_of_birth: data.date_of_birth,
+          name: data.name,
+          mother_name: data.mother_name,
+          sex: data.sex,
+          age: data.age,
+          date_of_death: data.date_of_death,
+          subdistrictcode: data.subdistrictcode,
+          districtcodes: data.districtcode,
+          statecode: data.statecode,
+          palce_of_death: data.palce_of_death,
+          primary_informant_name: data.primary_informant_name,
+          first_informant_type: data.first_informant_type,
+          createdBy: new ObjectID(data.createdBy)
+        }
+      });
+      if (newRecord.length > 0) {
+        let err = new Error('This Record already exists!');
+        err.statusCode = 402;
+        throw err
+      }
+      return;
+    }
+  });
+
   Cdrform1.observe("after save", async function (ctx) {
+    //console.log(ctx)
     let update = {},
       data = {};
     if (ctx.isNewInstance) {
       data = ctx.instance;
     } else {
-      data = ctx.data;
+      data = ctx.instance;
     }
     if (data.sex == "Male" || data.sex == "male") {
       update["Male"] = 1;
@@ -171,7 +204,7 @@ module.exports = function (Cdrform1) {
     if (ctx.isNewInstance) {
       await goiReportCollection.create(update);
     } else {
-      await goiReportCollection.update({ cdr_id: ctx.where._id }, update);
+      await goiReportCollection.update({ cdr_id: ctx.instance.id }, update);
     }
   });
 
@@ -770,6 +803,7 @@ module.exports = function (Cdrform1) {
   });
 
   Cdrform1.getNotificationDetails = async function (params) {
+    console.log("params", params)
     var self = this;
     var Cdrform1Collection = self
       .getDataSource()

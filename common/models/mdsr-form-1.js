@@ -642,12 +642,12 @@ module.exports = function (Mdsrform1) {
                     "$and": [
                       // {
                       //   "$or": [
-                          {
-                            "$eq": [
-                              "$place_of_death",
-                              "Health Facility"
-                            ]
-                          },
+                      {
+                        "$eq": [
+                          "$place_of_death",
+                          "Health Facility"
+                        ]
+                      },
                       //   ]
                       // },
                       {
@@ -925,7 +925,7 @@ module.exports = function (Mdsrform1) {
             icd_indirect_sub_category: '$cause_of_death.indirect.sub_category'
           }
         },
-       
+
 
         // Stage 3
         {
@@ -969,7 +969,7 @@ module.exports = function (Mdsrform1) {
             icd_indirect_sub_category: "$other.cause_of_death.indirect.sub_category"
           }
         },
-       
+
         // Stage 3
         {
           $group: group
@@ -1029,7 +1029,7 @@ module.exports = function (Mdsrform1) {
       }
     }
     data.push(obj);
-    console.log(obj)
+    //  console.log(obj)
     return data;
 
   }
@@ -1373,40 +1373,40 @@ module.exports = function (Mdsrform1) {
         }
       }
     ).toArray()
-    let response=[]
-     cursor.forEach((i)=>{
-      let obj={}
+    let response = []
+    cursor.forEach((i) => {
+      let obj = {}
       if (params.accessUpto === "National") {
         obj = {
           "category": i.statename,
           "statecode": i.statecode,
           "column-1": i.whereFBMDSRConducted,
-          "column-2": i.whereCBMDSRConducted ,
+          "column-2": i.whereCBMDSRConducted,
           "totalMDs": i.totalMDs,
-          "reported": i.reported 
+          "reported": i.reported
         }
         response.push(obj)
-      }else if (params.accessUpto == "State") {
+      } else if (params.accessUpto == "State") {
         obj = {
           "category": i.districtname,
           "districtcode": i.districtcode,
           "column-1": i.whereFBMDSRConducted,
-          "column-2": i.whereCBMDSRConducted ,
+          "column-2": i.whereCBMDSRConducted,
           "totalMDs": i.totalMDs,
-          "reported": i.reported 
+          "reported": i.reported
         }
         response.push(obj)
-      }else if (params.accessUpto=="District"){
+      } else if (params.accessUpto == "District") {
         obj = {
-                  "category": i.subdistrictname,
-                  "subdistrictcode": i.subdistrictcode,
-                  "column-1": i.whereFBMDSRConducted,
-                  "column-2": i.whereCBMDSRConducted,
-                  "totalMDs": i.totalMDs,
-                  "reported": i.reported 
-                }
+          "category": i.subdistrictname,
+          "subdistrictcode": i.subdistrictcode,
+          "column-1": i.whereFBMDSRConducted,
+          "column-2": i.whereCBMDSRConducted,
+          "totalMDs": i.totalMDs,
+          "reported": i.reported
+        }
         response.push(obj)
-      }else if(params.accessUpto == "Block"){
+      } else if (params.accessUpto == "Block") {
         obj = {
                 "category": i.subdistrictname,
                 "subdistrictcode": i.subdistrictcode,
@@ -1420,6 +1420,7 @@ module.exports = function (Mdsrform1) {
     }
      )
      return response
+
 
   }
 
@@ -1748,14 +1749,14 @@ module.exports = function (Mdsrform1) {
           else: 0
         }
       },
-      mdsrForm6:{
+      mdsrForm6: {
         $cond: {
           if: { $gt: [{ $size: "$mdsrForm6" }, 0] },
           then: 1,
           else: 0
         }
       }
-      
+
     };
     let project2 = {
       _id: 0,
@@ -2955,7 +2956,7 @@ module.exports = function (Mdsrform1) {
 
     } else if (type === "HIV_AIDS") {
 
-      where["cause_of_death.indirect.sub_category"] = "HIV / AIDS"
+      where["cause_of_death.indirect.sub_category"] = "HIV / AIDS" 
       where1["other.cause_of_death.indirect.sub_category"] = "HIV / AIDS"
 
     } else if (type === "H1N1ViralDisease") {
@@ -3044,7 +3045,7 @@ module.exports = function (Mdsrform1) {
       matchObj["district_id.districtcode"] = districtcodes
 
     } else if (accessUpto === 'Block') {
-      matchObj["created_by"] = ObjectId(userId);
+      matchObj["created_by"] = ObjectId(userId); 
     }
     const data = await Mdsrform1.find({ where: matchObj });
     const uid = []
@@ -3070,7 +3071,7 @@ module.exports = function (Mdsrform1) {
         if (time > 2) {
           delayedform4.push({ ...item, delayedBy: time, formdate: new Date(), form4_id: "", form5_id: "", form6_id: "" })
         }
-      }
+      } 
     }
     const delayedform5 = [];
     for (const item of data) {
@@ -3091,7 +3092,7 @@ module.exports = function (Mdsrform1) {
       }
     }
 
-    if (type==="count") {
+    if (type === "count") {
       const obj = {
         "total": delayedform4.length + delayedform5.length,
         "delayform4": delayedform4.length,
@@ -3123,86 +3124,86 @@ module.exports = function (Mdsrform1) {
   // api for SUMAN portal data
   Mdsrform1.sumanData = async function (params) {
     try {
-    const secretKey = "97258185-7987-4c0d-91de-a93b01274ca5"
+      const secretKey = "97258185-7987-4c0d-91de-a93b01274ca5"
       if (!params.token) {
         const err = new Error('Unauthorized');
         err.statusCode = 401;
         err.code = "Unauthorized Request";
         return err;
-      }else{
+      } else {
         // verify the token using the secret key
         const decoded = jwt.verify(params.token, secretKey);
-    if(decoded.authorized){
-    const mdsrForm1Connection = this.getDataSource().connector.collection(Mdsrform1.modelName);
+        if (decoded.authorized) {
+          const mdsrForm1Connection = this.getDataSource().connector.collection(Mdsrform1.modelName);
 
-      let { state_code, district_code, block_code, fromDate, toDate } = params;
-      let matchobj = {};
-      if (state_code) {
-        matchobj['state_id.statecode'] = state_code;
-      }
-      if (district_code) {
-        matchobj['district_id.districtcode'] = district_code
-      }
-      if (block_code) {
-        matchobj['block_id.subdistrictcode'] = block_code
-      }
-      if (fromDate && toDate) {
-        matchobj['death_date_time'] = { gte: fromDate, lte: toDate }
-      }
-      return await mdsrForm1Connection.aggregate(
-        [
-          {
-            "$match": matchobj
-          },
-          {
-            "$project": {
-              "_id": 0.0,
-              "name_of_mother": {
-                "$concat": [
-                  "$deceased_women_fname",
-                  " ",
-                  "$deceased_women_mname",
-                  " ",
-                  "$deceased_women_lname"
-                ]
-              },
-              "age_of_mother": "$age",
-              "husband_name": "$husband_name",
-              "state_code": "$state_id.statecode",
-              "district_code": "$district_id.districtcode",
-              "block": "$block_id.subdistrictname",
-              "village": "$village_name",
-              "date_of_death": {
-                "$dateToString": {
-                  "format": "%Y-%m-%d",
-                  "date": "$death_date_time"
-                }
-              },
-              "time_of_death": {
-                "$dateToString": {
-                  "format": "%H:%M:%S",
-                  "date": "$death_date_time"
-                }
-              },
-              "name_of_responder": "$reporting_person",
-              "contact_no": "$reporting_person_mobile",
-              "address_of_responder": "$reporting_person_address"
-            }
-          },
-          {
-            "$sort": {
-              "state_code": 1.0,
-              "district_code": 1.0,
-              "block": 1.0
-            }
+          let { state_code, district_code, block_code, fromDate, toDate } = params;
+          let matchobj = {};
+          if (state_code) {
+            matchobj['state_id.statecode'] = state_code;
           }
-        ]
-      ).toArray();
-    }
-  }
- }catch (e) {
+          if (district_code) {
+            matchobj['district_id.districtcode'] = district_code
+          }
+          if (block_code) {
+            matchobj['block_id.subdistrictcode'] = block_code
+          }
+          if (fromDate && toDate) {
+            matchobj['death_date_time'] = { gte: fromDate, lte: toDate }
+          }
+          return await mdsrForm1Connection.aggregate(
+            [
+              {
+                "$match": matchobj
+              },
+              {
+                "$project": {
+                  "_id": 0.0,
+                  "name_of_mother": {
+                    "$concat": [
+                      "$deceased_women_fname",
+                      " ",
+                      "$deceased_women_mname",
+                      " ",
+                      "$deceased_women_lname"
+                    ]
+                  },
+                  "age_of_mother": "$age",
+                  "husband_name": "$husband_name",
+                  "state_code": "$state_id.statecode",
+                  "district_code": "$district_id.districtcode",
+                  "block": "$block_id.subdistrictname",
+                  "village": "$village_name",
+                  "date_of_death": {
+                    "$dateToString": {
+                      "format": "%Y-%m-%d",
+                      "date": "$death_date_time"
+                    }
+                  },
+                  "time_of_death": {
+                    "$dateToString": {
+                      "format": "%H:%M:%S",
+                      "date": "$death_date_time"
+                    }
+                  },
+                  "name_of_responder": "$reporting_person",
+                  "contact_no": "$reporting_person_mobile",
+                  "address_of_responder": "$reporting_person_address"
+                }
+              },
+              {
+                "$sort": {
+                  "state_code": 1.0,
+                  "district_code": 1.0,
+                  "block": 1.0
+                }
+              }
+            ]
+          ).toArray();
+        }
+      }
+    } catch (e) {
       // console.log(e)
-      if(e.name==='JsonWebTokenError'){
+      if (e.name === 'JsonWebTokenError') {
         const err = new Error('Forbidden');
         err.statusCode = 403;
         err.code = "Invalid token";
@@ -3229,5 +3230,234 @@ module.exports = function (Mdsrform1) {
       verb: 'post'
     }
   });
+
+  Mdsrform1.userLoginCountsInSpecificDuration = async function (params) {
+    console.log("params=====>",params);
+    var userMasterCollection = this.getDataSource().connector.collection(app.models.Usermaster.modelName);
+    const stateModel = app.models.state;
+    const districtModel = app.models.district;
+    const subdistrictModel = app.models.subdistrict;
+    const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode,subdistrictname } = params;
+    let masterAPiArg = {}, masterAPiGroup = {}, match = {};
+    match['usertype'] = 'MDSR';
+    match['designation'] = { $in: ['BMO', 'FNO'] };
+    if (accessUpto === 'National') {
+      masterAPiArg['type'] = 'getState';
+      masterAPiGroup = {
+        statecode: "$statecode",
+        //statename: "$statename"
+      }
+    }
+    else if (accessUpto === 'State') {
+      match = {
+        "user_state_id.statecode": {$in:statecode},
+        //"user_state_id.statename": statename  
+      };
+      masterAPiArg['type'] = 'getDistrict';
+      masterAPiGroup = {
+        //districtname: "$districtname",
+        districtcode: "$districtcode"
+      }
+    }
+    else if (accessUpto === 'District') {
+      match = {
+        "user_state_id.statecode": {$in:statecode},
+        "user_state_id.statename": statename,
+        //"user_district_id.districtname": districtname,
+        "user_district_id.districtcode": {$in:districtcode}
+      };
+      masterAPiArg['type'] = 'getSubDistricts';
+      masterAPiGroup = {
+        subdistrictcode: "$subdistrictcode",
+        //subdistrictname: "$subdistrictname"
+      }
+    }
+    else if (accessUpto === 'Block') {
+      match = {
+        "user_state_id.statecode": {$in:statecode},
+        //"user_state_id.statename": statename,
+        //"user_district_id.districtname": districtname,
+        "user_district_id.districtcode": {$in:districtcode},
+        "user_block_id.subdistrictcode": {$in:subdistrictcode},
+       // "user_block_id.subdistrictname": subdistrictname
+      };
+      masterAPiGroup = {
+        subdistrictcode: "$subdistrictcode"
+      }
+    }
+    try {
+      const response = await userMasterCollection.aggregate([
+        {
+          $match: match
+        },
+        {
+          $lookup: {
+            from: "logininfo",
+            localField: "_id",
+            foreignField: "user_id", 
+            as: "loginInfo"
+          }
+        }, 
+        {
+          $match: {
+            "loginInfo": { "$ne": [] }
+          }
+        },
+        {
+          $addFields: {
+            dateRange: {
+              $dateFromString: {
+                dateString: {
+                  $dateToString: {
+                    format: "%Y-%m-%dT%H:%M:%S.%LZ",
+                    date: {
+                      $subtract: [new Date(), 60 * 24 * 60 * 60 * 1000]
+                    }
+                  }
+                }
+              }
+            },
+          }
+        },
+        {
+          $project: {
+            statecode: "$user_state_id.statecode",
+            statename: "$user_state_id.statename",
+            districtname: "$user_district_id.districtname",
+            districtcode: "$user_district_id.districtcode",
+            subdistrictcode: "$user_block_id.subdistrictcode",
+            subdistrictname: "$user_block_id.subdistrictname",
+            facilityLogin: { $cond: [{ $eq: ["$designation", "FNO"] }, 1, 0] },
+            blockLogin: { $cond: [{ $eq: ["$designation", "BMO"] }, 1, 0] },
+            facility_active: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "FNO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 2] }
+                ]
+              }, 1, 0]
+            },
+            block_active: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "BMO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 2] }
+                ]
+              }, 1, 0]
+            },
+            facility_30days: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "FNO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 30] }
+                ]
+              }, 1, 0]
+            },
+            block_30days: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "BMO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 30] }
+                ]
+              }, 1, 0]
+            },
+            facility_60days: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "FNO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 60] }
+                ]
+              }, 1, 0]
+            },
+            block_60days: {
+              $cond: [{
+                $and: [{ $eq: ["$designation", "BMO"] },
+                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
+                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 60] }
+                ]
+              }, 1, 0]
+            },
+          }
+        },
+        {
+          $group: {
+            _id: masterAPiGroup,
+            facilityLogin: { $sum: "$facilityLogin" },
+            blockLogin:{$sum:"$blockLogin"},
+            facility_active: { $sum: "$facility_active" },
+            block_active: { $sum: "$block_active" },
+            facility_30days: { $sum: "$facility_30days" },
+            block_30days: { $sum: "$block_30days" },
+            facility_60days: { $sum: "$facility_60days" },
+            block_60days: { $sum: "$block_60days" }
+          }
+        }
+      ],
+        {
+          allowDiskUse: true
+        }
+      ).toArray();
+
+     // console.log("response", response.length);
+
+      const data = [];
+      for (const item of response) {
+        let record = {
+          facilityLogin: item.facilityLogin,
+          blockLogin:item.blockLogin,
+          facility_active: item.facility_active,
+          block_active: item.block_active,
+          facility_30days: item.facility_30days,
+          block_30days: item.block_30days,
+          facility_60days: item.facility_60days,
+          block_60days: item.block_60days
+        }
+        if (masterAPiArg.type === 'getState') {
+          const steteInfo = await stateModel.findOne({ where: { statecode: item?._id?.statecode, statename: item?._id?.statename } });
+          if (steteInfo) {
+            data.push({ ...record, statename: steteInfo.statename,statecode:steteInfo.statecode });
+          }
+        }
+        else if (masterAPiArg.type === 'getDistrict') {
+          const districtInfo = await districtModel.findOne({ where: { districtcode: item?._id?.districtcode, districtname: item?._id?.districtname } });
+          if (districtInfo) {
+            data.push({
+              ...record, districtname: districtInfo?.districtname, districtcode: districtInfo?.districtcode,
+            statename: districtInfo?.stateName,statecode:districtInfo?.stateCode});
+          }
+        }
+        else if (masterAPiArg.type === 'getSubDistricts') {
+          const blockInfo = await subdistrictModel.findOne({ where: { subdistrictcode: item?._id?.subdistrictcode, subdistrictname: item?._id?.subdistrictname } });
+          if (blockInfo) {
+            data.push({
+              ...record, subdistrictname: blockInfo?.subdistrictname, subdistrictcode: blockInfo?.subdistrictcode,
+              statename: blockInfo?.statename, statecode: blockInfo?.statecode,
+              districtname: blockInfo?.districtname,districtcode:blockInfo?.districtcode});
+          }
+        }
+      }
+      return data;
+    } catch (error) {
+      console.log("error ", error);
+      throw error;
+    }
+  }
+
+  Mdsrform1.remoteMethod('userLoginCountsInSpecificDuration', {
+    description: 'get users login count for last 30 and 60 days',
+    accepts: [
+      {
+        arg: "params",
+        type: "object",
+      },
+    ],
+    returns: {
+      root: true,
+      type: "array",
+    },
+    http: {
+      verb: "get",
+    },
+  })
 
 };

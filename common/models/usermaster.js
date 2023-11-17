@@ -1,8 +1,6 @@
 'use strict';
-
-var os = require( 'os' );
-var ip = require('ip');
 var ObjectId = require('mongodb').ObjectID;
+const app = require("../../server/server");
 
 var bcrypt;
 try {
@@ -16,9 +14,9 @@ try {
   // Fall back to pure JS impl
   bcrypt = require('bcryptjs');
 }
-module.exports = function(Usermaster) {
+module.exports = function (Usermaster) {
   //calling remote method after login
-  Usermaster.afterRemote('login', function(context, loginObj, next) {
+  Usermaster.afterRemote('login', function (context, loginObj, next) {
     console.log('Turning off the engine, removing the key.');
     //console.log(context.instance);
     //console.log("Value is");
@@ -28,16 +26,17 @@ module.exports = function(Usermaster) {
 
     //console.log( "Network ",networkInterfaces );
     let loginInfoObj = {
-      user_id:loginObj.id,
-      login_time:new Date()
+      user_id: loginObj.id,
+      login_time: new Date()
     }
-    Usermaster.app.models.Logininfo.create(loginInfoObj,function(err,result){
+    Usermaster.app.models.Logininfo.create(loginInfoObj, function (err, result) {
 
       next();
     })
   });
+
   //login method
-  Usermaster.login = function(credentials, include, cb) {
+  Usermaster.login = function (credentials, include, cb) {
     var self = this;
     // console.log("credentials--", credentials);
     //let credentials = credentials.options;
@@ -61,15 +60,15 @@ module.exports = function(Usermaster) {
       },
       include: [{
         relation: 'useraccess'
-      },{
+      }, {
         relation: 'state'
-      },{
+      }, {
         relation: 'district'
-      },{
+      }, {
         relation: 'block'
       }]
 
-    }, function(err, user) {
+    }, function (err, user) {
       if (err) {
         // console.log(err);
         return cb(err);
@@ -88,7 +87,7 @@ module.exports = function(Usermaster) {
       }
 
       if (user.useridactive) {
-        bcrypt.compare(credentials.password, user.password, function(err, isMatch) {
+        bcrypt.compare(credentials.password, user.password, function (err, isMatch) {
           if (err) {
             // console.log(err);
             return cb(err);
@@ -100,7 +99,7 @@ module.exports = function(Usermaster) {
             return cb(defaultError);
           } else {
             let accesstokens = [];
-            user.createAccessToken(86400, function(err, token) {
+            user.createAccessToken(86400, function (err, token) {
               if (err)
                 return cb(err);
 
@@ -111,7 +110,7 @@ module.exports = function(Usermaster) {
               user.accessToken = accesstokens[0];
 
 
-              self.app.models.AccessToken.replaceOrCreate(accesstokens, function(err, updatedAccessToken) {
+              self.app.models.AccessToken.replaceOrCreate(accesstokens, function (err, updatedAccessToken) {
                 if (err) {
                   console.log(err);
                 }
@@ -132,107 +131,105 @@ module.exports = function(Usermaster) {
     })
   }
 
-//----------------------------------------------
-
-Usermaster.changePasswordAPI = function(param, cb) {
+  //chnage password
+  Usermaster.changePasswordAPI = function (param, cb) {
     var self = this;
     var userLoginCollection = this.getDataSource().connector.collection(Usermaster.modelName);
 
     if (param.id === undefined || param.id == "") {
-        var err = new Error('User Id is undefined or empty');
-        err.statusCode = 401;
-        err.code = 'LOGIN_FAILED';
-        return cb(err);
+      var err = new Error('User Id is undefined or empty');
+      err.statusCode = 401;
+      err.code = 'LOGIN_FAILED';
+      return cb(err);
     }
 
     if (param.oldPassword === undefined || param.oldPassword == "") {
-        var err = new Error('Old Password is undefined or empty');
-        err.statusCode = 401;
-        err.code = 'LOGIN_FAILED';
-        return cb(err);
+      var err = new Error('Old Password is undefined or empty');
+      err.statusCode = 401;
+      err.code = 'LOGIN_FAILED';
+      return cb(err);
     }
 
     if (param.newPasswords === undefined || param.newPasswords == "") {
-        var err = new Error('New Password is undefined or empty');
-        err.statusCode = 401;
-        err.code = 'LOGIN_FAILED';
-        return cb(err);
+      var err = new Error('New Password is undefined or empty');
+      err.statusCode = 401;
+      err.code = 'LOGIN_FAILED';
+      return cb(err);
     }
     let MAX_PASSWORD_LENGTH = 72;
     let len = Buffer.byteLength(param.newPasswords, 'utf8');
     if (len > MAX_PASSWORD_LENGTH) {
-        err = new Error('The password entered was too long. Max length is ' + MAX_PASSWORD_LENGTH + '(entered ' + len + ')');
-        err.code = 'PASSWORD_TOO_LONG';
-        err.statusCode = 422;
-        return cb(err);
+      err = new Error('The password entered was too long. Max length is ' + MAX_PASSWORD_LENGTH + '(entered ' + len + ')');
+      err.code = 'PASSWORD_TOO_LONG';
+      err.statusCode = 422;
+      return cb(err);
     }
 
     this.findById(param.id, function (err, user) {
-        if (err) {
-            return cb(err);
-        }
-        if (!user) {
-            const err = new Error(`User ${param.id} not found`);
-            err.statusCode = 401;
-            err.code = 'USER_NOT_FOUND';
-            return cb(err);
-        }
+      if (err) {
+        return cb(err);
+      }
+      if (!user) {
+        const err = new Error(`User ${param.id} not found`);
+        err.statusCode = 401;
+        err.code = 'USER_NOT_FOUND';
+        return cb(err);
+      }
 
 
-        if (user.password && param.oldPassword) {
-            bcrypt.compare(param.oldPassword, user.password, function (err, isMatch) {
-                if (err) return cb(false, err);
-                if (!isMatch) {
-                    var defaultError = new Error('Invalid Current Password');
-                    defaultError.statusCode = 401;
-                    defaultError.code = 'INVALID_PASSWORD';
-                    return cb(defaultError);
+      if (user.password && param.oldPassword) {
+        bcrypt.compare(param.oldPassword, user.password, function (err, isMatch) {
+          if (err) return cb(false, err);
+          if (!isMatch) {
+            var defaultError = new Error('Invalid Current Password');
+            defaultError.statusCode = 401;
+            defaultError.code = 'INVALID_PASSWORD';
+            return cb(defaultError);
+          }
+
+          bcrypt.hash(param.newPasswords, 10, function (err, hash) {
+            if (err) {
+              return (err);
+            }
+
+            userLoginCollection.update({
+              _id: ObjectId(param.id)
+
+            }, {
+              $set: {
+                password: hash,
+                viewPassword: param.newPasswords,
+                updatedAt: new Date()
+              }
+            },
+              function (err, result) {
+                if (err) {
+                  return err;
                 }
-
-                bcrypt.hash(param.newPasswords, 10, function (err, hash) {
-                    if (err) {
-                        return (err);
-                    }
-
-                    userLoginCollection.update({
-                        _id: ObjectId(param.id)
-
-                    }, {
-                            $set: {
-                                password: hash,
-                                viewPassword: param.newPasswords,
-                                updatedAt: new Date()
-                            }
-                        },
-                        function (err, result) {
-                            if (err) {
-                                return err;
-                            }
-                            return cb(false, result.result.n)
-                        });
-                });
-            });
-        } else {
-            return cb(false, false)
-        }
+                return cb(false, result.result.n)
+              });
+          });
+        });
+      } else {
+        return cb(false, false)
+      }
     });
   }
-
   Usermaster.remoteMethod(
     'changePasswordAPI', {
-        description: 'Change User\'s Password - User Defined API',
-        accepts: [{ 
-            arg: 'params',
-            type: 'object',
-            http: { source: 'body' }
-        }],
-        returns: {
-            root: true,
-            type: 'object'
-        },
-        http: {
-            verb: 'post'
-        }
+    description: 'Change User\'s Password - User Defined API',
+    accepts: [{
+      arg: 'params',
+      type: 'object',
+      http: { source: 'body' }
+    }],
+    returns: {
+      root: true,
+      type: 'object'
+    },
+    http: {
+      verb: 'post'
     }
-)
+  }
+  )
 };

@@ -7,7 +7,7 @@ const {
   getCDRDeathForMapData,
 } = require("../utils/dashboardQueries");
 var app = require("../../server/server");
-const axios = require("axios");
+// const axios = require("axios");
 const { ObjectID } = require("loopback-connector-mongodb");
 function daysCalculation(death, birth) {
   const date1 = new Date(death);
@@ -2039,6 +2039,38 @@ module.exports = function (Cdrform1) {
     },
     http: {
       verb: "get",
+    },
+  });
+
+  Cdrform1.getCDRForm1Deaths = async function (params) {
+    const data = JSON.parse(params.params);
+    try {
+      const finalResult = await this.find(data);
+      return finalResult;
+    } catch (err) {
+      // Handle errors appropriately
+      return err;
+    }
+  };
+
+  Cdrform1.remoteMethod("getCDRForm1Deaths", {
+    description: "Get the CDR form 1 death",
+    accepts: [
+      {
+        arg: "params",
+        type: "object",
+        require: true,
+        http: {
+          source: "body",
+        },
+      },
+    ],
+    returns: {
+      root: true,
+      type: "array",
+    },
+    http: {
+      verb: "post",
     },
   });
 };

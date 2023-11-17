@@ -7,7 +7,7 @@ const {
   getCDRDeathForMapData,
 } = require("../utils/dashboardQueries");
 var app = require("../../server/server");
-const axios = require("axios");
+// const axios = require("axios");
 const { ObjectID } = require("loopback-connector-mongodb");
 function daysCalculation(death, birth) {
   const date1 = new Date(death);
@@ -1904,7 +1904,7 @@ module.exports = function (Cdrform1) {
           if (foundDistrict) {
             districtCode = foundDistrict[0]?.districtcode;
           }
-         
+
           //console.log("sncu_district "+record.sncu_district+" district "+foundDistrict[0]?.districtname)
           if (districtCode) {
             const new_form = {
@@ -1919,8 +1919,8 @@ module.exports = function (Cdrform1) {
                 record?.baby_sex == "M"
                   ? "Male"
                   : record?.baby_sex == "F"
-                  ? "Female"
-                  : "Ambiguous",
+                    ? "Female"
+                    : "Ambiguous",
               mother_name: record?.mother_name,
               father_name: record?.father_name,
               address: {
@@ -1984,8 +1984,8 @@ module.exports = function (Cdrform1) {
               sncu_contact_number2: record?.contact_number2,
               sncu_contact_relation2: record?.contact_relation2,
             };
-           // console.log("first",new_form)
-            await cdr_form1Collection.create(new_form);           
+            // console.log("first",new_form)
+            await cdr_form1Collection.create(new_form);
           }
         } catch (error) {
           console.log("error while adding record", error);
@@ -2005,6 +2005,38 @@ module.exports = function (Cdrform1) {
     },
     http: {
       verb: "get",
+    },
+  });
+
+  Cdrform1.getCDRForm1Deaths = async function (params) {
+    const data = JSON.parse(params.params);
+    try {
+      const finalResult = await this.find(data);
+      return finalResult;
+    } catch (err) {
+      // Handle errors appropriately
+      return err;
+    }
+  };
+
+  Cdrform1.remoteMethod("getCDRForm1Deaths", {
+    description: "Get the CDR form 1 death",
+    accepts: [
+      {
+        arg: "params",
+        type: "object",
+        require: true,
+        http: {
+          source: "body",
+        },
+      },
+    ],
+    returns: {
+      root: true,
+      type: "array",
+    },
+    http: {
+      verb: "post",
     },
   });
 };

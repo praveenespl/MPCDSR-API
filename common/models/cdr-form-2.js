@@ -15,6 +15,8 @@ module.exports = function (Cdrform2) {
       data = {};
     if (ctx.isNewInstance) {
       data = ctx.instance;
+    } else if (ctx.instance) {
+      data = ctx.instance;
     } else {
       data = ctx.data;
     }
@@ -93,22 +95,22 @@ module.exports = function (Cdrform2) {
       update["ST"] = 0;
       update["NA"] = 1;
     }
-    if(data.sectionD.delay_at_home==true){
-      update["delayAtHome"]=1;
-      update["delayInTransportation"]=0;
-      update["delayAtFacility"]=0;
+    if (data.sectionD.delay_at_home == true) {
+      update["delayAtHome"] = 1;
+      update["delayInTransportation"] = 0;
+      update["delayAtFacility"] = 0;
     }
-    if(data.sectionD.delay_in_transportation==true){
-      update["delayAtHome"]=0;
-      update["delayInTransportation"]=1;
-      update["delayAtFacility"]=0;
+    if (data.sectionD.delay_in_transportation == true) {
+      update["delayAtHome"] = 0;
+      update["delayInTransportation"] = 1;
+      update["delayAtFacility"] = 0;
     }
-    if(data.sectionD.delay_at_facility==true){
-      update["delayAtHome"]=0;
-      update["delayInTransportation"]=0;
-      update["delayAtFacility"]=1;
+    if (data.sectionD.delay_at_facility == true) {
+      update["delayAtHome"] = 0;
+      update["delayInTransportation"] = 0;
+      update["delayAtFacility"] = 1;
     }
-    if(data){
+    if (data) {
       update["totalFbcdr"] = 0;
       update["totalCbcdr"] = 1;
       update["fbcdrGeneral"] = 0;
@@ -122,7 +124,7 @@ module.exports = function (Cdrform2) {
       update["fbcdrLessThanOneMonth"] = 0;
       update["fbcdrLessThanOneYear"] = 0;
       update["fbcdrLessThanFiveYear"] = 0;
-  }
+    }
     const cdrForm1 = app.models.cdr_form_1;
     const record = await cdrForm1.findOne({ where: { _id: data.cdr_id } });
     if (record.sex === "Female" || record.sex === "female") {
@@ -164,7 +166,7 @@ module.exports = function (Cdrform2) {
       update["cbcdrLessThanOneYear"] = 0;
       update["cbcdrLessThanFiveYear"] = 1;
     }
-    console.log("update",update);
+    console.log("update", update);
     const goiReportCollection = app.models.goi_report;
     await goiReportCollection.update({ cdr_id: data.cdr_id }, update);
   });

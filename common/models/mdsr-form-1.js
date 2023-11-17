@@ -695,7 +695,6 @@ module.exports = function (Mdsrform1) {
     params.updatedAt.$lte = new Date(params.updatedAt.$lte);
     params['is_maternal_death'] = true;
 
-
     let cursor = await Mdsrform1Collection.aggregate(
       // Pipeline
       [
@@ -1409,17 +1408,17 @@ module.exports = function (Mdsrform1) {
         response.push(obj)
       }else if(params.accessUpto == "Block"){
         obj = {
-                "category": i.whereCBMDSRAndFBMDSRConducted.subdistrictname,
+                "category": i.subdistrictname,
+                "subdistrictcode": i.subdistrictcode,
                 "column-1": i.whereCBMDSRAndFBMDSRConducted,
                 "column-2": i.whereCBMDSRAndFBMDSRConducted,
                 "totalMDs": i.totalMDs,
                 "reported": i.reported
               }
-              data.push(obj);
+              response.push(obj);
      }
     }
      )
-     console.log(response)
      return response
 
   }
@@ -2102,6 +2101,7 @@ module.exports = function (Mdsrform1) {
       var response = await stateModel.find({});
 
     }
+    console.log("where---",where)
     const cursor = await Mdsrform1Collection.aggregate([{
       $match: where
     }, {
@@ -2175,7 +2175,7 @@ module.exports = function (Mdsrform1) {
           obj['subdistrictname'] = item.subdistrictname;
           obj['districtcode'] = item.districtcode;
           obj['districtname'] = item.districtname,
-            obj['home'] = item.placeOfDeath === 'Home' ? item.count : 0;
+          obj['home'] = item.placeOfDeath === 'Home' ? item.count : 0;
           obj['transit'] = item.placeOfDeath === 'Transit' ? item.count : 0;
           obj['other'] = item.placeOfDeath === 'Other' ? item.count : 0;
           obj['facility'] = item.placeOfDeath === 'Health Facility' ? item.count : 0;
@@ -2262,8 +2262,6 @@ module.exports = function (Mdsrform1) {
       }
       return (res.sort((a, b) => a.subdistrictname.localeCompare(b.subdistrictname)));
     }
-
-
   }
 
   Mdsrform1.remoteMethod('getPlaceOfDeath', {
@@ -2375,7 +2373,7 @@ module.exports = function (Mdsrform1) {
 
   Mdsrform1.getReportOfMaternalCauseOfdeaths = async function (params) {
     let self = this;
-
+    console.log("--->",params)
     let Mdsrform4Collection = self.getDataSource().connector.collection(Mdsrform1.app.models.MdsrForm4.modelName);
     let Mdsrform5Collection = self.getDataSource().connector.collection(Mdsrform1.app.models.MdsrForm5.modelName);
     const { fromDate, toDate, accessUpto, districtcodes, statecodes, subdistrictcodes, causes } = params;

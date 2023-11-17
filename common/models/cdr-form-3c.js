@@ -1,4 +1,5 @@
 "use strict";
+const { ObjectID } = require("loopback-connector-mongodb");
 const app = require("../../server/server");
 function daysCalculation(death, birth) {
   const date1 = new Date(death);
@@ -13,7 +14,7 @@ module.exports = function (Cdrform3c) {
     const data = ctx.instance;
     const cdrForm3cCollectoin = app.models.cdr_form_3c;
     const newRecord = await cdrForm3cCollectoin.find({
-      where: {
+      where: { 
         cdr_id: new ObjectID(data.cdr_id)
       }
     });

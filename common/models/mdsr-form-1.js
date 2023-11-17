@@ -2957,7 +2957,7 @@ module.exports = function (Mdsrform1) {
 
     } else if (type === "HIV_AIDS") {
 
-      where["cause_of_death.indirect.sub_category"] = "HIV / AIDS"
+      where["cause_of_death.indirect.sub_category"] = "HIV / AIDS" 
       where1["other.cause_of_death.indirect.sub_category"] = "HIV / AIDS"
 
     } else if (type === "H1N1ViralDisease") {
@@ -3046,7 +3046,7 @@ module.exports = function (Mdsrform1) {
       matchObj["district_id.districtcode"] = districtcodes
 
     } else if (accessUpto === 'Block') {
-      matchObj["created_by"] = ObjectId(userId);
+      matchObj["created_by"] = ObjectId(userId); 
     }
     const data = await Mdsrform1.find({ where: matchObj });
     const uid = []
@@ -3072,7 +3072,7 @@ module.exports = function (Mdsrform1) {
         if (time > 2) {
           delayedform4.push({ ...item, delayedBy: time, formdate: new Date(), form4_id: "", form5_id: "", form6_id: "" })
         }
-      }
+      } 
     }
     const delayedform5 = [];
     for (const item of data) {
@@ -3233,60 +3233,59 @@ module.exports = function (Mdsrform1) {
   });
 
   Mdsrform1.userLoginCountsInSpecificDuration = async function (params) {
+    console.log("params=====>",params);
     var userMasterCollection = this.getDataSource().connector.collection(app.models.Usermaster.modelName);
     const stateModel = app.models.state;
     const districtModel = app.models.district;
     const subdistrictModel = app.models.subdistrict;
-    const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode, } = params;
+    const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode,subdistrictname } = params;
     let masterAPiArg = {}, masterAPiGroup = {}, match = {};
     match['usertype'] = 'MDSR';
     match['designation'] = { $in: ['BMO', 'FNO'] };
-
     if (accessUpto === 'National') {
       masterAPiArg['type'] = 'getState';
       masterAPiGroup = {
         statecode: "$statecode",
-        statename: "$statename"
+        //statename: "$statename"
       }
     }
     else if (accessUpto === 'State') {
       match = {
-        "user_state_id.statecode": statecode,
-        "user_state_id.statename": statename
+        "user_state_id.statecode": {$in:statecode},
+        //"user_state_id.statename": statename  
       };
       masterAPiArg['type'] = 'getDistrict';
       masterAPiGroup = {
-        districtname: "$districtname",
+        //districtname: "$districtname",
         districtcode: "$districtcode"
       }
     }
     else if (accessUpto === 'District') {
       match = {
-        "user_state_id.statecode": statecode,
+        "user_state_id.statecode": {$in:statecode},
         "user_state_id.statename": statename,
-        "user_district_id.districtname": districtname,
-        "user_district_id.districtcode": districtcode
+        //"user_district_id.districtname": districtname,
+        "user_district_id.districtcode": {$in:districtcode}
       };
       masterAPiArg['type'] = 'getSubDistricts';
       masterAPiGroup = {
         subdistrictcode: "$subdistrictcode",
-        subdistrictname: "$subdistrictname"
+        //subdistrictname: "$subdistrictname"
       }
     }
     else if (accessUpto === 'Block') {
       match = {
-        "user_state_id.statecode": statecode,
-        "user_state_id.statename": statename,
-        "user_district_id.districtname": districtname,
-        "user_district_id.districtcode": districtcode,
-        "user_block_id.subdistrictcode": subdistrictcode,
-        "user_block_id.subdistrictname": subdistrictname
+        "user_state_id.statecode": {$in:statecode},
+        //"user_state_id.statename": statename,
+        //"user_district_id.districtname": districtname,
+        "user_district_id.districtcode": {$in:districtcode},
+        "user_block_id.subdistrictcode": {$in:subdistrictcode},
+       // "user_block_id.subdistrictname": subdistrictname
       };
       masterAPiGroup = {
         subdistrictcode: "$subdistrictcode"
       }
     }
-
     try {
       const response = await userMasterCollection.aggregate([
         {
@@ -3296,10 +3295,10 @@ module.exports = function (Mdsrform1) {
           $lookup: {
             from: "logininfo",
             localField: "_id",
-            foreignField: "user_id",
+            foreignField: "user_id", 
             as: "loginInfo"
           }
-        },
+        }, 
         {
           $match: {
             "loginInfo": { "$ne": [] }

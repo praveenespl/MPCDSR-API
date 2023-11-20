@@ -7,6 +7,7 @@ const {
   getCDRDeathForMapData,
 } = require("../utils/dashboardQueries");
 var app = require("../../server/server");
+
 const { ObjectID } = require("loopback-connector-mongodb");
 function daysCalculation(death, birth) {
   const date1 = new Date(death);

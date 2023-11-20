@@ -1,8 +1,9 @@
 'use strict';
 const { ObjectID } = require("loopback-connector-mongodb");
 const app = require("../../server/server");
-module.exports = function(Cdrform3) {
-    Cdrform3.observe("before save", async function (ctx) {
+module.exports = function (Cdrform3) {
+  Cdrform3.observe("before save", async function (ctx) {
+    if (ctx.isNewInstance) {
       const cdrForm3BCollectoin = app.models.cdr_form_3;
       if (ctx.isNewInstance) {
         const data = ctx.instance;
@@ -18,5 +19,6 @@ module.exports = function(Cdrform3) {
         }
         return;
       }
-      });
+    }
+  });
 };

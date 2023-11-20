@@ -7,7 +7,7 @@ const {
   getCDRDeathForMapData,
 } = require("../utils/dashboardQueries");
 var app = require("../../server/server");
-// const axios = require("axios");
+
 const { ObjectID } = require("loopback-connector-mongodb");
 function daysCalculation(death, birth) {
   const date1 = new Date(death);
@@ -23,17 +23,7 @@ const congif = {
     ApiKey: "40d1d2676e0cea032d9203a109edb116a3",
   },
 };
-const getData = async () => {
-  try {
-    const res = await axios.get(
-      `https://sncuindiaonline.org/SNCUAPI/api/v1/patients_custom?date=01-02-2023`,
-      congif
-    );
-    return res.data.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-};
+
 
 module.exports = function (Cdrform1) {
   Cdrform1.observe("before save", async function (ctx) {

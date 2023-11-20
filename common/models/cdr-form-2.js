@@ -12,6 +12,7 @@ function daysCalculation(death, birth) {
 
 module.exports = function (Cdrform2) {
   Cdrform2.observe("before save", async function (ctx) {
+    if (ctx.isNewInstance) {
     const data = ctx.instance;
     const cdrFormTwoCollectoin = app.models.cdr_form_2;
     const newRecord = await cdrFormTwoCollectoin.find({
@@ -26,6 +27,7 @@ module.exports = function (Cdrform2) {
       throw err
     }
     return;
+  }
   });
 
   

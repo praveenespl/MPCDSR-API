@@ -3237,21 +3237,28 @@ module.exports = function (Mdsrform1) {
     const stateModel = app.models.state;
     const districtModel = app.models.district;
     const subdistrictModel = app.models.subdistrict;
+
     const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode,subdistrictname } = params;
     let masterAPiArg = {}, masterAPiGroup = {}, match = {};
     match['usertype'] = 'MDSR';
     match['designation'] = { $in: ['BMO', 'FNO'] };
+
     if (accessUpto === 'National') {
       masterAPiArg['type'] = 'getState';
       masterAPiGroup = {
         statecode: "$statecode",
         //statename: "$statename"
       }
+      if (statecode) {
+        match = {
+          "user_state_id.statecode": { $in: statecode }
+        };
+      }
     }
     else if (accessUpto === 'State') {
       match = {
-        "user_state_id.statecode": {$in:statecode},
-        //"user_state_id.statename": statename  
+        "user_state_id.statecode": { $in: statecode },
+        "user_state_id.statename": { $in: statename }
       };
       masterAPiArg['type'] = 'getDistrict';
       masterAPiGroup = {
@@ -3261,10 +3268,10 @@ module.exports = function (Mdsrform1) {
     }
     else if (accessUpto === 'District') {
       match = {
-        "user_state_id.statecode": {$in:statecode},
-        "user_state_id.statename": statename,
-        //"user_district_id.districtname": districtname,
-        "user_district_id.districtcode": {$in:districtcode}
+        "user_state_id.statecode": { $in: statecode },
+        "user_state_id.statename": { $in: statename },
+        "user_district_id.districtname": { $in: districtname },
+        "user_district_id.districtcode": { $in: districtcode }
       };
       masterAPiArg['type'] = 'getSubDistricts';
       masterAPiGroup = {

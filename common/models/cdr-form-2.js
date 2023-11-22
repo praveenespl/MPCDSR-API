@@ -12,6 +12,7 @@ function daysCalculation(death, birth) {
 
 module.exports = function (Cdrform2) {
   Cdrform2.observe("before save", async function (ctx) {
+    if (ctx.isNewInstance) {
     const data = ctx.instance;
     const cdrFormTwoCollectoin = app.models.cdr_form_2;
     const newRecord = await cdrFormTwoCollectoin.find({
@@ -26,6 +27,7 @@ module.exports = function (Cdrform2) {
       throw err
     }
     return;
+  }
   });
 
   
@@ -34,6 +36,8 @@ module.exports = function (Cdrform2) {
     let update = {},
       data = {};
     if (ctx.isNewInstance) {
+      data = ctx.instance;
+    } else if (ctx.instance) {
       data = ctx.instance;
     } else {
       data = ctx.instance;
@@ -184,6 +188,7 @@ module.exports = function (Cdrform2) {
       update["cbcdrLessThanOneYear"] = 0;
       update["cbcdrLessThanFiveYear"] = 1;
     }
+
     const goiReportCollection = app.models.goi_report;
     await goiReportCollection.update({ cdr_id: data.cdr_id }, update);
   });

@@ -214,17 +214,6 @@
       }
     },
     "sectionD": {
-      "type": {
-        "delay_at_home": {
-          "type": "boolean"
-        },
-        "delay_in_transportation": {
-          "type": "boolean"
-        },
-        "delay_at_facility": {
-          "type": "boolean"
-        }
-      }
     },
     "sectionE": {
       "type": {

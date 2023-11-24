@@ -3232,14 +3232,15 @@ module.exports = function (Mdsrform1) {
   });
 
   Mdsrform1.userLoginCountsInSpecificDuration = async function (params) {
-    console.log("params=====>",params);
+
     var userMasterCollection = this.getDataSource().connector.collection(app.models.Usermaster.modelName);
     const stateModel = app.models.state;
     const districtModel = app.models.district;
     const subdistrictModel = app.models.subdistrict;
 
-    const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode,subdistrictname } = params;
-    let masterAPiArg = {}, masterAPiGroup = {}, match = {};
+    const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode } = params;
+    let masterAPiArg = {}, masterAPiGroup = {}, match = {}, match1 = {};
+
     match['usertype'] = 'MDSR';
     match['designation'] = { $in: ['BMO', 'FNO'] };
 
@@ -3249,7 +3250,7 @@ module.exports = function (Mdsrform1) {
         statecode: "$statecode",
         //statename: "$statename"
       }
-      if (statecode) {
+      if (statecode && statecode.length>=1) {
         match = {
           "user_state_id.statecode": { $in: statecode }
         };
@@ -3279,19 +3280,7 @@ module.exports = function (Mdsrform1) {
         //subdistrictname: "$subdistrictname"
       }
     }
-    else if (accessUpto === 'Block') {
-      match = {
-        "user_state_id.statecode": {$in:statecode},
-        //"user_state_id.statename": statename,
-        //"user_district_id.districtname": districtname,
-        "user_district_id.districtcode": {$in:districtcode},
-        "user_block_id.subdistrictcode": {$in:subdistrictcode},
-       // "user_block_id.subdistrictname": subdistrictname
-      };
-      masterAPiGroup = {
-        subdistrictcode: "$subdistrictcode"
-      }
-    }
+
     try {
       const response = await userMasterCollection.aggregate([
         {
@@ -3390,7 +3379,7 @@ module.exports = function (Mdsrform1) {
           $group: {
             _id: masterAPiGroup,
             facilityLogin: { $sum: "$facilityLogin" },
-            blockLogin:{$sum:"$blockLogin"},
+            blockLogin: { $sum: "$blockLogin" },
             facility_active: { $sum: "$facility_active" },
             block_active: { $sum: "$block_active" },
             facility_30days: { $sum: "$facility_30days" },
@@ -3405,13 +3394,13 @@ module.exports = function (Mdsrform1) {
         }
       ).toArray();
 
-     // console.log("response", response.length);
+      // console.log("response", response.length);
 
       const data = [];
       for (const item of response) {
         let record = {
           facilityLogin: item.facilityLogin,
-          blockLogin:item.blockLogin,
+          blockLogin: item.blockLogin,
           facility_active: item.facility_active,
           block_active: item.block_active,
           facility_30days: item.facility_30days,
@@ -3422,7 +3411,7 @@ module.exports = function (Mdsrform1) {
         if (masterAPiArg.type === 'getState') {
           const steteInfo = await stateModel.findOne({ where: { statecode: item?._id?.statecode, statename: item?._id?.statename } });
           if (steteInfo) {
-            data.push({ ...record, statename: steteInfo.statename,statecode:steteInfo.statecode });
+            data.push({ ...record, statename: steteInfo.statename, statecode: steteInfo.statecode });
           }
         }
         else if (masterAPiArg.type === 'getDistrict') {
@@ -3430,7 +3419,8 @@ module.exports = function (Mdsrform1) {
           if (districtInfo) {
             data.push({
               ...record, districtname: districtInfo?.districtname, districtcode: districtInfo?.districtcode,
-            statename: districtInfo?.stateName,statecode:districtInfo?.stateCode});
+              statename: districtInfo?.stateName, statecode: districtInfo?.stateCode
+            });
           }
         }
         else if (masterAPiArg.type === 'getSubDistricts') {
@@ -3439,7 +3429,8 @@ module.exports = function (Mdsrform1) {
             data.push({
               ...record, subdistrictname: blockInfo?.subdistrictname, subdistrictcode: blockInfo?.subdistrictcode,
               statename: blockInfo?.statename, statecode: blockInfo?.statecode,
-              districtname: blockInfo?.districtname,districtcode:blockInfo?.districtcode});
+              districtname: blockInfo?.districtname, districtcode: blockInfo?.districtcode
+            });
           }
         }
       }
@@ -3467,4 +3458,209 @@ module.exports = function (Mdsrform1) {
     },
   })
 
+  Mdsrform1.countCbmdsrOutofFbmdsr = async function (params) {
+    const Mdsrform1Collection = this.getDataSource().connector.collection(Mdsrform1.modelName);
+    const stateModel = app.models.state;
+    const districtModel = app.models.district;
+    const subdistrictModel = app.models.subdistrict;
+    const { statecodes, fromDate, toDate, accessupto, subdistrictcodes, districtcodes } = params;
+    let groupBy = {}, match = {}, masterApi = {};
+
+    if (fromDate && toDate) {
+      match['updatedAt'] = { $gte: fromDate, $lte: toDate };
+    }
+
+    if (accessupto === 'National') {
+      masterApi.type = "getStates";
+      if (statecodes && statecodes.length >= 1) {
+        match['state_id.statecode'] = { $in: statecodes };
+      }
+      groupBy = { statename: "$statename", statecode: "$statecode" }
+    }
+    else if (accessupto === 'State') {
+      masterApi.type = "getDistricts";
+      match['state_id.statecode'] = { $in: statecodes };
+      if (districtcodes && districtcodes.length >= 1) {
+        match['district_id.districtcode'] = { $in: districtcodes }
+      }
+      groupBy = { districtname: "$districtname", districtcode: "$districtcode" };
+    }
+    else if (accessupto === 'District') {
+      masterApi.type = 'getSubDistricts';
+      match['district_id.districtcode'] = { $in: districtcodes };
+      if (subdistrictcodes && subdistrictcodes.length) {
+        match["block_id.block.subdistrictcode"] = { $in: subdistrictcodes }
+      }
+      groupBy = { subdistrictname: "$subdistrictname", subdistrictcode: "$subdistrictcode" };
+    }
+    
+    try {
+      const data = await Mdsrform1Collection.aggregate([
+        {
+          $match: match
+        },
+        {
+          $lookup: {
+            from: "mdsr_form_2",
+            localField: "_id",
+            foreignField: "deceased_women_id",
+            as: "form2"
+          }
+        },
+        {
+          $lookup: {
+              from: "mdsr_form_2",
+              localField: "_id",
+              foreignField: "deceased_women_id",
+              as: "form2"
+          }
+      },
+      {
+          $lookup: {
+              from: "mdsr_form_3",
+              localField: "_id",
+              foreignField: "deceased_women_id",
+              as: "form3"
+          }
+      },
+      {
+          $lookup: {
+              from: "mdsr_form_4",
+              localField: "_id",
+              foreignField: "deceased_women_id",
+              as: "form4"
+          }
+      },
+      {
+          $lookup: {
+              from: "mdsr_form_5",
+              localField: "_id",
+              foreignField: "deceased_women_id",
+              as: "form5"
+          }
+      },
+      {
+          $lookup: {
+              from: "mdsr_form_6",
+              localField: "_id",
+              foreignField: "deceased_women_id",
+              as: "form6"
+          }
+      },
+      {
+          $project: {
+              statecode: "$state_id.statecode",
+              statename: "$state_id.statename",
+              districtcode: "$district_id.districtcode",
+              districtname: "$district_id.districtname",
+              subdistrictcode: "$block_id.subdistrictcode",
+              subdistrictname: "$block_id.subdistrictname",
+              form2: { $cond: [{ $gt: [{ $size: "$form2" }, 0] }, 1, 0] },
+              form3: { $cond: [{ $gt: [{ $size: "$form3" }, 0] }, 1, 0] },
+              form4: { $cond: [{ $gt: [{ $size: "$form4" }, 0] }, 1, 0] },
+              form5: { $cond: [{ $gt: [{ $size: "$form5" }, 0] }, 1, 0] },
+              form6: { $cond: [{ $gt: [{ $size: "$form6" }, 0] }, 1, 0] },
+              cbmdsr: {
+                  $cond: [{
+                      $and: [
+                          { $gt: [{ $size: "$form4" }, 0] },
+                          { $gt: [{ $size: "$form5" }, 0] }
+                      ]
+                  }, 1, 0]
+              },
+          }
+      },
+      {
+          $group: {
+              _id: groupBy,
+              form1: { $sum: 1 },
+              form2: { $sum: "$form2" },
+              form3: { $sum: "$form3" },
+              form4: { $sum: "$form4" },
+              form5: { $sum: "$form5" },
+              form6: { $sum: "$form6" },
+              fbmdsr: { $sum: "$form4" },
+              cbmdsr: { $sum: "$cbmdsr" }
+          }
+      },
+      {
+          $project: {
+              form1: 1,
+              form2: 1,
+              form3: 1,
+              form4: 1,
+              form5: 1,
+              form6: 1,
+              fbmdsr: 1,
+              cbmdsr: 1,
+              percent: { $round: [{ $multiply: [{ $cond: [{ $eq: ["$cbmdsr", 0] }, null, { "$divide": ["$cbmdsr", "$form4"] }] }, 100] }, 2] }
+          }
+      }
+      ],
+        {
+          allowDiskUse: true
+        }).toArray(); 
+
+      const response = [];
+      for (let item of data) {
+        const record = {
+          form1: item.form1,
+          form2: item.form2,
+          form3: item.form3,
+          form4: item.form4,
+          form5: item.form5,
+          form6: item.form6,
+          fbmdsr: item.fbmdsr,
+          cbmdsr: item.cbmdsr,
+          percent: item.percent == null ? 0 : item.percent
+        };
+
+        if (masterApi.type === "getStates") {
+          const steteInfo = await stateModel.findOne({ where: { statecode: item?._id?.statecode, statename: item?._id?.statename } });
+          if (steteInfo) {
+            response.push({ ...record, statename: steteInfo.statename, statecode: steteInfo.statecode });
+          }
+        }
+        else if (masterApi.type === 'getDistricts') {
+          const districtInfo = await districtModel.findOne({ where: { districtcode: item?._id?.districtcode, districtname: item?._id?.districtname } });
+          if (districtInfo) {
+            response.push({
+              ...record, districtname: districtInfo?.districtname, districtcode: districtInfo?.districtcode,
+              statename: districtInfo?.stateName, statecode: districtInfo?.stateCode
+            }); 
+          }
+        }
+        else if (masterApi.type === 'getSubDistricts') {
+          const blockInfo = await subdistrictModel.findOne({ where: { subdistrictcode: item?._id?.subdistrictcode, subdistrictname: item?._id?.subdistrictname } });
+          if (blockInfo) {
+            response.push({
+              ...record, subdistrictname: blockInfo?.subdistrictname, subdistrictcode: blockInfo?.subdistrictcode,
+              statename: blockInfo?.statename, statecode: blockInfo?.statecode,
+              districtname: blockInfo?.districtname, districtcode: blockInfo?.districtcode
+            });
+          }
+        }
+      }
+
+      return response;
+
+    } catch (error) {
+      return error;
+    }
+  }
+
+  Mdsrform1.remoteMethod('countCbmdsrOutofFbmdsr', {
+    description: 'Out of FBMDR How many CBMDR Has been submitted',
+    accepts: [{
+      arg: 'params',
+      type: 'object',
+    }],
+    returns: {
+      root: true,
+      type: 'array',
+    },
+    http: {
+      verb: 'get',
+    },
+  });
 };

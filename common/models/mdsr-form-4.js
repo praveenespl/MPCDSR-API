@@ -63,11 +63,12 @@ module.exports = function (Mdsrform4) {
 
     } else {
       const stateModel = app.models.state;
-      var response = await stateModel.find({where:{},fields: {
-        "statename": true,
-        "statecode": true
-      }
-     } );
+      var response = await stateModel.find({
+        where: {}, fields: {
+          "statename": true,
+          "statecode": true
+        }
+      });
 
     }
 
@@ -122,14 +123,14 @@ module.exports = function (Mdsrform4) {
         }
       }
       if (statecodes && statecodes.length) {
-        return("aniket",data.filter(item => statecodes.includes(item.statecode)))
+        return ("aniket", data.filter(item => statecodes.includes(item.statecode)))
       }
     } else if (accessupto === 'State') {
       for (const district of response) {
         const fbmdr = cursor.find((fbmdr) => fbmdr.districtcode === district.districtcode);
         if (fbmdr) {
           data.push({ ...district.__data, fbmdr: fbmdr.fbmdr, cbmdr: fbmdr.cbmdr, percent: Math.round(fbmdr.percent) })
-          
+
         } else {
           data.push({ ...district.__data, fbmdr: 0, cbmdr: 0, percent: 0 })
         }
@@ -173,4 +174,5 @@ module.exports = function (Mdsrform4) {
       verb: 'get',
     },
   });
+
 };

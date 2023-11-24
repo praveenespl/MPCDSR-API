@@ -695,7 +695,6 @@ module.exports = function (Mdsrform1) {
     params.updatedAt.$lte = new Date(params.updatedAt.$lte);
     params['is_maternal_death'] = true;
 
-
     let cursor = await Mdsrform1Collection.aggregate(
       // Pipeline
       [
@@ -1409,18 +1408,19 @@ module.exports = function (Mdsrform1) {
         response.push(obj)
       } else if (params.accessUpto == "Block") {
         obj = {
-          "category": i.whereCBMDSRAndFBMDSRConducted.subdistrictname,
-          "column-1": i.whereCBMDSRAndFBMDSRConducted,
-          "column-2": i.whereCBMDSRAndFBMDSRConducted,
-          "totalMDs": i.totalMDs,
-          "reported": i.reported
-        }
-        data.push(obj);
-      }
+                "category": i.subdistrictname,
+                "subdistrictcode": i.subdistrictcode,
+                "column-1": i.whereCBMDSRAndFBMDSRConducted,
+                "column-2": i.whereCBMDSRAndFBMDSRConducted,
+                "totalMDs": i.totalMDs,
+                "reported": i.reported
+              }
+              response.push(obj);
+     }
     }
-    )
+     )
+     return response
 
-    return response
 
   }
 
@@ -2102,6 +2102,7 @@ module.exports = function (Mdsrform1) {
       var response = await stateModel.find({});
 
     }
+    console.log("where---",where)
     const cursor = await Mdsrform1Collection.aggregate([{
       $match: where
     }, {
@@ -2175,7 +2176,7 @@ module.exports = function (Mdsrform1) {
           obj['subdistrictname'] = item.subdistrictname;
           obj['districtcode'] = item.districtcode;
           obj['districtname'] = item.districtname,
-            obj['home'] = item.placeOfDeath === 'Home' ? item.count : 0;
+          obj['home'] = item.placeOfDeath === 'Home' ? item.count : 0;
           obj['transit'] = item.placeOfDeath === 'Transit' ? item.count : 0;
           obj['other'] = item.placeOfDeath === 'Other' ? item.count : 0;
           obj['facility'] = item.placeOfDeath === 'Health Facility' ? item.count : 0;
@@ -2262,8 +2263,6 @@ module.exports = function (Mdsrform1) {
       }
       return (res.sort((a, b) => a.subdistrictname.localeCompare(b.subdistrictname)));
     }
-
-
   }
 
   Mdsrform1.remoteMethod('getPlaceOfDeath', {
@@ -2375,7 +2374,7 @@ module.exports = function (Mdsrform1) {
 
   Mdsrform1.getReportOfMaternalCauseOfdeaths = async function (params) {
     let self = this;
-
+    console.log("--->",params)
     let Mdsrform4Collection = self.getDataSource().connector.collection(Mdsrform1.app.models.MdsrForm4.modelName);
     let Mdsrform5Collection = self.getDataSource().connector.collection(Mdsrform1.app.models.MdsrForm5.modelName);
     const { fromDate, toDate, accessUpto, districtcodes, statecodes, subdistrictcodes, causes } = params;
@@ -2957,7 +2956,7 @@ module.exports = function (Mdsrform1) {
 
     } else if (type === "HIV_AIDS") {
 
-      where["cause_of_death.indirect.sub_category"] = "HIV / AIDS"
+      where["cause_of_death.indirect.sub_category"] = "HIV / AIDS" 
       where1["other.cause_of_death.indirect.sub_category"] = "HIV / AIDS"
 
     } else if (type === "H1N1ViralDisease") {
@@ -3046,7 +3045,7 @@ module.exports = function (Mdsrform1) {
       matchObj["district_id.districtcode"] = districtcodes
 
     } else if (accessUpto === 'Block') {
-      matchObj["created_by"] = ObjectId(userId);
+      matchObj["created_by"] = ObjectId(userId); 
     }
     const data = await Mdsrform1.find({ where: matchObj });
     const uid = []
@@ -3072,7 +3071,7 @@ module.exports = function (Mdsrform1) {
         if (time > 2) {
           delayedform4.push({ ...item, delayedBy: time, formdate: new Date(), form4_id: "", form5_id: "", form6_id: "" })
         }
-      }
+      } 
     }
     const delayedform5 = [];
     for (const item of data) {
@@ -3233,19 +3232,23 @@ module.exports = function (Mdsrform1) {
   });
 
   Mdsrform1.userLoginCountsInSpecificDuration = async function (params) {
+
     var userMasterCollection = this.getDataSource().connector.collection(app.models.Usermaster.modelName);
     const stateModel = app.models.state;
     const districtModel = app.models.district;
     const subdistrictModel = app.models.subdistrict;
+
     const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode } = params;
     let masterAPiArg = {}, masterAPiGroup = {}, match = {}, match1 = {};
+
     match['usertype'] = 'MDSR';
+    match['designation'] = { $in: ['BMO', 'FNO'] };
 
     if (accessUpto === 'National') {
       masterAPiArg['type'] = 'getState';
       masterAPiGroup = {
         statecode: "$statecode",
-        statename: "$statename"
+        //statename: "$statename"
       }
       if (statecode && statecode.length>=1) {
         match = {
@@ -3260,7 +3263,7 @@ module.exports = function (Mdsrform1) {
       };
       masterAPiArg['type'] = 'getDistrict';
       masterAPiGroup = {
-        districtname: "$districtname",
+        //districtname: "$districtname",
         districtcode: "$districtcode"
       }
     }
@@ -3274,10 +3277,9 @@ module.exports = function (Mdsrform1) {
       masterAPiArg['type'] = 'getSubDistricts';
       masterAPiGroup = {
         subdistrictcode: "$subdistrictcode",
-        subdistrictname: "$subdistrictname"
+        //subdistrictname: "$subdistrictname"
       }
     }
-    
 
     try {
       const response = await userMasterCollection.aggregate([
@@ -3288,10 +3290,10 @@ module.exports = function (Mdsrform1) {
           $lookup: {
             from: "logininfo",
             localField: "_id",
-            foreignField: "user_id",
+            foreignField: "user_id", 
             as: "loginInfo"
           }
-        },
+        }, 
         {
           $match: {
             "loginInfo": { "$ne": [] }

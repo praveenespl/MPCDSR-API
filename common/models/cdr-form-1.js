@@ -1556,38 +1556,45 @@ module.exports = function (Cdrform1) {
 
   Cdrform1.getFormStatusReport = async function (params) {
     try {
-      if (params.statecode > 0) {
-        var dmatch = {
-          statecode: params.statecode,
-          updatedAt: {
-            $gte: new Date(params.fromDate),
-            $lte: new Date(params.toDate),
-          },
-        };
-      } else if (params.districtcode > 0) {
-        var dmatch = {
-          districtcode: params.districtcode,
-          updatedAt: {
-            $gte: new Date(params.fromDate),
-            $lte: new Date(params.toDate),
-          },
-        };
-      } else if (params.subdistrictcode > 0) {
-        var dmatch = {
-          subdistrictcode: params.subdistrictcode,
-          updatedAt: {
-            $gte: new Date(params.fromDate),
-            $lte: new Date(params.toDate),
-          },
-        };
-      } else if (params.createdBy.length > 0) {
-        var dmatch = {
-          createdBy: ObjectID(params.createdBy),
-          updatedAt: {
-            $gte: new Date(params.fromDate),
-            $lte: new Date(params.toDate),
-          },
-        };
+      const {
+        fromDate,
+        toDate,
+        districtcodes,
+        statecodes,
+        subdistrictcodes,
+        createdBy,
+      } = params;
+      const where = {
+        updatedAt: { $gte: new Date(fromDate), $lte: new Date(toDate) },
+      };
+
+      if (
+        statecodes?.length > 0 &&
+        districtcodes?.length === 0 &&
+        subdistrictcodes?.length === 0
+      ) {
+        where["statecode"] = { $in: statecodes };
+        var groupId = "$districtcode";
+      } else if (
+        districtcodes?.length > 0 &&
+        statecodes?.length > 0 &&
+        subdistrictcodes?.length === 0
+      ) {
+        where["statecode"] = { $in: statecodes };
+        where["districtcode"] = { $in: districtcodes };
+        var groupId = "$subdistrictcode";
+      } else if (
+        subdistrictcodes?.length > 0 &&
+        statecodes?.length > 0 &&
+        districtcodes?.length > 0
+      ) {
+        where["statecode"] = { $in: statecodes };
+        where["districtcode"] = { $in: districtcodes };
+        where["subdistrictcode"] = { $in: subdistrictcodes };
+        where["createdBy"] = ObjectId(createdBy);
+        var groupId = "$subdistrictcode";
+      } else {
+        var groupId = "$statecode";
       }
 
       const self = this;
@@ -1595,7 +1602,7 @@ module.exports = function (Cdrform1) {
         .getDataSource()
         .connector.collection(Cdrform1.modelName);
       const result = await Cdrform1Collection.aggregate([
-        { $match: dmatch },
+        { $match: where },
         {
           $lookup: {
             from: "cdr_form_2",

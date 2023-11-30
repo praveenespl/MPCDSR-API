@@ -2374,7 +2374,7 @@ module.exports = function (Mdsrform1) {
 
   Mdsrform1.getReportOfMaternalCauseOfdeaths = async function (params) {
     let self = this;
-   // console.log("--->", params)
+    // console.log("--->", params)
     let Mdsrform4Collection = self.getDataSource().connector.collection(Mdsrform1.app.models.MdsrForm4.modelName);
     let Mdsrform5Collection = self.getDataSource().connector.collection(Mdsrform1.app.models.MdsrForm5.modelName);
     const { fromDate, toDate, accessUpto, districtcodes, statecodes, subdistrictcodes, causes } = params;
@@ -3472,33 +3472,44 @@ module.exports = function (Mdsrform1) {
 
     if (accessupto === 'National') {
       masterApi.type = "getStates";
-      groupBy = { statename: "$statename", statecode: "$statecode" }
+      groupBy = { statename: "$statename", statecode: "$statecode" };
+      if (statecodes && statecodes.length >= 1) {
+        match['state_id.statecode'] = { $in: statecodes };
+      }
+      if (districtcodes && districtcodes.length >= 1) {
+        masterApi.type = "getDistricts";
+        match['district_id.districtcode'] = { $in: districtcodes };
+        groupBy = { districtname: "$districtname", districtcode: "$districtcode" };
+      }
+      if (subdistrictcodes && subdistrictcodes.length >= 1) {
+        masterApi.type = 'getSubDistricts';
+        match["block_id.subdistrictcode"] = { $in: subdistrictcodes };
+        groupBy = { subdistrictname: "$subdistrictname", subdistrictcode: "$subdistrictcode" };
+      }
     }
     else if (accessupto === 'State') {
       masterApi.type = "getDistricts";
+      match['state_id.statecode'] = { $in: statecodes };
       groupBy = { districtname: "$districtname", districtcode: "$districtcode" };
+      if (districtcodes && districtcodes.length >= 1) {
+        match['district_id.districtcode'] = { $in: districtcodes };
+      }
+      if (subdistrictcodes && subdistrictcodes.length >= 1) {
+        masterApi.type = 'getSubDistricts';
+        match["block_id.subdistrictcode"] = { $in: subdistrictcodes };
+        groupBy = { subdistrictname: "$subdistrictname", subdistrictcode: "$subdistrictcode" };
+      }
     }
     else if (accessupto === 'District') {
-      masterApi.type = 'getSubDistricts';
+      masterApi.type = "getSubDistricts";
+      match['district_id.districtcode'] = { $in: districtcodes };
       groupBy = { subdistrictname: "$subdistrictname", subdistrictcode: "$subdistrictcode" };
+      if (subdistrictcodes && subdistrictcodes.length >= 1) {
+        match["block_id.subdistrictcode"] = { $in: subdistrictcodes };
+      }
     }
 
-    if (statecodes && statecodes.length >= 1) {
-      masterApi.type = "getStates";
-      match['state_id.statecode'] = { $in: statecodes };
-      groupBy = { statename: "$statename", statecode: "$statecode" };
-    }
-    if (districtcodes && districtcodes.length >= 1) {
-      masterApi.type = "getDistricts";
-      match['district_id.districtcode'] = { $in: districtcodes };
-      groupBy = { districtname: "$districtname", districtcode: "$districtcode" };
-    }
-    if (subdistrictcodes && subdistrictcodes.length >= 1) {
-      masterApi.type = 'getSubDistricts';
-      match["block_id.subdistrictcode"] = { $in: subdistrictcodes };
-      groupBy = { subdistrictname: "$subdistrictname", subdistrictcode: "$subdistrictcode" };
-    }
-    
+
     try {
       const data = await Mdsrform1Collection.aggregate([
         {
@@ -3614,7 +3625,7 @@ module.exports = function (Mdsrform1) {
 
         if (masterApi.type === "getStates") {
           const steteInfo = await stateModel.findOne({ where: { statecode: item?._id?.statecode, statename: item?._id?.statename } });
-          
+
           if (steteInfo) {
             response.push({ ...record, statename: steteInfo.statename, statecode: steteInfo.statecode });
           }

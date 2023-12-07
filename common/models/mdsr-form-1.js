@@ -3255,8 +3255,19 @@ module.exports = function (Mdsrform1) {
           "user_state_id.statecode": { $in: statecode }
         };
       }
+      if (districtcode && districtcode.length >= 1) {
+        masterAPiArg['type'] = "getDistrict";
+        match = {"user_district_id.districtcode" : { $in: districtcode }};
+        masterAPiGroup = { districtcode: "$districtcode" };
+      }
+      if (subdistrictcode && subdistrictcode.length >= 1) {
+        masterAPiArg['type'] = 'getSubDistricts';
+        match = {"user_block_id.subdistrictcode" : { $in: subdistrictcode }};
+        masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
+      }
     }
     else if (accessUpto === 'State') {
+      if (districtcode && districtcode.length >= 1){
       match = {
         "user_state_id.statecode": { $in: statecode },
         "user_state_id.statename": { $in: statename }
@@ -3267,11 +3278,15 @@ module.exports = function (Mdsrform1) {
         districtcode: "$districtcode"
       }
     }
+    if (subdistrictcode && subdistrictcode.length >= 1) {
+      masterAPiArg['type'] = 'getSubDistricts';
+      match = {"user_block_id.subdistrictcode" : { $in: subdistrictcode }};
+      masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
+    }
+    }
     else if (accessUpto === 'District') {
       match = {
         "user_state_id.statecode": { $in: statecode },
-        "user_state_id.statename": { $in: statename },
-        "user_district_id.districtname": { $in: districtname },
         "user_district_id.districtcode": { $in: districtcode }
       };
       masterAPiArg['type'] = 'getSubDistricts';

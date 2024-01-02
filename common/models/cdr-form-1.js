@@ -348,6 +348,7 @@ module.exports = function (Cdrform1) {
 
   //Done by ravindra on 23-01-2021
   Cdrform1.getDashboardData = async function (params) {
+    console.log(params)
     try {
       const self = this;
       const Cdrform1Collection = self

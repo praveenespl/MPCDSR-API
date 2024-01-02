@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 var ObjectId = require('mongodb').ObjectID;
 const app = require("../../server/server");
+const { permittedCrossDomainPolicies } = require('helmet');
 module.exports = function (Mdsrform1) {
   Mdsrform1.observe('before save', async (ctx) => {
     if (ctx.isNewInstance) {
@@ -694,6 +695,7 @@ module.exports = function (Mdsrform1) {
     params.updatedAt.$gte = new Date(params.updatedAt.$gte);
     params.updatedAt.$lte = new Date(params.updatedAt.$lte);
     params['is_maternal_death'] = true;
+    //params['block_id.subdistrictcode']={"$in":params.subdistrictcode}
 
     let cursor = await Mdsrform1Collection.aggregate(
       // Pipeline
@@ -705,9 +707,7 @@ module.exports = function (Mdsrform1) {
       ]
       // Created with 3T MongoChef, the GUI for MongoDB - http://3t.io/mongochef
     ).toArray()
-
     return cursor;
-    ;
   }
   Mdsrform1.remoteMethod("getNotificationDetails", {
     description: "Get Notification Details",
@@ -2046,225 +2046,167 @@ module.exports = function (Mdsrform1) {
     }
   })
 
-
   Mdsrform1.getPlaceOfDeath = async function (params) {
-    const self = this;
-    const { statecodes, accessupto, districtcodes, subdistrictcodes } = params;
-    var Mdsrform1Collection = self.getDataSource().connector.collection(Mdsrform1.modelName);
-    let where = {};
-    let group = {};
-    if (accessupto === 'National') {
-      where = { updatedAt: { $gte: new Date(params.fromDate), $lte: new Date(params.toDate) }, is_maternal_death: true };
-      group = {
-        _id: { "statecode": "$state_id.statecode", "statename": "$state_id.statename", "placeOfDeath": "$place_of_death" },
-        count: { $sum: 1 }
-      }
-    } else if (accessupto === 'State') {
-      where = { "state_id.statecode": { $in: statecodes }, updatedAt: { $gte: new Date(params.fromDate), $lte: new Date(params.toDate) }, is_maternal_death: true }
-      group = {
-        _id: { "statecode": "$state_id.statecode", "statename": "$state_id.statename", "districtcode": "$district_id.districtcode", "districtname": "$district_id.districtname", "placeOfDeath": "$place_of_death" },
-        count: { $sum: 1 }
-      }
-      if (districtcodes && districtcodes.length) {
-        where = { ...where, "district_id.districtcode": { $in: districtcodes } }
-      }
-      if (params.type == 'getSubDistricts' && districtcodes && districtcodes.length) {
-        where = { ...where }
-        group = {
-          ...group,
-          _id: { ...group._id, "subdistrictcode": "$block_id.subdistrictcode", "subdistrictname": "$block_id.subdistrictname" }
-        }
-      }
-    } else if (accessupto === 'District') {
-      where = { "district_id.districtcode": { $in: districtcodes }, updatedAt: { $gte: new Date(params.fromDate), $lte: new Date(params.toDate) }, is_maternal_death: true }
-      if (subdistrictcodes && subdistrictcodes.length) {
-        where = { "block_id.subdistrictcode": { $in: subdistrictcodes }, updatedAt: { $gte: new Date(params.fromDate), $lte: new Date(params.toDate) }, is_maternal_death: true }
-      }
-      group = {
-        _id: { "statecode": "$state_id.statecode", "statename": "$state_id.statename", "districtcode": "$district_id.districtcode", "districtname": "$district_id.districtname", "subdistrictcode": "$block_id.subdistrictcode", "subdistrictname": "$block_id.subdistrictname", "placeOfDeath": "$place_of_death" },
-        count: { $sum: 1 }
-      }
+    const self = this;;
+    const { statecodes, districtcodes, subdistrictcodes ,type} = params;
+    const Mdsrform1Collection = self.getDataSource().connector.collection(Mdsrform1.modelName);
+
+    let where = {
+      updatedAt: { $gte: new Date(params.fromDate), $lte: new Date(params.toDate) },
+      is_maternal_death: true
+    };
+    let group = createGroup("National");
+    let accessupto;
+
+    if (statecodes && statecodes.length>0 ){
+        where["state_id.statecode"] = { $in: statecodes };
+        group = createGroup("State");
+    }
+    if(districtcodes && districtcodes.length > 0){
+        where["state_id.statecode"] = { $in: statecodes };
+        where["district_id.districtcode"] = { $in: districtcodes };
+        group = createGroup("District");
+    }
+    if(subdistrictcodes && subdistrictcodes.length > 0){
+        where["state_id.statecode"] = { $in: statecodes };
+        where["district_id.districtcode"] = { $in: districtcodes };
+        where["block_id.subdistrictcode"] = { $in: subdistrictcodes };
+        group = createGroup("Subdistrict");
     }
 
-    if (params.type == "getStates") {
-      const stateModel = app.models.state;
-      var response = await stateModel.find({});
-    } else if (params.type == "getDistricts") {
-      const districtModel = app.models.district;
-      var response = await districtModel.find({ where: { stateCode: params.statecodes[0] } });
-
-    } else if (params.type == "getSubDistricts") {
-      const subdistrictModel = app.models.subdistrict;
-      var response = await subdistrictModel.find({ where: { districtcode: params.districtcodes[0] } })
-
-    } else {
-      const stateModel = app.models.state;
-      var response = await stateModel.find({});
-
-    }
-    //console.log("where---", where)
-    const cursor = await Mdsrform1Collection.aggregate([{
-      $match: where
-    }, {
-      $group: group
-    }, {
-      $project: {
-        placeOfDeath: "$_id.placeOfDeath",
-        statecode: "$_id.statecode",
-        statename: "$_id.statename",
-        districtcode: "$_id.districtcode",
-        districtname: "$_id.districtname",
-        subdistrictcode: "$_id.subdistrictcode",
-        subdistrictname: "$_id.subdistrictname",
-        count: 1,
-        _id: 0
-      }
-    }]
-    ).toArray();
-    let res = [];
-    const results = { cursor, response }
-    if (accessupto === 'National') {
-      for (const item of cursor) {
-        let obj = {};
-        const index = res.findIndex(ele => ele.statecode === item.statecode);
-        if (index === -1) {
-          obj['statecode'] = item.statecode;
-          obj['statename'] = item.statename;
-          obj['home'] = item.placeOfDeath === 'Home' ? item.count : 0;
-          obj['transit'] = item.placeOfDeath === 'Transit' ? item.count : 0;
-          obj['other'] = item.placeOfDeath === 'Other' ? item.count : 0;
-          obj['facility'] = item.placeOfDeath === 'Health Facility' ? item.count : 0;
-          obj['total'] = obj['home'] + obj['transit'] + obj['other'] + obj['facility'];
-          res.push(obj);
-        } else {
-          res[index]['home'] = item.placeOfDeath === 'Home' ? item.count : res[index]['home'];
-          res[index]['transit'] = item.placeOfDeath === 'Transit' ? item.count : res[index]['transit'];
-          res[index]['other'] = item.placeOfDeath === 'Other' ? item.count : res[index]['other'];
-          res[index]['facility'] = item.placeOfDeath === 'Health Facility' ? item.count : res[index]['facility'];
-          res[index]['total'] = res[index]['home'] + res[index]['transit'] + res[index]['other'] + res[index]['facility'];
+    const cursor = await Mdsrform1Collection.aggregate([
+      { $match: where },
+      { $group: group },
+      {
+        $project: {
+          placeOfDeath: "$_id.placeOfDeath",
+          statecode: "$_id.statecode",
+          statename: "$_id.statename",
+          districtcode: "$_id.districtcode",
+          districtname: "$_id.districtname",
+          subdistrictcode: "$_id.subdistrictcode",
+          subdistrictname: "$_id.subdistrictname",
+          count: 1,
+          _id: 0
         }
       }
-      response.forEach(state => {
-        let index = res.findIndex(item => state.name === item.statename);
-        if (index === -1) {
-          res.push({
-            statecode: state.statecode,
-            statename: state.name,
-            facility: 0,
-            other: 0,
-            transit: 0,
-            home: 0,
-            code: state.code
-          })
-        } else {
-          res[index]['code'] = state.code;
-        }
-      });
+    ]).toArray();
 
-      if (statecodes && statecodes.length) {
-        return (res.filter(item => statecodes.includes(item.statecode)).sort((a, b) => b.total - a.total));
-      }
-      return res.sort((a, b) => b.total - a.total);
-    } else if (accessupto === 'State' && params.type !== "getSubDistricts") {
-      for (const item of cursor) {
-        let obj = {};
-        const index = res.findIndex(ele => ele.districtcode === item.districtcode);
-        if (index === -1) {
-          obj['statecode'] = item.statecode;
-          obj['statename'] = item.statename;
-          obj['subdistrictcode'] = item.subdistrictcode;
-          obj['subdistrictname'] = item.subdistrictname;
-          obj['districtcode'] = item.districtcode;
-          obj['districtname'] = item.districtname,
-            obj['home'] = item.placeOfDeath === 'Home' ? item.count : 0;
-          obj['transit'] = item.placeOfDeath === 'Transit' ? item.count : 0;
-          obj['other'] = item.placeOfDeath === 'Other' ? item.count : 0;
-          obj['facility'] = item.placeOfDeath === 'Health Facility' ? item.count : 0;
-          obj['total'] = obj['home'] + obj['transit'] + obj['other'] + obj['facility'];
-          res.push(obj);
-        } else {
-          res[index]['home'] = item.placeOfDeath === 'Home' ? item.count : res[index]['home'];
-          res[index]['transit'] = item.placeOfDeath === 'Transit' ? item.count : res[index]['transit'];
-          res[index]['other'] = item.placeOfDeath === 'Other' ? item.count : res[index]['other'];
-          res[index]['facility'] = item.placeOfDeath === 'Health Facility' ? item.count : res[index]['facility'];
-          res[index]['total'] = res[index]['home'] + res[index]['transit'] + res[index]['other'] + res[index]['facility'];
-        }
-      }
-      if (districtcodes) {
-        response.forEach(district => {
-          let index = res.findIndex(dist => dist.districtcode === district.districtcode);
-          if (index === -1) {
-            res.push({
-              districtcode: district.districtcode,
-              districtname: district.districtname,
-              facility: 0,
-              other: 0,
-              transit: 0,
-              home: 0,
-              //code: state.code
-            })
-          } else {
-            res[index]['districtname'] = district.districtname;
-          }
-        });
-      }
-      if (districtcodes && districtcodes.length) {
-        let finalRes = [];
-        finalRes = res.filter(ele => ele.home !== NaN).filter(item => districtcodes.includes(item.districtcode));
-        finalRes.sort((a, b) => a.districtname.localeCompare(b.districtname))
-        return finalRes;
-      }
+    const response = await getModelData(type, params);
 
-      return (res.sort((a, b) => a.districtname.localeCompare(b.districtname)));
-    } else if (accessupto === 'District' || params.type === 'getSubDistricts') {
-      for (const item of cursor) {
-        let obj = {};
-        const index = res.findIndex(ele => ele.subdistrictcode === item.subdistrictcode);
-        if (index === -1) {
-          obj['subdistrictcode'] = item.subdistrictcode;
-          obj['subdistrictname'] = item.subdistrictname;
-          obj['home'] = item.placeOfDeath === 'Home' ? item.count : 0;
-          obj['transit'] = item.placeOfDeath === 'Transit' ? item.count : 0;
-          obj['other'] = item.placeOfDeath === 'Other' ? item.count : 0;
-          obj['facility'] = item.placeOfDeath === 'Health Facility' ? item.count : 0;
-          obj['total'] = obj['home'] + obj['transit'] + obj['other'] + obj['facility'];
-          res.push(obj);
-        } else {
-          res[index]['home'] = item.placeOfDeath === 'Home' ? item.count : res[index]['home'];
-          res[index]['transit'] = item.placeOfDeath === 'Transit' ? item.count : res[index]['transit'];
-          res[index]['other'] = item.placeOfDeath === 'Other' ? item.count : res[index]['other'];
-          res[index]['facility'] = item.placeOfDeath === 'Health Facility' ? item.count : res[index]['facility'];
-          res[index]['total'] = res[index]['home'] + res[index]['transit'] + res[index]['other'] + res[index]['facility'];
-        }
-      }
-      if (subdistrictcodes) {
-        response.forEach(subdistrict => {
-          let index = res.findIndex(subdist => subdist.subdistrictcode === subdistrict.subdistrictcode);
-          if (index === -1) {
-            res.push({
-              subdistrictcode: subdistrict.subdistrictcode,
-              subdistrictname: subdistrict.subdistrictname,
-              facility: 0,
-              other: 0,
-              transit: 0,
-              home: 0,
-              //code: state.code
-            })
-          } else {
-            res[index]['subdistrictname'] = subdistrict.subdistrictname;
-          }
-        });
-      }
-      if (subdistrictcodes && subdistrictcodes.length) {
-        let finalRes = [];
-        finalRes = res.filter(ele => ele.home !== NaN).filter(item => subdistrictcodes.includes(item.subdistrictcode));
-        finalRes.sort((a, b) => a.subdistrictname.localeCompare(b.subdistrictname))
-        return finalRes;
-      }
-      return (res.sort((a, b) => a.subdistrictname.localeCompare(b.subdistrictname)));
+    const res = processCursor(cursor, response,type, accessupto, statecodes,type, districtcodes, subdistrictcodes);
+
+    return res;
+  };
+
+  function createGroup(accessupto) {
+    switch (accessupto) {
+      case "State":
+        return {
+          _id: { "statecode": "$state_id.statecode", "statename": "$state_id.statename", "districtcode": "$district_id.districtcode", "districtname": "$district_id.districtname", "placeOfDeath": "$place_of_death" },
+          count: { $sum: 1 }
+        };
+      case "District":
+        return {
+          _id: { "statecode": "$state_id.statecode", "statename": "$state_id.statename", "districtcode": "$district_id.districtcode", "districtname": "$district_id.districtname", "subdistrictcode": "$block_id.subdistrictcode", "subdistrictname": "$block_id.subdistrictname", "placeOfDeath": "$place_of_death" },
+          count: { $sum: 1 }
+        };
+      case "Subdistrict":
+        return {
+          _id: { "statecode": "$state_id.statecode", "statename": "$state_id.statename", "districtcode": "$district_id.districtcode", "districtname": "$district_id.districtname", "subdistrictcode": "$block_id.subdistrictcode", "subdistrictname": "$block_id.subdistrictname", "placeOfDeath": "$place_of_death" },
+          count: { $sum: 1 }
+        };
+      default:
+        return {
+          _id: { "statecode": "$state_id.statecode", "statename": "$state_id.statename", "placeOfDeath": "$place_of_death" },
+          count: { $sum: 1 }
+        };
     }
   }
 
+  async function getModelData(type, params) {
+ 
+    const districtModel = app.models.district;
+    const subdistrictModel = app.models.subdistrict;
+    switch (type) {
+      case "getStates":
+        return await app.models.state.find({});
+      case "getDistricts":
+        return await districtModel.find({ "where": { "stateCode": { inq: params.statecodes } } });
+      case "getSubDistricts":
+        return await subdistrictModel.find({ "where": { "districtcode": { inq: params.districtcodes } } });
+      default:
+        return await app.models.state.find({});
+    }
+  }
+  function processCursor(cursor, response, type, accessupto, statecodes, districtcodes, subdistrictcodes) {
+    const res = [];
+    let key, nameKey, codeKey; // Initialize key, nameKey, and codeKey
+    // Determine key, nameKey, and codeKey based on accessupto and type
+    if (type === 'getStates') {
+      key = 'statecode';
+      nameKey = 'statename';
+      codeKey = 'statecode';
+    } else if (type === 'getDistricts') {
+      key = 'districtcode';
+      nameKey = 'districtname';
+      codeKey = 'districtcode';
+    } else if (type === 'getSubDistricts') {
+      key = 'subdistrictcode';
+      nameKey = 'subdistrictname';
+      codeKey = 'subdistrictcode';
+    }
+  
+    // Create a map to store counts for each code
+    const countMap = {};
+    // Initialize countMap with keys
+    cursor.forEach(item => {
+      countMap[item[key]] = {
+        [codeKey]: item[codeKey],
+        [nameKey]: item[nameKey],
+        home: 0,
+        transit: 0,
+        other: 0,
+        facility: 0,
+        total: 0
+      };
+    });
+  
+    // Accumulate counts using forEach
+    cursor.forEach(item => {
+      countMap[item[key]].home += item.placeOfDeath === 'Home' ? item.count : 0;
+      countMap[item[key]].transit += item.placeOfDeath === 'Transit' ? item.count : 0;
+      countMap[item[key]].other += item.placeOfDeath === 'Other' ? item.count : 0;
+      countMap[item[key]].facility += item.placeOfDeath === 'Health Facility' ? item.count : 0;
+      countMap[item[key]].total += item.count;
+    });
+  
+    // Update names using forEach
+    response.forEach(item => {
+      if (countMap[item[key]]) {
+        countMap[item[key]][nameKey] = item[nameKey];
+        // Include additional keys for 'getDistricts' and 'getSubDistricts'
+        if (type === 'getDistricts' && item.stateCode && item.stateName) {
+          countMap[item[key]].statecode = item.stateCode;
+          countMap[item[key]].statename = item.stateName;
+        } else if (type === 'getSubDistricts' && item.statecode && item.statename) {
+          countMap[item[key]].statecode = item.statecode;
+          countMap[item[key]].statename = item.statename;
+          countMap[item[key]].districtcode = item.districtcode;
+          countMap[item[key]].districtname = item.districtname;
+        }
+      }
+    });
+  
+    // Convert countMap to an array of objects using Object.values
+    const finalRes = Object.values(countMap);
+  
+    // Sort the result based on total count using sort
+    finalRes.sort((a, b) => b.total - a.total);
+  
+    return finalRes;
+  }
+  
   Mdsrform1.remoteMethod('getPlaceOfDeath', {
     description: 'Getting the count of the place of death (Facility, Transit, Home & Other)',
     accepts: [{
@@ -3257,32 +3199,32 @@ module.exports = function (Mdsrform1) {
       }
       if (districtcode && districtcode.length >= 1) {
         masterAPiArg['type'] = "getDistrict";
-        match = {"user_district_id.districtcode" : { $in: districtcode }};
+        match = { "user_district_id.districtcode": { $in: districtcode } };
         masterAPiGroup = { districtcode: "$districtcode" };
       }
       if (subdistrictcode && subdistrictcode.length >= 1) {
         masterAPiArg['type'] = 'getSubDistricts';
-        match = {"user_block_id.subdistrictcode" : { $in: subdistrictcode }};
+        match = { "user_block_id.subdistrictcode": { $in: subdistrictcode } };
         masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
       }
     }
     else if (accessUpto === 'State') {
-      if (districtcode && districtcode.length >= 1){
-      match = {
-        "user_state_id.statecode": { $in: statecode },
-        "user_state_id.statename": { $in: statename }
-      };
-      masterAPiArg['type'] = 'getDistrict';
-      masterAPiGroup = {
-        //districtname: "$districtname",
-        districtcode: "$districtcode"
+      if (districtcode && districtcode.length >= 1) {
+        match = {
+          "user_state_id.statecode": { $in: statecode },
+          "user_state_id.statename": { $in: statename }
+        };
+        masterAPiArg['type'] = 'getDistrict';
+        masterAPiGroup = {
+          //districtname: "$districtname",
+          districtcode: "$districtcode"
+        }
       }
-    }
-    if (subdistrictcode && subdistrictcode.length >= 1) {
-      masterAPiArg['type'] = 'getSubDistricts';
-      match = {"user_block_id.subdistrictcode" : { $in: subdistrictcode }};
-      masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
-    }
+      if (subdistrictcode && subdistrictcode.length >= 1) {
+        masterAPiArg['type'] = 'getSubDistricts';
+        match = { "user_block_id.subdistrictcode": { $in: subdistrictcode } };
+        masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
+      }
     }
     else if (accessUpto === 'District') {
       match = {

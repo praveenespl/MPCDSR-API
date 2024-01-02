@@ -3180,7 +3180,7 @@ module.exports = function (Mdsrform1) {
     const districtModel = app.models.district;
     const subdistrictModel = app.models.subdistrict;
 
-    const { accessUpto, statecode, statename, districtname, districtcode, subdistrictcode } = params;
+    const { accessUpto, statecode, districtcode, subdistrictcode } = params;
     let masterAPiArg = {}, masterAPiGroup = {}, match = {}, match1 = {};
 
     match['usertype'] = 'MDSR';
@@ -3188,14 +3188,9 @@ module.exports = function (Mdsrform1) {
 
     if (accessUpto === 'National') {
       masterAPiArg['type'] = 'getState';
-      masterAPiGroup = {
-        statecode: "$statecode",
-        //statename: "$statename"
-      }
+      masterAPiGroup = {statecode: "$statecode"}
       if (statecode && statecode.length >= 1) {
-        match = {
-          "user_state_id.statecode": { $in: statecode }
-        };
+        match = {"user_state_id.statecode": { $in: statecode } };
       }
       if (districtcode && districtcode.length >= 1) {
         masterAPiArg['type'] = "getDistrict";
@@ -3225,16 +3220,26 @@ module.exports = function (Mdsrform1) {
         match = { "user_block_id.subdistrictcode": { $in: subdistrictcode } };
         masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
       }
+
+      masterAPiArg['type'] = 'getDistrict';
+      match = {"user_state_id.statecode":  statecode };
+      masterAPiGroup = {districtcode: "$districtcode" };
+      if (districtcode && districtcode.length >= 1) {
+        match = {"user_district_id.districtcode":  districtcode};
+      }
+      if (subdistrictcode && subdistrictcode.length >= 1) {
+        masterAPiArg['type'] = 'getSubDistricts';
+        match = {"user_block_id.subdistrictcode" :  subdistrictcode };
+        masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
+      }
+
     }
     else if (accessUpto === 'District') {
-      match = {
-        "user_state_id.statecode": { $in: statecode },
-        "user_district_id.districtcode": { $in: districtcode }
-      };
       masterAPiArg['type'] = 'getSubDistricts';
-      masterAPiGroup = {
-        subdistrictcode: "$subdistrictcode",
-        //subdistrictname: "$subdistrictname"
+      match = { "user_district_id.districtcode": districtcode  };
+      masterAPiGroup = { subdistrictname: "$subdistrictname", subdistrictcode: "$subdistrictcode" };
+      if (subdistrictcode && subdistrictcode.length >= 1) {
+        match["user_block_id.subdistrictcode"] =  subdistrictcode;
       }
     }
 
@@ -3424,7 +3429,7 @@ module.exports = function (Mdsrform1) {
     let groupBy = {}, match = {}, masterApi = {};
 
     if (fromDate && toDate) {
-      // match['updatedAt'] = { $gte: new Date(fromDate), $lte: new Date(toDate) };
+       match['updatedAt'] = { $gte: new Date(fromDate), $lte: new Date(toDate) };
     }
 
     if (accessupto === 'National') {
@@ -3465,7 +3470,6 @@ module.exports = function (Mdsrform1) {
         match["block_id.subdistrictcode"] = { $in: subdistrictcodes };
       }
     }
-
 
     try {
       const data = await Mdsrform1Collection.aggregate([

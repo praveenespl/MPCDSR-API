@@ -1,7 +1,7 @@
 'use strict';
 var ObjectId = require('mongodb').ObjectID;
 const app = require("../../server/server");
-
+const cron = require('node-cron');
 var bcrypt;
 try {
   // Try the native module first
@@ -232,4 +232,51 @@ module.exports = function (Usermaster) {
     }
   }
   )
+
+  // Remote method to perform the task
+  Usermaster.performTask = async function () {
+    const self = this;
+    try {
+      const loginInfoModel = self.getDataSource().connector.collection(app.models.Logininfo.modelName);
+      const userMasterCollection = Usermaster.getDataSource().connector.collection(Usermaster.modelName);
+
+      // Your task implementation goes here
+      const currentDate = new Date();
+      const last60Days = new Date(currentDate - 60 * 24 * 60 * 60 * 1000);
+      const last30Days = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
+
+      const loginInfo = await loginInfoModel.distinct('user_id', { login_time: { $gte: last60Days } });
+      const loginInfoThirty = await loginInfoModel.distinct('user_id', { login_time: { $gte: last30Days } });
+      const loginInfoOnce = await loginInfoModel.distinct('user_id', {});
+
+      console.log('Task executed at: ', new Date());
+      console.log(loginInfo.length);
+      console.log(loginInfoThirty.length);
+      console.log(loginInfoOnce.length);
+
+      await userMasterCollection.updateMany({ '_id': { $in: loginInfo } }, { $set: { 'last_sixty_days_login': true } });
+      await userMasterCollection.updateMany({ '_id': { $in: loginInfoThirty } }, { $set: { 'last_thirty_days_login': true } });
+      await userMasterCollection.updateMany({ '_id': { $in: loginInfoOnce } }, { $set: { 'logged_once': true } });
+
+      return 'success';
+    } catch (error) {
+      console.error('Error in performing task: ', error);
+      throw error; // Throw the error to handle it further
+    }
+  };
+
+  // Set the remote method to be called via HTTP
+  Usermaster.remoteMethod('performTask', {
+    accepts: [],
+    returns: { arg: 'result', type: 'string' },
+    http: { verb: 'post' },
+  });
+  cron.schedule('0 */2 * * *', async () => {
+    try {
+      const result = await Usermaster.performTask();
+      console.log(result);
+    } catch (error) {
+      console.error('Error in scheduled task: ', error);
+    }
+  });
 };

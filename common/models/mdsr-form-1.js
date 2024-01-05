@@ -2048,7 +2048,7 @@ module.exports = function (Mdsrform1) {
 
   Mdsrform1.getPlaceOfDeath = async function (params) {
     const self = this;;
-    const { statecodes, districtcodes, subdistrictcodes ,type} = params;
+    const { statecodes, districtcodes, subdistrictcodes, type } = params;
     const Mdsrform1Collection = self.getDataSource().connector.collection(Mdsrform1.modelName);
 
     let where = {
@@ -2058,20 +2058,20 @@ module.exports = function (Mdsrform1) {
     let group = createGroup("National");
     let accessupto;
 
-    if (statecodes && statecodes.length>0 ){
-        where["state_id.statecode"] = { $in: statecodes };
-        group = createGroup("State");
+    if (statecodes && statecodes.length > 0) {
+      where["state_id.statecode"] = { $in: statecodes };
+      group = createGroup("State");
     }
-    if(districtcodes && districtcodes.length > 0){
-        where["state_id.statecode"] = { $in: statecodes };
-        where["district_id.districtcode"] = { $in: districtcodes };
-        group = createGroup("District");
+    if (districtcodes && districtcodes.length > 0) {
+      where["state_id.statecode"] = { $in: statecodes };
+      where["district_id.districtcode"] = { $in: districtcodes };
+      group = createGroup("District");
     }
-    if(subdistrictcodes && subdistrictcodes.length > 0){
-        where["state_id.statecode"] = { $in: statecodes };
-        where["district_id.districtcode"] = { $in: districtcodes };
-        where["block_id.subdistrictcode"] = { $in: subdistrictcodes };
-        group = createGroup("Subdistrict");
+    if (subdistrictcodes && subdistrictcodes.length > 0) {
+      where["state_id.statecode"] = { $in: statecodes };
+      where["district_id.districtcode"] = { $in: districtcodes };
+      where["block_id.subdistrictcode"] = { $in: subdistrictcodes };
+      group = createGroup("Subdistrict");
     }
 
     const cursor = await Mdsrform1Collection.aggregate([
@@ -2094,7 +2094,7 @@ module.exports = function (Mdsrform1) {
 
     const response = await getModelData(type, params);
 
-    const res = processCursor(cursor, response,type, accessupto, statecodes,type, districtcodes, subdistrictcodes);
+    const res = processCursor(cursor, response, type, accessupto, statecodes, type, districtcodes, subdistrictcodes);
 
     return res;
   };
@@ -2125,7 +2125,7 @@ module.exports = function (Mdsrform1) {
   }
 
   async function getModelData(type, params) {
- 
+
     const districtModel = app.models.district;
     const subdistrictModel = app.models.subdistrict;
     switch (type) {
@@ -2156,7 +2156,7 @@ module.exports = function (Mdsrform1) {
       nameKey = 'subdistrictname';
       codeKey = 'subdistrictcode';
     }
-  
+
     // Create a map to store counts for each code
     const countMap = {};
     // Initialize countMap with keys
@@ -2171,7 +2171,7 @@ module.exports = function (Mdsrform1) {
         total: 0
       };
     });
-  
+
     // Accumulate counts using forEach
     cursor.forEach(item => {
       countMap[item[key]].home += item.placeOfDeath === 'Home' ? item.count : 0;
@@ -2180,7 +2180,7 @@ module.exports = function (Mdsrform1) {
       countMap[item[key]].facility += item.placeOfDeath === 'Health Facility' ? item.count : 0;
       countMap[item[key]].total += item.count;
     });
-  
+
     // Update names using forEach
     response.forEach(item => {
       if (countMap[item[key]]) {
@@ -2197,16 +2197,16 @@ module.exports = function (Mdsrform1) {
         }
       }
     });
-  
+
     // Convert countMap to an array of objects using Object.values
     const finalRes = Object.values(countMap);
-  
+
     // Sort the result based on total count using sort
     finalRes.sort((a, b) => b.total - a.total);
-  
+
     return finalRes;
   }
-  
+
   Mdsrform1.remoteMethod('getPlaceOfDeath', {
     description: 'Getting the count of the place of death (Facility, Transit, Home & Other)',
     accepts: [{
@@ -3174,7 +3174,7 @@ module.exports = function (Mdsrform1) {
   });
 
   Mdsrform1.userLoginCountsInSpecificDuration = async function (params) {
-
+ try{
     var userMasterCollection = this.getDataSource().connector.collection(app.models.Usermaster.modelName);
     const stateModel = app.models.state;
     const districtModel = app.models.district;
@@ -3243,164 +3243,185 @@ module.exports = function (Mdsrform1) {
       }
     }
 
-    try {
-      const response = await userMasterCollection.aggregate([
-        {
-          $match: match
+    const response = await userMasterCollection.aggregate([
+      {
+        $match: match,
+      },
+      {
+        $project: {
+          statecode: "$user_state_id.statecode",
+          statename: "$user_state_id.statename",
+          districtname: "$user_district_id.districtname",
+          districtcode: "$user_district_id.districtcode",
+          subdistrictcode: "$user_block_id.subdistrictcode",
+          subdistrictname: "$user_block_id.subdistrictname",
+          facilityLogin: {
+            $cond: [
+              { $and: [{ $eq: ["$designation", "FNO"] }, { $eq: ["$useridactive", true] }] },
+              1,
+              0,
+            ],
+          },
+          blockLogin: {
+            $cond: [
+              { $and: [{ $eq: ["$designation", "BMO"] }, { $eq: ["$useridactive", true] }] },
+              1,
+              0,
+            ],
+          },
+          facility_active: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$designation", "FNO"] },
+                  { $eq: ["$logged_once", true] },
+                  { $eq: ["$useridactive", true] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+          block_active: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$designation", "BMO"] },
+                  { $eq: ["$logged_once", true] },
+                  { $eq: ["$useridactive", true] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+          facility_30days: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$designation", "FNO"] },
+                  { $eq: ["$last_thirty_days_login", true] },
+                  { $eq: ["$useridactive", true] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+          block_30days: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$designation", "BMO"] },
+                  { $eq: ["$last_thirty_days_login", true] },
+                  { $eq: ["$useridactive", true] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+          facility_60days: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$designation", "FNO"] },
+                  { $eq: ["$last_sixty_days_login", true] },
+                  { $eq: ["$useridactive", true] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+          block_60days: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ["$designation", "BMO"] },
+                  { $eq: ["$last_sixty_days_login", true] },
+                  { $eq: ["$useridactive", true] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
         },
-        {
-          $lookup: {
-            from: "logininfo",
-            localField: "_id",
-            foreignField: "user_id",
-            as: "loginInfo"
-          }
+      },
+      {
+        $group: {
+          _id: masterAPiGroup,
+          facilityLogin: { $sum: "$facilityLogin" },
+          blockLogin: { $sum: "$blockLogin" },
+          facility_active: { $sum: "$facility_active" },
+          block_active: { $sum: "$block_active" },
+          facility_30days: { $sum: "$facility_30days" },
+          block_30days: { $sum: "$block_30days" },
+          facility_60days: { $sum: "$facility_60days" },
+          block_60days: { $sum: "$block_60days" },
         },
-        {
-          $match: {
-            "loginInfo": { "$ne": [] }
-          }
-        },
-        {
-          $addFields: {
-            dateRange: {
-              $dateFromString: {
-                dateString: {
-                  $dateToString: {
-                    format: "%Y-%m-%dT%H:%M:%S.%LZ",
-                    date: {
-                      $subtract: [new Date(), 60 * 24 * 60 * 60 * 1000]
-                    }
-                  }
-                }
-              }
-            },
-          }
-        },
-        {
-          $project: {
-            statecode: "$user_state_id.statecode",
-            statename: "$user_state_id.statename",
-            districtname: "$user_district_id.districtname",
-            districtcode: "$user_district_id.districtcode",
-            subdistrictcode: "$user_block_id.subdistrictcode",
-            subdistrictname: "$user_block_id.subdistrictname",
-            facilityLogin: { $cond: [{ $eq: ["$designation", "FNO"] }, 1, 0] },
-            blockLogin: { $cond: [{ $eq: ["$designation", "BMO"] }, 1, 0] },
-            facility_active: {
-              $cond: [{
-                $and: [{ $eq: ["$designation", "FNO"] },
-                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
-                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 2] }
-                ]
-              }, 1, 0]
-            },
-            block_active: {
-              $cond: [{
-                $and: [{ $eq: ["$designation", "BMO"] },
-                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
-                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 2] }
-                ]
-              }, 1, 0]
-            },
-            facility_30days: {
-              $cond: [{
-                $and: [{ $eq: ["$designation", "FNO"] },
-                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
-                { $lte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 30] }
-                ]
-              }, 1, 0]
-            },
-            block_30days: {
-              $cond: [{
-                $and: [{ $eq: ["$designation", "BMO"] },
-                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
-                { $lte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 30] }
-                ]
-              }, 1, 0]
-            },
-            facility_60days: {
-              $cond: [{
-                $and: [{ $eq: ["$designation", "FNO"] },
-                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
-                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 60] }
-                ]
-              }, 1, 0]
-            },
-            block_60days: {
-              $cond: [{
-                $and: [{ $eq: ["$designation", "BMO"] },
-                { $gte: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 1] },
-                { $lt: [{ $round: { $divide: [{ $subtract: ["$dateRange", { $arrayElemAt: ["$loginInfo.login_time", { $subtract: [{ $size: "$loginInfo" }, 1] }] }] }, 86400000] } }, 60] }
-                ]
-              }, 1, 0]
-            },
-          }
-        },
-        {
-          $group: {
-            _id: masterAPiGroup,
-            facilityLogin: { $sum: "$facilityLogin" },
-            blockLogin: { $sum: "$blockLogin" },
-            facility_active: { $sum: "$facility_active" },
-            block_active: { $sum: "$block_active" },
-            facility_30days: { $sum: "$facility_30days" },
-            block_30days: { $sum: "$block_30days" },
-            facility_60days: { $sum: "$facility_60days" },
-            block_60days: { $sum: "$block_60days" }
-          }
+      },
+    ]).toArray();
+  
+    const data = [];
+    for (const item of response) {
+      let record = {
+        facilityLogin: item.facilityLogin,
+        blockLogin: item.blockLogin,
+        facility_active: item.facility_active,
+        block_active: item.block_active,
+        facility_30days: item.facility_30days,
+        block_30days: item.block_30days,
+        facility_60days: item.facility_60days,
+        block_60days: item.block_60days,
+      };
+      if (masterAPiArg.type === 'getState') {
+        const stateInfo = await stateModel.findOne({
+          where: { statecode: item?._id?.statecode, statename: item?._id?.statename },
+        });
+        if (stateInfo) {
+          data.push({ ...record, statename: stateInfo.statename, statecode: stateInfo.statecode });
         }
-      ],
-        {
-          allowDiskUse: true
+      } else if (masterAPiArg.type === 'getDistrict') {
+        const districtInfo = await districtModel.findOne({
+          where: { districtcode: item?._id?.districtcode, districtname: item?._id?.districtname },
+        });
+        if (districtInfo) {
+          data.push({
+            ...record,
+            districtname: districtInfo?.districtname,
+            districtcode: districtInfo?.districtcode,
+            statename: districtInfo?.stateName,
+            statecode: districtInfo?.stateCode,
+          });
         }
-      ).toArray();
-
-      // console.log("response", response.length);
-
-      const data = [];
-      for (const item of response) {
-        let record = {
-          facilityLogin: item.facilityLogin,
-          blockLogin: item.blockLogin,
-          facility_active: item.facility_active,
-          block_active: item.block_active,
-          facility_30days: item.facility_30days,
-          block_30days: item.block_30days,
-          facility_60days: item.facility_60days,
-          block_60days: item.block_60days
-        }
-        if (masterAPiArg.type === 'getState') {
-          const steteInfo = await stateModel.findOne({ where: { statecode: item?._id?.statecode, statename: item?._id?.statename } });
-          if (steteInfo) {
-            data.push({ ...record, statename: steteInfo.statename, statecode: steteInfo.statecode });
-          }
-        }
-        else if (masterAPiArg.type === 'getDistrict') {
-          const districtInfo = await districtModel.findOne({ where: { districtcode: item?._id?.districtcode, districtname: item?._id?.districtname } });
-          if (districtInfo) {
-            data.push({
-              ...record, districtname: districtInfo?.districtname, districtcode: districtInfo?.districtcode,
-              statename: districtInfo?.stateName, statecode: districtInfo?.stateCode
-            });
-          }
-        }
-        else if (masterAPiArg.type === 'getSubDistricts') {
-          const blockInfo = await subdistrictModel.findOne({ where: { subdistrictcode: item?._id?.subdistrictcode, subdistrictname: item?._id?.subdistrictname } });
-          if (blockInfo) {
-            data.push({
-              ...record, subdistrictname: blockInfo?.subdistrictname, subdistrictcode: blockInfo?.subdistrictcode,
-              statename: blockInfo?.statename, statecode: blockInfo?.statecode,
-              districtname: blockInfo?.districtname, districtcode: blockInfo?.districtcode
-            });
-          }
+      } else if (masterAPiArg.type === 'getSubDistricts') {
+        const subdistrictInfo = await subdistrictModel.findOne({
+          where: {
+            subdistrictcode: item?._id?.subdistrictcode,
+            subdistrictname: item?._id?.subdistrictname,
+          },
+        });
+        if (subdistrictInfo) {
+          data.push({
+            ...record,
+            subdistrictname: subdistrictInfo?.subdistrictname,
+            subdistrictcode: subdistrictInfo?.subdistrictcode,
+            statename: subdistrictInfo?.statename,
+            statecode: subdistrictInfo?.statecode,
+            districtname: subdistrictInfo?.districtname,
+            districtcode: subdistrictInfo?.districtcode,
+          });
         }
       }
-      return data;
-    } catch (error) {
-      console.log("error ", error);
-      throw error;
     }
+    return data;
+  } catch (error) {
+    console.log("error ", error);
+    throw error;
+  }
+    
   }
 
   Mdsrform1.remoteMethod('userLoginCountsInSpecificDuration', {
@@ -3429,7 +3450,7 @@ module.exports = function (Mdsrform1) {
     let groupBy = {}, match = {}, masterApi = {};
 
     if (fromDate && toDate) {
-       match['updatedAt'] = { $gte: new Date(fromDate), $lte: new Date(toDate) };
+      match['updatedAt'] = { $gte: new Date(fromDate), $lte: new Date(toDate) };
     }
 
     if (accessupto === 'National') {

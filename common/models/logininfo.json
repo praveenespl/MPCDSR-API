@@ -2,9 +2,12 @@
   "name": "logininfo",
   "base": "PersistedModel",
   "idInjection": true,
+  "dataSource": "MPCDSR-Production", 
   "options": {
     "validateUpsert": true
   },
+
+
   "properties": {
     "user_id": {
       "type": "string",

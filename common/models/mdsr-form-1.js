@@ -3190,46 +3190,29 @@ module.exports = function (Mdsrform1) {
       masterAPiArg['type'] = 'getState';
       masterAPiGroup = {statecode: "$statecode"}
       if (statecode && statecode.length >= 1) {
-        match = {"user_state_id.statecode": { $in: statecode } };
+        match["user_state_id.statecode"]= { $in: statecode };
       }
       if (districtcode && districtcode.length >= 1) {
         masterAPiArg['type'] = "getDistrict";
-        match = { "user_district_id.districtcode": { $in: districtcode } };
+        match["user_district_id.districtcode"]= { $in: districtcode } ;
         masterAPiGroup = { districtcode: "$districtcode" };
       }
       if (subdistrictcode && subdistrictcode.length >= 1) {
         masterAPiArg['type'] = 'getSubDistricts';
-        match = { "user_block_id.subdistrictcode": { $in: subdistrictcode } };
+        match["user_block_id.subdistrictcode"]= { $in: subdistrictcode };
         masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
       }
-    }
-    else if (accessUpto === 'State') {
-      if (districtcode && districtcode.length >= 1) {
-        match = {
-          "user_state_id.statecode": { $in: statecode },
-          "user_state_id.statename": { $in: statename }
-        };
-        masterAPiArg['type'] = 'getDistrict';
-        masterAPiGroup = {
-          //districtname: "$districtname",
-          districtcode: "$districtcode"
-        }
-      }
-      if (subdistrictcode && subdistrictcode.length >= 1) {
-        masterAPiArg['type'] = 'getSubDistricts';
-        match = { "user_block_id.subdistrictcode": { $in: subdistrictcode } };
-        masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
-      }
-
+    }else if (accessUpto === 'State') {
+      match["user_state_id.statecode"]= { $in: statecode }
       masterAPiArg['type'] = 'getDistrict';
-      match = {"user_state_id.statecode":  statecode };
-      masterAPiGroup = {districtcode: "$districtcode" };
+      masterAPiGroup = {districtcode: "$districtcode" } 
       if (districtcode && districtcode.length >= 1) {
-        match = {"user_district_id.districtcode":  districtcode};
-      }
-      if (subdistrictcode && subdistrictcode.length >= 1) {
+        masterAPiArg['type'] = "getSubDistricts";
+        match["user_district_id.districtcode"]= { $in: districtcode } ;
+        masterAPiGroup = { subdistrictcode: "$subdistrictcode" };   
+      }if (subdistrictcode && subdistrictcode.length >= 1) {
         masterAPiArg['type'] = 'getSubDistricts';
-        match = {"user_block_id.subdistrictcode" :  subdistrictcode };
+        match["user_block_id.subdistrictcode"]={ $in: subdistrictcode };
         masterAPiGroup = { subdistrictcode: "$subdistrictcode" };
       }
 
@@ -3242,7 +3225,6 @@ module.exports = function (Mdsrform1) {
         match["user_block_id.subdistrictcode"] =  subdistrictcode;
       }
     }
-
     const response = await userMasterCollection.aggregate([
       {
         $match: match,

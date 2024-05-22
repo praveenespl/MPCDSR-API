@@ -99,7 +99,7 @@ module.exports = function (Usermaster) {
             return cb(defaultError);
           } else {
             let accesstokens = [];
-            user.createAccessToken(86400, function (err, token) {
+            user.createAccessToken(300, function (err, token) {
               if (err)
                 return cb(err);
 

@@ -1,0 +1,42 @@
+{
+  "name": "Issuetracker",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "statecode": {
+      "type": "number",
+      "required": true
+    },
+    "statename": {
+      "type": "string",
+      "required": true
+    },
+    "districtcode": {
+      "type": "number"
+    },
+    "districtname": {
+      "type": "string"
+    },
+    "subdistrictcode": {
+      "type": "number"
+    },
+    "subdistrictname": {
+      "type": "string"
+    },
+    "issueTitle": {
+      "type": "string",
+      "required": true
+    },
+    "issueDescription": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

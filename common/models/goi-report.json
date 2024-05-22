@@ -6,75 +6,211 @@
     "validateUpsert": true
   },
   "properties": {
-    "districtname" : {"type":"string"},
-    "LessThanMonth" : {"type":"number"},
-    "LessThanOneYear" :  {"type":"number"},
-    "LessThanFiveYear" :  {"type":"number"},
-    "Male" :  {"type":"number"},
-    "Female" :  {"type":"number"},
-    "Ambiguous" :  {"type":"number"},
-    "General" :  {"type":"number"},
-    "OBC" :  {"type":"number"},
-    "SC" :  {"type":"number"},
-    "ST" :  {"type":"number"},
-    "NA" :  {"type":"number"},
-    "Home" :  {"type":"number"},
-    "Hospital" :  {"type":"number"},
-    "InTransit" :  {"type":"number"},
-    "HealthFacility" :  {"type":"number"},
-    "HealthFacility (Gov)" :  {"type":"number"},
-    "Others/Private" :  {"type":"number"},
-    "delayAtHome" :  {"type":"number"},
-    "delayInTransportation" :  {"type":"number"},
-    "delayAtFacility" :  {"type":"number"},
-    "date_of_death" :{"type":"date"},
-    "updatedAt" : {"type":"date"},
-    "createdAt" : {"type":"date"},
-    "districtcode" : {"type":"number"},
-    "subdistrictcode" : {"type":"number"},
-    "statecode" : {"type":"number"},
-    "statename" : {"type":"string"} ,
-    "subdistrictname" :  {"type":"string"},
-    "date_of_birth" : {"type":"date"},
-    "fbcdrAmbiguous" : {"type":"number"},
-    "fbcdrFemale" : {"type":"number"},
-    "fbcdrGeneral" : {"type":"number"},
-    "fbcdrLessThanFiveYear" : {"type":"number"},
-    "fbcdrLessThanOneMonth" : {"type":"number"},
-    "fbcdrLessThanOneYear" : {"type":"number"},
-    "fbcdrMale" : {"type":"number"},
-    "fbcdrNA" : {"type":"number"},
-    "fbcdrOBC" : {"type":"number"},
-    "fbcdrSC" : {"type":"number"},
-    "fbcdrST" : {"type":"number"},
-    "cbcdrAmbiguous" : {"type":"number"},
-    "cbcdrFemale" : {"type":"number"},
-    "cbcdrGeneral" : {"type":"number"},
-    "cbcdrLessThanFiveYear" : {"type":"number"},
-    "cbcdrLessThanOneMonth" : {"type":"number"},
-    "cbcdrLessThanOneYear" : {"type":"number"},
-    "cbcdrMale" : {"type":"number"},
-    "cbcdrNA" : {"type":"number"},
-    "cbcdrOBC" : {"type":"number"},
-    "cbcdrSC" : {"type":"number"},
-    "cbcdrST" : {"type":"number"},
-    "autopsy_ambiguous" : {"type":"number"},
-    "autopsy_female" : {"type":"number"},
-    "autopsy_general" : {"type":"number"},
-    "autopsy_lessThanFiveYear" : {"type":"number"},
-    "autopsy_lessThanOneMonth" : {"type":"number"},
-    "autopsy_lessThanOneYear" : {"type":"number"},
-    "autopsy_male" : {"type":"number"},
-    "autopsy_na" : {"type":"number"},
-    "autopsy_obc" : {"type":"number"},
-    "autopsy_sc" : {"type":"number"},
-    "autopsy_st" : {"type":"number"},
-    "autopsy_total" : {"type":"number"},
-    "totalCbcdr" : {"type":"number"},
-    "totalFbcdr" : {"type":"number"},
-    "total" : {"type":"number"},
-    "cdr_id":{"type":"string"}
-},
+    "districtname": {
+      "type": "string"
+    },
+    "LessThanMonth": {
+      "type": "number"
+    },
+    "LessThanOneYear": {
+      "type": "number"
+    },
+    "LessThanFiveYear": {
+      "type": "number"
+    },
+    "Male": {
+      "type": "number"
+    },
+    "Female": {
+      "type": "number"
+    },
+    "Ambiguous": {
+      "type": "number"
+    },
+    "General": {
+      "type": "number"
+    },
+    "OBC": {
+      "type": "number"
+    },
+    "SC": {
+      "type": "number"
+    },
+    "ST": {
+      "type": "number"
+    },
+    "NA": {
+      "type": "number"
+    },
+    "Home": {
+      "type": "number"
+    },
+    "Hospital": {
+      "type": "number"
+    },
+    "InTransit": {
+      "type": "number"
+    },
+    "HealthFacility": {
+      "type": "number"
+    },
+    "HealthFacility (Gov)": {
+      "type": "number"
+    },
+    "Others/Private": {
+      "type": "number"
+    },
+    "delayAtHome": {
+      "type": "number"
+    },
+    "delayInTransportation": {
+      "type": "number"
+    },
+    "delayAtFacility": {
+      "type": "number"
+    },
+    "date_of_death": {
+      "type": "date"
+    },
+    "updatedAt": {
+      "type": "date"
+    },
+    "createdAt": {
+      "type": "date"
+    },
+    "districtcode": {
+      "type": "number"
+    },
+    "subdistrictcode": {
+      "type": "number"
+    },
+    "statecode": {
+      "type": "number"
+    },
+    "statename": {
+      "type": "string"
+    },
+    "subdistrictname": {
+      "type": "string"
+    },
+    "date_of_birth": {
+      "type": "date"
+    },
+    "fbcdrAmbiguous": {
+      "type": "number"
+    },
+    "fbcdrFemale": {
+      "type": "number"
+    },
+    "fbcdrGeneral": {
+      "type": "number"
+    },
+    "fbcdrLessThanFiveYear": {
+      "type": "number"
+    },
+    "fbcdrLessThanOneMonth": {
+      "type": "number"
+    },
+    "fbcdrLessThanOneYear": {
+      "type": "number"
+    },
+    "fbcdrMale": {
+      "type": "number"
+    },
+    "fbcdrNA": {
+      "type": "number"
+    },
+    "fbcdrOBC": {
+      "type": "number"
+    },
+    "fbcdrSC": {
+      "type": "number"
+    },
+    "fbcdrST": {
+      "type": "number"
+    },
+    "cbcdrAmbiguous": {
+      "type": "number"
+    },
+    "cbcdrFemale": {
+      "type": "number"
+    },
+    "cbcdrGeneral": {
+      "type": "number"
+    },
+    "cbcdrLessThanFiveYear": {
+      "type": "number"
+    },
+    "cbcdrLessThanOneMonth": {
+      "type": "number"
+    },
+    "cbcdrLessThanOneYear": {
+      "type": "number"
+    },
+    "cbcdrMale": {
+      "type": "number"
+    },
+    "cbcdrNA": {
+      "type": "number"
+    },
+    "cbcdrOBC": {
+      "type": "number"
+    },
+    "cbcdrSC": {
+      "type": "number"
+    },
+    "cbcdrST": {
+      "type": "number"
+    },
+    "autopsy_ambiguous": {
+      "type": "number"
+    },
+    "autopsy_female": {
+      "type": "number"
+    },
+    "autopsy_general": {
+      "type": "number"
+    },
+    "autopsy_lessThanFiveYear": {
+      "type": "number"
+    },
+    "autopsy_lessThanOneMonth": {
+      "type": "number"
+    },
+    "autopsy_lessThanOneYear": {
+      "type": "number"
+    },
+    "autopsy_male": {
+      "type": "number"
+    },
+    "autopsy_na": {
+      "type": "number"
+    },
+    "autopsy_obc": {
+      "type": "number"
+    },
+    "autopsy_sc": {
+      "type": "number"
+    },
+    "autopsy_st": {
+      "type": "number"
+    },
+    "autopsy_total": {
+      "type": "number"
+    },
+    "totalCbcdr": {
+      "type": "number"
+    },
+    "totalFbcdr": {
+      "type": "number"
+    },
+    "total": {
+      "type": "number"
+    },
+    "cdr_id": {
+      "type": "string"
+    }
+  },
   "validations": [],
   "relations": {
     "createdBy": {

@@ -18,10 +18,18 @@ module.exports = function (Mdsrform1) {
 
   })
   Mdsrform1.getDashboardData = async function (params) {
+    if(params.dateWise==="death_date_time"){
+      params.death_date_time.$gte = new Date(params.death_date_time.$gte);
+      params.death_date_time.$lte = new Date(params.death_date_time.$lte);
+      delete params.dateWise;
+    }else{
     params.updatedAt.$gte = new Date(params.updatedAt.$gte);
     params.updatedAt.$lte = new Date(params.updatedAt.$lte);
+    delete params.dateWise;
+    }
     var self = this;
     var Mdsrform1Collection = self.getDataSource().connector.collection(Mdsrform1.modelName);
+    console.log("get dashboard data",params)
     let cursor = await Mdsrform1Collection.aggregate(
 
       // Pipeline
@@ -583,8 +591,15 @@ module.exports = function (Mdsrform1) {
   Mdsrform1.getNotificationCount = async function (params) {
     var self = this;
     var Mdsrform1Collection = self.getDataSource().connector.collection(Mdsrform1.modelName);
+    if(params.dateWise==="death_date_time"){
+      params.death_date_time.$gte = new Date(params.death_date_time.$gte);
+      params.death_date_time.$lte = new Date(params.death_date_time.$lte);
+      delete params.dateWise;
+    }else{
     params.updatedAt.$gte = new Date(params.updatedAt.$gte);
     params.updatedAt.$lte = new Date(params.updatedAt.$lte);
+    delete params.dateWise;
+    }
     let cursor = await Mdsrform1Collection.aggregate(
       // Pipeline
       [
@@ -1029,7 +1044,6 @@ module.exports = function (Mdsrform1) {
       }
     }
     data.push(obj);
-    //  console.log(obj)
     return data;
 
   }
@@ -1173,11 +1187,10 @@ module.exports = function (Mdsrform1) {
     let self = this;
     let Mdsrform1Collection = self.getDataSource().connector.collection(Mdsrform1.modelName);
     let masterAPIArg = {};
-    let where = {
-      //"is_maternal_death": true
-    };
+    let where = {};
     let groupUnderscoreId = {};
     let project = {};
+    where[params.dateWise] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
     const { statecodes, districtcodes, subdistrictcodes } = params.where;
     if (params.accessUpto == "National") {
       masterAPIArg['type'] = "getStates";
@@ -1185,7 +1198,6 @@ module.exports = function (Mdsrform1) {
         statecode: "$state_id.statecode",
         statename: "$state_id.statename"
       }
-      where['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
       if (statecodes && statecodes.length) {
         where["state_id.statecode"] = { $in: statecodes };
 
@@ -1206,7 +1218,6 @@ module.exports = function (Mdsrform1) {
       if (districtcodes && districtcodes.length) {
         where["district_id.districtcode"] = { $in: districtcodes };
       }
-      where['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
       groupUnderscoreId = {
         statename: "$state_id.statename",
         districtcode: "$district_id.districtcode",
@@ -1226,9 +1237,6 @@ module.exports = function (Mdsrform1) {
       masterAPIArg['type'] = "getSubDistricts";
       masterAPIArg['districtcode'] = params.where['districtcode'];
       where['district_id.districtcode'] = params.where['districtcode'];
-      where['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
-
-
       if (subdistrictcodes && subdistrictcodes.length) {
         where["block_id.subdistrictcode"] = { $in: subdistrictcodes }
       }
@@ -1247,7 +1255,6 @@ module.exports = function (Mdsrform1) {
       }
     } else if (params.accessUpto == "Block") {
       where['block_id.subdistrictcode'] = params.where['subdistrictcode'];
-      where['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
       groupUnderscoreId = {
         subdistrictcode: "$block_id.subdistrictcode",
         subdistrictname: "$block_id.subdistrictname"
@@ -1262,7 +1269,7 @@ module.exports = function (Mdsrform1) {
         reported: 1
       }
     }
-
+    console.log("get death where cbmdsr and fbmdsr conducted---->",where)
     let cursor = await Mdsrform1Collection.aggregate(
       // Pipeline
       [
@@ -1769,13 +1776,13 @@ module.exports = function (Mdsrform1) {
     };
     let sort = {}
     where1["place_of_death"] = { $in: ['Home', 'Transit', 'Other'] }
-    where1['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
+    where1[params.dateWise] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
     if (params.where && params.where.state_id && params.where.state_id.statecode && params.where.state_id.statecode.length) {
       where1['state_id.statecode'] = { $in: params.where.state_id.statecode };
       where2['state_id.statecode'] = { $in: params.where.state_id.statecode };
     }
     where2["place_of_death"] = { $in: ['Health Facility'] }
-    where2['updatedAt'] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
+    where2[params.dateWise] = { '$gte': new Date(params.previousYearFromDate), '$lte': new Date(params.previousYearToDate) };
     if (params.accessUpto == "National") {
       groupUnderscoreId = {
         statecode: "$statecode",
@@ -1833,7 +1840,6 @@ module.exports = function (Mdsrform1) {
       project2['subdistrictcode'] = "$_id.subdistrictcode";
       sort['subdistrictname'] = 1;
     }
-
 
     let cbmdsrFormsStatus = await Mdsrform1Collection.aggregate(
       // Pipeline
@@ -2316,7 +2322,6 @@ module.exports = function (Mdsrform1) {
 
   Mdsrform1.getReportOfMaternalCauseOfdeaths = async function (params) {
     let self = this;
-    // console.log("--->", params)
     let Mdsrform4Collection = self.getDataSource().connector.collection(Mdsrform1.app.models.MdsrForm4.modelName);
     let Mdsrform5Collection = self.getDataSource().connector.collection(Mdsrform1.app.models.MdsrForm5.modelName);
     const { fromDate, toDate, accessUpto, districtcodes, statecodes, subdistrictcodes, causes } = params;
@@ -2794,7 +2799,7 @@ module.exports = function (Mdsrform1) {
       where["general_information.block.subdistritcode"] = subdistrictcodes;
       where1["generalinformation.block_id.subdistrictcode"] = subdistrictcodes;
     } else if (accessUpto === "National") {
-      // console.log('aniket')
+
     } else if (accessUpto === "District") {
       where["general_information.district.districtcode"] = { $in: districtcodes };
       where1["generalinformation.district_id.districtcode"] = { $in: districtcodes };
@@ -2814,7 +2819,6 @@ module.exports = function (Mdsrform1) {
 
     }
     params['is_maternal_death'] = true;
-    // console.log(type)
     if (type === "abortion") {
       where["cause_of_death.direct.category"] = "Abortion"
       where1["other.cause_of_death.direct.category"] = "Abortion"
@@ -3144,7 +3148,6 @@ module.exports = function (Mdsrform1) {
         }
       }
     } catch (e) {
-      // console.log(e)
       if (e.name === 'JsonWebTokenError') {
         const err = new Error('Forbidden');
         err.statusCode = 403;
@@ -3183,10 +3186,10 @@ module.exports = function (Mdsrform1) {
     const { accessUpto, statecode, districtcode, subdistrictcode } = params;
     let masterAPiArg = {}, masterAPiGroup = {}, match = {}, match1 = {};
 
-    match['usertype'] = 'MDSR';
     match['designation'] = { $in: ['BMO', 'FNO'] };
 
     if (accessUpto === 'National') {
+      match['usertype'] = 'MDSR';
       masterAPiArg['type'] = 'getState';
       masterAPiGroup = {statecode: "$statecode"}
       if (statecode && statecode.length >= 1) {
@@ -3334,6 +3337,7 @@ module.exports = function (Mdsrform1) {
       {
         $group: {
           _id: masterAPiGroup,
+          total: { $sum: "$count" },
           facilityLogin: { $sum: "$facilityLogin" },
           blockLogin: { $sum: "$blockLogin" },
           facility_active: { $sum: "$facility_active" },
@@ -3400,7 +3404,6 @@ module.exports = function (Mdsrform1) {
     }
     return data;
   } catch (error) {
-    console.log("error ", error);
     throw error;
   }
     

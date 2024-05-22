@@ -1,6 +1,7 @@
 {
   "initial:before": {
-    "loopback#favicon": {}
+    "loopback#favicon": {},
+    "./xFrameOptions": {}
   },
   "initial": {
     "compression": {},
@@ -31,7 +32,10 @@
     }
   },
   "session": {},
-  "auth": {},
+  "auth": {
+    "loopback#token": {},
+    "./initial-authentication": {}
+  },
   "parse": {},
   "routes": {
     "loopback#rest": {

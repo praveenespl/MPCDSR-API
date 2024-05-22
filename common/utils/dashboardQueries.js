@@ -161,7 +161,7 @@ const getCDRDeathForMapData = async (Cdrform1,CdrForm1Aggregate, {params}) => {
             },
             (err, res) => {
               let obj = {
-                accessToken: res.ihipAccessToken,
+                // accessToken: res.ihipAccessToken,
               };
               if (params.type === "getDistricts") {
                 obj.type = "getDistricts";

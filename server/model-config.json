@@ -227,5 +227,9 @@
   "sncu_records": {
     "dataSource": "MPDSRDB",
     "public": true
+  },
+  "Issuetracker": {
+    "dataSource": "MPDSRDB",
+    "public": true
   }
 }

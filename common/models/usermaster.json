@@ -84,16 +84,22 @@
       "type": "string"
     },
     "user_state_id": {
-      "statename": "string",
-      "statecode": "number"
+      "type": {
+        "statename": "string",
+        "statecode": "number"
+      }
     },
     "user_district_id": {
-      "districtname": "string",
-      "districtcode": "number"
+      "type": {
+        "districtname": "string",
+        "districtcode": "number"
+      }
     },
     "user_block_id": {
-      "subdistrictname": "string",
-      "subdistrictcode": "number"
+      "type": {
+        "subdistrictname": "string",
+        "subdistrictcode": "number"
+      }
     },
     "nin": {
       "type": "string",

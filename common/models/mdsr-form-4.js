@@ -7,13 +7,13 @@ module.exports = function (Mdsrform4) {
   Mdsrform4.fbmdrVsCbmdrSubmitted = async function (params) {
     var self = this;
     const Mdsrform4Collection = self.getDataSource().connector.collection(Mdsrform4.modelName);
-    const { statecodes, fromDate, toDate, accessupto, subdistrictcodes, districtcodes } = params;
+    const { statecodes, fromDate, toDate, accessupto, subdistrictcodes, districtcodes ,dateWise} = params;
     // get all fbmdr cases submitted statewise
+    let where={}
     const obj = {};
     let group = {};
-    const where = {
-      "createdAt": { $gte: new Date(fromDate), $lte: new Date(toDate) },
-    }
+
+    where[dateWise]= { $gte: new Date(fromDate), $lte: new Date(toDate) }
     if (accessupto === 'National') {
       if (statecodes && statecodes.length) {
         where["general_information.state.statecode"] = { $in: statecodes }

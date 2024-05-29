@@ -348,7 +348,6 @@ module.exports = function (Cdrform1) {
 
   //Done by ravindra on 23-01-2021
   Cdrform1.getDashboardData = async function (params) {
-    console.log(params)
     try {
       const self = this;
       const Cdrform1Collection = self
@@ -366,30 +365,19 @@ module.exports = function (Cdrform1) {
       const Cdrform4bCollection = self
         .getDataSource()
         .connector.collection(Cdrform1.app.models.cdr_form_4b.modelName);
-      let where;
-      if (params.accessupto === "National") {
-        where = {
-          updatedAt: {
-            $gte: new Date(params.updatedAt.$gte),
-            $lte: new Date(params.updatedAt.$lte),
-          },
-        };
-      } else if (params.accessupto === "State") {
-        where = {
-          statecode: params.statecode,
-          updatedAt: {
-            $gte: new Date(params.updatedAt.$gte),
-            $lte: new Date(params.updatedAt.$lte),
-          },
-        };
-      } else if (params.accessupto === "District") {
-        where = {
-          districtcode: params.districtcode,
-          updatedAt: {
-            $gte: new Date(params.updatedAt.$gte),
-            $lte: new Date(params.updatedAt.$lte),
-          },
-        };
+      let where={};
+       where[params.datewise] = {
+        $gte: new Date(params.previousYearFromDate),
+        $lte: new Date(params.previousYearToDate),
+      };
+      if (params.where.statecode && params.where.statecode.length > 0) {
+        where["statecode"] ={$in:params.where.statecode};
+      }
+      if (params.where.districtcode && params.where.districtcode.length > 0) {
+        where["districtcode"] = {$in:params.where.districtcode};
+      }
+      if (params.where.subdistrictcode && params.where.subdistrictcode.length > 0) {
+        where["subdistrictcode"] = {$in:params.where.subdistrictcode};
       }
       const form1Data = await Cdrform1Collection.aggregate([
         {
@@ -434,7 +422,6 @@ module.exports = function (Cdrform1) {
           },
         },
       ]).toArray();
-
       const form2Data = await Cdrform2Collection.aggregate([
         {
           $match: {
@@ -561,7 +548,7 @@ module.exports = function (Cdrform1) {
         statecode: "$statecode",
         statename: "$address.statename",
       };
-      where["updatedAt"] = {
+      where[params.datewise] = {
         $gte: new Date(params.previousYearFromDate),
         $lte: new Date(params.previousYearToDate),
       };
@@ -576,7 +563,7 @@ module.exports = function (Cdrform1) {
       masterAPIArg["type"] = "getDistricts";
       masterAPIArg["statecode"] = params.where["statecode"];
       where["statecode"] = params.where["statecode"];
-      where["updatedAt"] = {
+      where[params.datewise] = {
         $gte: new Date(params.previousYearFromDate),
         $lte: new Date(params.previousYearToDate),
       };
@@ -595,8 +582,13 @@ module.exports = function (Cdrform1) {
     } else if (params.accessUpto == "District") {
       masterAPIArg["type"] = "getSubDistricts";
       masterAPIArg["districtcode"] = params.where["districtcode"];
-      where["districtcode"] = params.where["districtcode"];
-      where["updatedAt"] = {
+      if(params.where.districtcode && params.where.districtcode.length>0){
+      where["districtcode"] = {$in:params.where["districtcode"]};
+      }
+      if(params.where.subdistrictcode && params.where.subdistrictcode.length>0){
+      where["subdistrictcode"] = {$in:params.where["subdistrictcode"]};
+      }
+      where[params.datewise] = {
         $gte: new Date(params.previousYearFromDate),
         $lte: new Date(params.previousYearToDate),
       };
@@ -613,7 +605,7 @@ module.exports = function (Cdrform1) {
       };
     } else if (params.accessUpto == "Block") {
       where["block_id.subdistrictcode"] = params.where["subdistrictcode"];
-      where["updatedAt"] = {
+      where[params.datewise] = {
         $gte: new Date(params.previousYearFromDate),
         $lte: new Date(params.previousYearToDate),
       };
@@ -794,7 +786,6 @@ module.exports = function (Cdrform1) {
   });
 
   Cdrform1.getNotificationDetails = async function (params) {
-    console.log("params", params)
     var self = this;
     var Cdrform1Collection = self
       .getDataSource()
@@ -833,9 +824,7 @@ module.exports = function (Cdrform1) {
 
   Cdrform1.getSubmittedFormsStatus = async function (params) {
     let self = this;
-    let Cdrform1Collection = self
-      .getDataSource()
-      .connector.collection(Cdrform1.modelName);
+    let Cdrform1Collection = self.getDataSource().connector.collection(Cdrform1.modelName);
     let where1 = {};
     let where2 = {};
     let groupUnderscoreId = {};
@@ -918,24 +907,51 @@ module.exports = function (Cdrform1) {
       form4B: 1,
     };
     let sort = {};
+  
     where1["palce_of_death"] = {
-      $in: [
-        "Home",
-        "In transit",
-        "Other",
-        "Others/Private",
-        "Health facility (Govt.)",
-      ],
-    };
-    where1["updatedAt"] = {
-      $gte: new Date(params.previousYearFromDate),
-      $lte: new Date(params.previousYearToDate),
+      $in: ["Home", "In transit", "Other", "Others/Private", "Health facility (Govt.)"],
     };
     where2["palce_of_death"] = { $in: ["Hospital", "Health facility"] };
-    where2["updatedAt"] = {
+  
+    where1[params.datewise] = {
       $gte: new Date(params.previousYearFromDate),
       $lte: new Date(params.previousYearToDate),
     };
+    where2[params.datewise] = {
+      $gte: new Date(params.previousYearFromDate),
+      $lte: new Date(params.previousYearToDate),
+    };
+  
+    if (params.where && params.where["statecode"]) {
+      if (Array.isArray(params.where["statecode"])) {
+        where1["statecode"] = { $in: params.where["statecode"] };
+        where2["statecode"] = { $in: params.where["statecode"] };
+      } else {
+        where1["statecode"] = params.where["statecode"];
+        where2["statecode"] = params.where["statecode"];
+      }
+    }
+  
+    if (params.where && params.where["districtcode"]) {
+      if (Array.isArray(params.where["districtcode"])) {
+        where1["districtcode"] = { $in: params.where["districtcode"] };
+        where2["districtcode"] = { $in: params.where["districtcode"] };
+      } else {
+        where1["districtcode"] = params.where["districtcode"];
+        where2["districtcode"] = params.where["districtcode"];
+      }
+    }
+  
+    if (params.where && params.where["subdistrictcode"]) {
+      if (Array.isArray(params.where["subdistrictcode"])) {
+        where1["subdistrictcode"] = { $in: params.where["subdistrictcode"] };
+        where2["subdistrictcode"] = { $in: params.where["subdistrictcode"] };
+      } else {
+        where1["subdistrictcode"] = params.where["subdistrictcode"];
+        where2["subdistrictcode"] = params.where["subdistrictcode"];
+      }
+    }
+  
     if (params.accessUpto == "National") {
       groupUnderscoreId = {
         statecode: "$statecode",
@@ -951,8 +967,6 @@ module.exports = function (Cdrform1) {
       project2FbCdr["statecode"] = "$_id.statecode";
       sort["statename"] = 1;
     } else if (params.accessUpto == "State") {
-      where1["statecode"] = params.where["statecode"];
-      where2["statecode"] = params.where["statecode"];
       groupUnderscoreId = {
         districtcode: "$districtcode",
         districtname: "$districtname",
@@ -967,8 +981,6 @@ module.exports = function (Cdrform1) {
       project2FbCdr["districtcode"] = "$_id.districtcode";
       sort["districtname"] = 1;
     } else if (params.accessUpto == "District") {
-      where1["districtcode"] = params.where["districtcode"];
-      where2["districtcode"] = params.where["districtcode"];
       groupUnderscoreId = {
         subdistrictcode: "$subdistrictcode",
         subdistrictname: "$subdistrictname",
@@ -983,8 +995,6 @@ module.exports = function (Cdrform1) {
       project2FbCdr["subdistrictcode"] = "$_id.subdistrictcode";
       sort["subdistrictname"] = 1;
     } else if (params.accessUpto == "Block") {
-      where1["subdistrictcode"] = params.where["subdistrictcode"];
-      where2["subdistrictcode"] = params.where["subdistrictcode"];
       groupUnderscoreId = {
         subdistrictcode: "$subdistrictcode",
         subdistrictname: "$address.subdistrictname",
@@ -995,7 +1005,6 @@ module.exports = function (Cdrform1) {
       project2["subdistrictcode"] = "$_id.subdistrictcode";
       sort["subdistrictname"] = 1;
     }
-
     let cbmdsrFormsStatus = await Cdrform1Collection.aggregate(
       // Pipeline
       // Pipeline

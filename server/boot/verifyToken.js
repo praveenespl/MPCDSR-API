@@ -1,9 +1,8 @@
 var app = require("../server");
 function verifyAccessToken(token,created,ttl) {
-    console.log("------->ttkvvu",token,created,ttl)
+
           const now = new Date().getTime();
           const expiresAt = new Date(created).getTime() + ttl * 1000;
-          console.log("------>",expiresAt,"asdlfj--->",now)
           if (now >= expiresAt) {  
         //     app.models.AccessToken.replaceOrCreate(accesstokens, function (err, updatedAccessToken) {
         //     if (err) {

@@ -16,10 +16,9 @@ module.exports = function(app) {
 
     // Check if the requested URL path is public
     if (publicRoutes.some(route => urlPath.startsWith(route))) {
-      return next(); // Skip token check for public routes
+      return next(); 
     }
 
-    // If the route is not public, check for the token
     if (token) {
      const verifiedtoken= verifyAccessToken(token,req.headers.created,req.headers.ttl)
         if (!verifiedtoken) {

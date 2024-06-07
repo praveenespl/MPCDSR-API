@@ -552,6 +552,9 @@ module.exports = function (Cdrform1) {
         $gte: new Date(params.previousYearFromDate),
         $lte: new Date(params.previousYearToDate),
       };
+      if(params.where.statecode && params.where.statecode.length>0){
+        where["statecode"] = {$in:params.where["statecode"]};
+        }
       project = {
         _id: 0,
         statecode: "$_id.statecode",
@@ -562,7 +565,13 @@ module.exports = function (Cdrform1) {
     } else if (params.accessUpto == "State") {
       masterAPIArg["type"] = "getDistricts";
       masterAPIArg["statecode"] = params.where["statecode"];
-      where["statecode"] = params.where["statecode"];
+      // where["statecode"] = params.where["statecode"];
+      if(params.where.statecode && params.where.statecode.length>0){
+        where["statecode"] = {$in:params.where["statecode"]};
+        }
+        if(params.where.districtcode && params.where.districtcode.length>0){
+        where["districtcode"] = {$in:params.where["districtcode"]};
+        }
       where[params.datewise] = {
         $gte: new Date(params.previousYearFromDate),
         $lte: new Date(params.previousYearToDate),

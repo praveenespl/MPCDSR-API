@@ -794,26 +794,52 @@ module.exports = function (Cdrform1) {
     },
   });
 
-  Cdrform1.getNotificationDetails = async function (params) {
-    var self = this;
-    var Cdrform1Collection = self
-      .getDataSource()
-      .connector.collection(Cdrform1.modelName);
-    params.updatedAt.$gte = new Date(params.updatedAt.$gte);
-    params.updatedAt.$lte = new Date(params.updatedAt.$lte);
-    let cursor = Cdrform1Collection.aggregate(
-      // Pipeline
-      [
-        // Stage 1
-        {
-          $match: params,
-        },
-      ]
-      // Created with 3T MongoChef, the GUI for MongoDB - http://3t.io/mongochef
-    ).toArray();
+  // Cdrform1.getNotificationDetails = async function (params) {
+  //   var self = this;
+  //   var Cdrform1Collection = self
+  //     .getDataSource()
+  //     .connector.collection(Cdrform1.modelName);
+  //   params.updatedAt.$gte = new Date(params.updatedAt.$gte);
+  //   params.updatedAt.$lte = new Date(params.updatedAt.$lte);
+  //   let cursor = Cdrform1Collection.aggregate(
+  //     // Pipeline
+  //     [
+  //       // Stage 1
+  //       {
+  //         $match: params,
+  //       },
+  //     ]
+  //     // Created with 3T MongoChef, the GUI for MongoDB - http://3t.io/mongochef
+  //   ).toArray();
 
-    return cursor;
-  };
+  //   return cursor;
+  // };
+  Cdrform1.getNotificationDetails = async function (params) {
+    const Cdrform1Collection = this.getDataSource().connector.collection(Cdrform1.modelName);
+
+    // Convert the dateWiseSelection parameters to dates
+    for (const key in params) {
+        if (params[key].$gte) {
+            params[key].$gte = new Date(params[key].$gte);
+        }
+        if (params[key].$lte) {
+            params[key].$lte = new Date(params[key].$lte);
+        }
+    }
+
+    try {
+        const cursor = await Cdrform1Collection.aggregate([
+            { $match: params }
+        ]).toArray();
+
+        return cursor;
+    } catch (error) {
+        // Handle errors appropriately
+        console.error("Error fetching notification details:", error);
+        throw new Error("Failed to fetch notification details. Please check your request.");
+    }
+};
+
   Cdrform1.remoteMethod("getNotificationDetails", {
     description: "Get Notification Details",
     accepts: [
